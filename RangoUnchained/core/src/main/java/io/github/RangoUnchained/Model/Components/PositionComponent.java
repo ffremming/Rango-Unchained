@@ -1,3 +1,5 @@
+package main.java.io.github.RangoUnchained.Model.Components;
+
 public class PositionComponent {
 
     private int xpos;

@@ -1,3 +1,5 @@
+package main.java.io.github.RangoUnchained.Model.Components;
+
 public class VelocityComponent {
 
     private int velocityY;

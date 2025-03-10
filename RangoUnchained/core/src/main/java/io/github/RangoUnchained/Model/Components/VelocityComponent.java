@@ -1,6 +1,6 @@
-package main.java.io.github.RangoUnchained.Model.Components;
+package core.src.main.java.io.github.RangoUnchained.Model.Components;
 
-public class VelocityComponent {
+public class VelocityComponent implements Component {
 
     private int velocityY;
 

@@ -1,6 +1,6 @@
-package main.java.io.github.RangoUnchained.Model.Components;
+package core.src.main.java.io.github.RangoUnchained.Model.Components;
 
-public class InputComponent {
+public class InputComponent implements Component {
 
     private boolean left;
     private boolean right;

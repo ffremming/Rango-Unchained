@@ -1,6 +1,6 @@
-package main.java.io.github.RangoUnchained.Model.Components;
+package core.src.main.java.io.github.RangoUnchained.Model.Components;
 
-public class PositionComponent {
+public class PositionComponent implements Component {
 
     private int posX;
     private int posY;

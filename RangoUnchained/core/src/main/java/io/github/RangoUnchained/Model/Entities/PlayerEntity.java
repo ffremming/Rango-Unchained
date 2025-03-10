@@ -1,10 +1,10 @@
-package main.java.io.github.RangoUnchained.Model.Entities;
+package core.src.main.java.io.github.RangoUnchained.Model.Entities;
 
-import main.java.io.github.RangoUnchained.Model.Components.InputComponent;
-import main.java.io.github.RangoUnchained.Model.Components.PositionComponent;
-import main.java.io.github.RangoUnchained.Model.Components.VelocityComponent;
+import core.src.main.java.io.github.RangoUnchained.Model.Components.InputComponent;
+import core.src.main.java.io.github.RangoUnchained.Model.Components.PositionComponent;
+import core.src.main.java.io.github.RangoUnchained.Model.Components.VelocityComponent;
 
-public class PlayerEntity {
+public class PlayerEntity implements Entity{
 
     private PositionComponent positionComponent;
     private VelocityComponent velocityComponent;

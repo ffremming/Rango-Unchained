@@ -1,34 +1,65 @@
 package io.github.RangoUnchained;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+import io.github.RangoUnchained.Views.MainMenuView;
+import io.github.RangoUnchained.Views.ScoreboardView;
+
+public class Main extends Game {
+    private static SpriteBatch batch;
+    private static BitmapFont font;
+    private static Skin skin;
+    private Screen currentScreen;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        font = new BitmapFont();
+        skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
+
+        changeScreen(new MainMenuView(this));
     }
 
-    @Override
-    public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+    public static SpriteBatch getBatch() {
+        if (batch == null) batch = new SpriteBatch();
+        return batch;
     }
+
+    public static BitmapFont getFont() {
+        if (font == null) font = new BitmapFont();
+        return font;
+    }
+
+    public static Skin getSkin() {
+        return skin;
+    }
+
+    public void changeScreen(Screen newScreen) {
+        if (currentScreen != null && currentScreen != newScreen) {
+            currentScreen.hide();
+
+            // Dispose only if the screen is not meant to be reused
+            if (!(currentScreen instanceof ScoreboardView)) {
+                currentScreen.dispose();
+            }
+        }
+
+        currentScreen = newScreen;
+        setScreen(currentScreen);
+    }
+
 
     @Override
     public void dispose() {
         batch.dispose();
-        image.dispose();
+        font.dispose();
+        skin.dispose();
+        if (currentScreen != null) {
+            currentScreen.dispose();
+        }
     }
 }

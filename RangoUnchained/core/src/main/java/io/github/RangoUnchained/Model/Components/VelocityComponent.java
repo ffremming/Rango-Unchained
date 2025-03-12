@@ -2,28 +2,17 @@ package core.src.main.java.io.github.RangoUnchained.Model.Components;
 
 public class VelocityComponent implements Component {
 
-    private int velocityY;
+    private int velocity;
 
-    private int velocityX;
-
-    public VelocityComponent(int velocityY, int velocityX) {
-        this.velocityY = velocityY;
-        this.velocityX = velocityX;
+    public VelocityComponent(int velocity) {
+        this.velocity = velocity;
     }
 
-    public int getVelocityY() {
-        return velocityY;
+    public int getVelocity() {
+        return velocity;
     }
 
-    public void setVelocityY(int velocityY) {
-        this.velocityY = velocityY;
-    }
-
-    public int getVelocityX() {
-        return velocityX;
-    }
-
-    public void setVelocityX(int velocityX) {
-        this.velocityX = velocityX;
+    public void setVelocity(int velocity) {
+        this.velocity = velocity;
     }
 }

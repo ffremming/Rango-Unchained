@@ -12,9 +12,6 @@ public class PlayerEntity implements Entity{
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    public PlayerEntity() {
-    }
-
     public PositionComponent getPositionComponent() {
         return (PositionComponent) components.get(PositionComponent.class);
     }
@@ -23,9 +20,9 @@ public class PlayerEntity implements Entity{
         return (VelocityComponent) components.get(VelocityComponent.class);
     }
 
-    /*public InputComponent getInputComponent() {
-        return inputComponent;
-    }*/
+    public InputComponent getInputComponent() {
+        return (InputComponent) components.get(InputComponent.class);
+    }
 
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {

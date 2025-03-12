@@ -26,6 +26,7 @@ public class InputSystem {
         multiplayer = false;
     }
 
+    // Method that can be called for controllers, delegates to correct handler based on gamemode
     public void handleInputs() {
         if (multiplayer) {
             handleInputMultiplayer();
@@ -34,6 +35,7 @@ public class InputSystem {
         }
     }
 
+    // Updates the input components of the player in singleplayer
     public void handleInputSingleplayer() {
         InputComponent p1_input = (InputComponent) entities.get(0).getComponent(InputComponent.class);
 
@@ -43,6 +45,7 @@ public class InputSystem {
 
     }
 
+    // Updates the input components of the players in multiplayer
     public void handleInputMultiplayer() {
         InputComponent p1_input = (InputComponent) entities.get(0).getComponent(InputComponent.class);
         InputComponent p2_input = (InputComponent) entities.get(1).getComponent(InputComponent.class);

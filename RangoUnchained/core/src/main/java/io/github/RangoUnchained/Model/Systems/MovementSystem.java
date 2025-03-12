@@ -7,12 +7,12 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.PositionComponent;
 import io.github.RangoUnchained.Model.Components.VelocityComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class MovementSystem {
 
     private List<Entity> entities = new ArrayList<>();
 
+    // Updates every playable entity's position based on input and velocity
     public void updateEntityPosition() {
         for (Entity e : entities) {
             PositionComponent positionComponent = (PositionComponent) e.getComponent(PositionComponent.class);
@@ -22,9 +22,9 @@ public class MovementSystem {
             if (inputComponent.isShoot()) {
                 return; //Play animation?
             } else if (inputComponent.isLeft()) {
-                positionComponent.setPosX(positionComponent.getPosX() - velocityComponent.getVelocity());
+                positionComponent.setPosX(positionComponent.getPosX() - velocityComponent.getVelocityX());
             } else if (inputComponent.isRight()){
-                positionComponent.setPosX(positionComponent.getPosX() + velocityComponent.getVelocity());
+                positionComponent.setPosX(positionComponent.getPosX() + velocityComponent.getVelocityX());
             }
         }
     }

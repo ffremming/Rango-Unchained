@@ -1,11 +1,14 @@
-package core.src.main.java.io.github.RangoUnchained.Model.Systems;
+package io.github.RangoUnchained.Model.Systems;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import core.src.main.java.io.github.RangoUnchained.Model.Components.InputComponent;
-import core.src.main.java.io.github.RangoUnchained.Model.Entities.Entity;
-import core.src.main.java.io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class InputSystem {
 
@@ -23,8 +26,21 @@ public class InputSystem {
         multiplayer = false;
     }
 
+    public void handleInputs() {
+        if (multiplayer) {
+            handleInputMultiplayer();
+        } else {
+            handleInputSingleplayer();
+        }
+    }
+
     public void handleInputSingleplayer() {
-        InputComponent inputComponent = (InputComponent) entities.get(0).getComponent(InputComponent.class);
+        InputComponent p1_input = (InputComponent) entities.get(0).getComponent(InputComponent.class);
+
+        p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
+        p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
+        p1_input.setShoot(Gdx.input.isKeyPressed(Input.Keys.SPACE));
+
     }
 
     public void handleInputMultiplayer() {
@@ -34,6 +50,14 @@ public class InputSystem {
         // if key pressed a,d or left,right change input to left/right = true/false. Set to false when not pressed
         // if key pressed q or p, stop make shoot true. shoot = true should be true for 0.2 seconds?
         // should stop when shooting or not? has to play the animation at least.
+
+        p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
+        p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
+        p1_input.setShoot(Gdx.input.isKeyPressed(Input.Keys.SPACE));
+
+        p2_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.LEFT));
+        p2_input.setRight(Gdx.input.isKeyPressed(Input.Keys.RIGHT));
+        p2_input.setShoot(Gdx.input.isKeyPressed(Input.Keys.P));
     }
 
 

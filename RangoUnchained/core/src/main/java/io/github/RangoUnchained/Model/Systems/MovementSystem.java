@@ -1,20 +1,19 @@
-package core.src.main.java.io.github.RangoUnchained.Model.Systems;
+package io.github.RangoUnchained.Model.Systems;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import core.src.main.java.io.github.RangoUnchained.Model.Components.InputComponent;
-import core.src.main.java.io.github.RangoUnchained.Model.Components.PositionComponent;
-import core.src.main.java.io.github.RangoUnchained.Model.Components.VelocityComponent;
-import core.src.main.java.io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Components.PositionComponent;
+import io.github.RangoUnchained.Model.Components.VelocityComponent;
+import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class MovementSystem {
 
     private List<Entity> entities = new ArrayList<>();
 
-    public MovementSystem() {}
-
-    public void update() {
+    public void updateEntityPosition() {
         for (Entity e : entities) {
             PositionComponent positionComponent = (PositionComponent) e.getComponent(PositionComponent.class);
             VelocityComponent velocityComponent = (VelocityComponent) e.getComponent(VelocityComponent.class);
@@ -41,5 +40,15 @@ public class MovementSystem {
     public void removeEntity(int index) {
         entities.remove(index);
     }
+
+    /*public static void main(String[] args) {
+        PositionComponent positionComponent = new PositionComponent();
+        Entity player = new PlayerEntity();
+        MovementSystem movementSystem = new MovementSystem();
+        player.addComponent(positionComponent);
+        movementSystem.addEntity(player);
+        System.out.println(player.getComponent(PositionComponent.class));
+        System.out.println("HEi");
+    }*/
 
 }

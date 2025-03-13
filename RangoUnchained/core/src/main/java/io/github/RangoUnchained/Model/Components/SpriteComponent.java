@@ -1,16 +1,18 @@
 package io.github.RangoUnchained.Model.Components;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class SpriteComponent implements Component {
 
-    private Texture texture;
+    private Sprite sprite;
 
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    public SpriteComponent(String path) {
+        sprite = new Sprite(new Texture(Gdx.files.internal(path)));
     }
 
-    public Texture getTexture() {
-        return texture;
+    public Sprite getSprite() {
+        return sprite;
     }
 }

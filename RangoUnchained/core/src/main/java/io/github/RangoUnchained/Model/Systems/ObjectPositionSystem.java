@@ -1,5 +1,7 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,6 @@ public class ObjectPositionSystem {
             //
             PositionComponent positionComponent = (PositionComponent) e.getComponent(PositionComponent.class);
             VelocityComponent velocityComponent = (VelocityComponent) e.getComponent(VelocityComponent.class);
-
 
         }
     }

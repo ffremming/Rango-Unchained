@@ -1,9 +1,10 @@
-package main.java.io.github.RangoUnchained.Model.Factories;
+package io.github.RangoUnchained.Model.Factories;
 
-import main.java.io.github.RangoUnchained.Model.Components.InputComponent;
-import main.java.io.github.RangoUnchained.Model.Components.PositionComponent;
-import main.java.io.github.RangoUnchained.Model.Components.VelocityComponent;
-import main.java.io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Components.PositionComponent;
+import io.github.RangoUnchained.Model.Components.VelocityComponent;
+import io.github.RangoUnchained.Model.Entities.Ball;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class EntityFactory {
     public static PlayerEntity createPlayerEntity(int startX, int startY, int velocityX, int velocityY) {
@@ -11,14 +12,34 @@ public class EntityFactory {
         position.setPosX(startX);
         position.setPosY(startY);
 
-        VelocityComponent velocity = new VelocityComponent(velocityY, velocityX);
+        VelocityComponent velocity = new VelocityComponent(velocityX, velocityY);
 
         InputComponent input = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity(position, velocity, input);
+        PlayerEntity player = new PlayerEntity();
+        player.addComponent(position);
+        player.addComponent(velocity);
+        player.addComponent(input);
 
         return player;
     }
 
-    // Flere public createXxxEntity-metoder på samme format. Følg logical view
+    public static Ball createBallEntity(int startX, int startY, int velocityX, int velocityY) {
+        PositionComponent position = new PositionComponent();
+        position.setPosX(startX);
+        position.setPosY(startY);
+
+        VelocityComponent velocity = new VelocityComponent(velocityX, velocityY);
+
+        InputComponent input = new InputComponent();
+
+        Ball ball = new Ball();
+        ball.addComponent(position);
+        ball.addComponent(velocity);
+        ball.addComponent(input);
+
+        return ball;
+    }
+
+    // Flere public entity-metoder på samme format. Følg logical view
 }

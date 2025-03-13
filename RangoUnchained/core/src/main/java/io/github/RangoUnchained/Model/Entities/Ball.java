@@ -5,10 +5,10 @@ import java.util.Map;
 
 import io.github.RangoUnchained.Model.Components.Component;
 
-public class PlayerEntity implements Entity{
+
+public class Ball implements Entity{
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
-
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {
         return components.get(componentClass);

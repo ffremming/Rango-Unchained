@@ -1,10 +1,9 @@
-package main.java.io.github.RangoUnchained.Model.Components;
+package io.github.RangoUnchained.Model.Components;
 
-public class PositionComponent {
+public class PositionComponent implements Component {
 
     private int posX;
     private int posY;
-    private int rotation;
 
     public PositionComponent() {
     }
@@ -23,14 +22,6 @@ public class PositionComponent {
 
     public void setPosY(int posY) {
         this.posY = posY;
-    }
-
-    public int getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(int rotation) {
-        this.rotation = rotation;
     }
 }
 

@@ -1,6 +1,6 @@
 package io.github.RangoUnchained.Model.Components;
 
-public class StatComponent {
+public class StatComponent implements Component {
 
     private int timesPopped = 0;
 

@@ -1,27 +1,20 @@
 package io.github.RangoUnchained.Model.Systems;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.PositionComponent;
 import io.github.RangoUnchained.Model.Components.VelocityComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
-public class ObjectPositionSystem {
+public class CollisionSystem {
 
     private List<Entity> entities = new ArrayList<>();
 
-    public void updateObjectPosition() {
+    public void Collision() {
         for (Entity e : entities) {
-            // Usikker på hvor vi skal legge til collision detection. Kunne vært her også bare hatt en enkel
-            // "if (object collide) {snu retning}", hvor vi sjekker posisjonen til komponenten og henter koordinater
-            // til skjermen direkte her -> Gdx.Graphics...
-            //
-            PositionComponent positionComponent = (PositionComponent) e.getComponent(PositionComponent.class);
-            VelocityComponent velocityComponent = (VelocityComponent) e.getComponent(VelocityComponent.class);
-
+            BodyComponent bodyComponent = (BodyComponent) e.getComponent(BodyComponent.class);
         }
     }
 

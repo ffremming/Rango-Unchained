@@ -31,7 +31,6 @@ public class PhysicsSystem {
             return;
         }
         bodyComponent.setBody(simpleBodyFactory.createBody(entity));
-
     }
 
     public void removeEntity(Entity entity) {

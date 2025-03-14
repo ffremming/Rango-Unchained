@@ -1,36 +1,27 @@
-package main.java.io.github.RangoUnchained.Model.Components;
+package io.github.RangoUnchained.Model.Components;
 
-public class PositionComponent {
+public class PositionComponent implements Component {
 
-    private int posX;
-    private int posY;
-    private int rotation;
+    private float posX;
+    private float posY;
 
     public PositionComponent() {
     }
 
-    public int getPosX() {
+    public float getPosX() {
         return posX;
     }
 
-    public void setPosX(int posX) {
+    public void setPosX(float posX) {
         this.posX = posX;
     }
 
-    public int getPosY() {
+    public float getPosY() {
         return posY;
     }
 
-    public void setPosY(int posY) {
+    public void setPosY(float posY) {
         this.posY = posY;
-    }
-
-    public int getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(int rotation) {
-        this.rotation = rotation;
     }
 }
 

@@ -9,18 +9,11 @@ public class BodyComponent implements Component {
 
     private Body body;
     private BodyDef bodyDef;
-    private Fixture fixture;
 
+    // When creating a body component you need to create a bodydef to define starting point and type (Dynamic, Static, Kinematic)
+    // See "tips" chat on discord for documentation of box2d. ctrl + f "bodies"
     public BodyComponent(BodyDef bodyDef) {
         this.bodyDef = bodyDef;
-    }
-
-    public Fixture getFixture() {
-        return fixture;
-    }
-
-    public void setFixture(Fixture fixture) {
-        this.fixture = fixture;
     }
 
     public BodyDef getBodyDef() {

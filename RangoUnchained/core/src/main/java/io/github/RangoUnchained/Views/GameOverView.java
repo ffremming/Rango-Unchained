@@ -2,14 +2,13 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import io.github.RangoUnchained.Main;
+import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
-
 public class GameOverView extends BaseScreen {
 
-    public GameOverView(Main game) {
-        super(game);
+    public GameOverView() {
+        super(GameController.getInstance());
     }
 
     @Override
@@ -31,11 +30,11 @@ public class GameOverView extends BaseScreen {
         table.row();
 
         // Retry button (goes back to level selection)
-        table.add(ButtonFactory.createButton("Retry", 300, 60, getSkin(), game, new SelectLevelView(game))).center().padBottom(20);
+        table.add(ButtonFactory.createButton("Play", 300, 60, getSkin(),  game,"LEVEL_SCREEN")).center().padBottom(20);
         table.row();
 
         // Back to main menu button
-        table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game, new MainMenuView(game))).center();
+        table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,"MAIN_MENU")).center();
 
         stage.addActor(table);
     }

@@ -2,14 +2,15 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import io.github.RangoUnchained.Main;
+
+import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
 public class SelectLevelView extends BaseScreen {
 
-    public SelectLevelView(Main game) {
-        super(game);
+    public SelectLevelView() {
+        super(GameController.getInstance());
     }
 
     @Override
@@ -32,12 +33,12 @@ public class SelectLevelView extends BaseScreen {
 
         // Add level selection buttons
         for (int i = 1; i <= 3; i++) {
-            table.add(ButtonFactory.createButton("Level " + i, 300, 60, getSkin(), game, new GameView(game, i))).center().padBottom(20);
+            table.add(ButtonFactory.createButton("Level " + i, 300, 60, getSkin(), game, "GAMEPLAY")).center().padBottom(20);
             table.row();
         }
 
-        // Back button to Main Menu
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, new MainMenuView(game))).center().padTop(20);
+        // Back button to ScreenController Menu
+        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, "MAIN_MENU")).center().padTop(20);
 
         stage.addActor(table);
     }

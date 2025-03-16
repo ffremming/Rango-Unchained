@@ -1,4 +1,5 @@
-package io.github.RangoUnchained;
+
+package io.github.RangoUnchained.Controllers;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
@@ -6,14 +7,18 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import io.github.RangoUnchained.Views.GamePlayView;
 import io.github.RangoUnchained.Views.MainMenuView;
-import io.github.RangoUnchained.Views.ScoreboardView;
 
-public class Main extends Game {
+public class GameController extends Game {
+
+    private static GameController GameController;
     private static SpriteBatch batch;
     private static BitmapFont font;
     private static Skin skin;
-    private Screen currentScreen;
+    private Screen currentView;
+
+    private GameController() {}
 
     @Override
     public void create() {
@@ -21,7 +26,30 @@ public class Main extends Game {
         font = new BitmapFont();
         skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
 
-        changeScreen(new MainMenuView(this));
+        setView(new MainMenuView(), "");
+    }
+
+    public static GameController getInstance(){
+        if (GameController == null) {
+            GameController = new GameController();
+        }
+        return GameController;
+    }
+
+    public void setView(Screen view, String level){
+        if (currentView != null){
+            currentView.dispose();
+        }
+        currentView = view;
+        setScreen(currentView);
+        if (view instanceof GamePlayView){
+            loadGame();
+        }
+    }
+
+    private void loadGame(){
+        //Kaller på abstract factory.
+
     }
 
     public static SpriteBatch getBatch() {
@@ -38,28 +66,14 @@ public class Main extends Game {
         return skin;
     }
 
-    public void changeScreen(Screen newScreen) {
-        if (currentScreen != null && currentScreen != newScreen) {
-            currentScreen.hide();
-
-            // Dispose only if the screen is not meant to be reused
-            if (!(currentScreen instanceof ScoreboardView)) {
-                currentScreen.dispose();
-            }
-        }
-
-        currentScreen = newScreen;
-        setScreen(currentScreen);
-    }
-
-
-    @Override
-    public void dispose() {
+    public void dispose(){
         batch.dispose();
-        font.dispose();
         skin.dispose();
-        if (currentScreen != null) {
-            currentScreen.dispose();
+        font.dispose();
+        if (currentView != null){
+            currentView.dispose();
         }
     }
+
 }
+

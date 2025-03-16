@@ -7,8 +7,7 @@ import java.util.List;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
-import io.github.RangoUnchained.Model.Components.PositionComponent;
-import io.github.RangoUnchained.Model.Components.VelocityComponent;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
 public class MovementSystem {
@@ -16,23 +15,37 @@ public class MovementSystem {
     private List<Entity> entities = new ArrayList<>();
 
     // Updates every playable entity's position based on input and velocity
+    // Method called from controllers for updates
     public void updateEntityPosition() {
         for (Entity e : entities) {
             BodyComponent bodyComponent = (BodyComponent) e.getComponent(BodyComponent.class);
             InputComponent inputComponent = (InputComponent) e.getComponent(InputComponent.class);
+            SpriteComponent spriteComponent = (SpriteComponent) e.getComponent(SpriteComponent.class);
+            Body body = bodyComponent.getBody();
 
             if (inputComponent.isShoot()) {
                 bodyComponent.getBody().setLinearVelocity(0, 0);
+                spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
                 return; //Play animation?
             } else if (inputComponent.isLeft()) {
                 bodyComponent.getBody().setLinearVelocity(-5, 0);
+                spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
             } else if (inputComponent.isRight()){
                 bodyComponent.getBody().setLinearVelocity(5, 0);
+                spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
             }
         }
     }
 
     public void addEntity(Entity entity) {
+        if (entity.getComponent(BodyComponent.class) == null) {
+            System.out.println("Entity did not have required bodycomponent");
+            return;
+        }
+        if (entity.getComponent(InputComponent.class) == null) {
+            System.out.println("Entity did not have required inputcomponent");
+            return;
+        }
         entities.add(entity);
     }
 

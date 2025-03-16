@@ -1,42 +1,34 @@
 package io.github.RangoUnchained.Model.Factories;
 
+import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
-import io.github.RangoUnchained.Model.Components.PositionComponent;
-import io.github.RangoUnchained.Model.Components.VelocityComponent;
-import io.github.RangoUnchained.Model.Entities.Ball;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class EntityFactory {
-    public static PlayerEntity createPlayerEntity(int startX, int startY, int velocityX, int velocityY) {
-        PositionComponent position = new PositionComponent();
-        position.setPosX(startX);
-        position.setPosY(startY);
+    public static PlayerEntity createPlayerEntity(BodyDef bodyDef, String spritePath) {
+        BodyComponent body = new BodyComponent(bodyDef);
 
-        VelocityComponent velocity = new VelocityComponent(velocityX, velocityY);
+        SpriteComponent sprite = new SpriteComponent(spritePath);
 
         InputComponent input = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity();
-        player.addComponent(position);
-        player.addComponent(velocity);
-        player.addComponent(input);
+        PlayerEntity player = new PlayerEntity(body, sprite, input);
 
         return player;
     }
 
-    public static Ball createBallEntity(int startX, int startY, int velocityX, int velocityY) {
-        PositionComponent position = new PositionComponent();
-        position.setPosX(startX);
-        position.setPosY(startY);
+    public static BallEntity createBallEntity(BodyDef bodyDef, String spritePath) {
+        BodyComponent body = new BodyComponent(bodyDef);
 
-        VelocityComponent velocity = new VelocityComponent(velocityX, velocityY);
+        StatComponent stat = new StatComponent();
 
-        InputComponent input = new InputComponent();
+        SpriteComponent sprite = new SpriteComponent(spritePath);
 
-        Ball ball = new Ball();
-        ball.addComponent(position);
-        ball.addComponent(velocity);
-        ball.addComponent(input);
+        BallEntity ball = new BallEntity(body, stat, sprite);
 
         return ball;
     }

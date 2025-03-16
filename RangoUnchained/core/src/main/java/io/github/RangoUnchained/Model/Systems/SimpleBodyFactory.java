@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Model.Systems;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -28,7 +29,7 @@ public class SimpleBodyFactory {
         BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
         FixtureDef fixtureDef = new FixtureDef();
         Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
-        body.setUserData(spriteComponent.getSprite()); //Attach sprite to body
+        body.setUserData(entity); // Attach entity to the body
 
         // If statements to edit the values of fixture.
         if (entity instanceof PlayerEntity) {
@@ -61,7 +62,7 @@ public class SimpleBodyFactory {
         }
 
         // Set the fixture of the body corresponding to the fixturedef of the correct entity
-        body.createFixture(fixtureDef);
+        Fixture fixture = body.createFixture(fixtureDef);
         return body;
     }
 

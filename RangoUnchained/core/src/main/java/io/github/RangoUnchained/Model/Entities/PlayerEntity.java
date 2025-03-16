@@ -6,9 +6,7 @@ import java.util.Map;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
 import io.github.RangoUnchained.Model.Components.InputComponent;
-import io.github.RangoUnchained.Model.Components.PositionComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
-import io.github.RangoUnchained.Model.Components.VelocityComponent;
 
 public class PlayerEntity implements Entity{
 

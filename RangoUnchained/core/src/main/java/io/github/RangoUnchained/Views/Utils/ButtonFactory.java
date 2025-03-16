@@ -18,7 +18,7 @@ public class ButtonFactory {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setView(createView(nextScreen, ""));
+                game.setView(createView(nextScreen), "");
             }
         });
         return button;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import io.github.RangoUnchained.Views.GamePlayView;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
@@ -25,7 +26,7 @@ public class GameController extends Game {
         font = new BitmapFont();
         skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
 
-        setView(new MainMenuView());
+        setView(new MainMenuView(), "");
     }
 
     public static GameController getInstance(){
@@ -35,12 +36,20 @@ public class GameController extends Game {
         return GameController;
     }
 
-    public void setView(Screen view){
+    public void setView(Screen view, String level){
         if (currentView != null){
             currentView.dispose();
         }
         currentView = view;
         setScreen(currentView);
+        if (view instanceof GamePlayView){
+            loadGame();
+        }
+    }
+
+    private void loadGame(){
+        //Kaller på abstract factory.
+
     }
 
     public static SpriteBatch getBatch() {
@@ -55,6 +64,15 @@ public class GameController extends Game {
 
     public static Skin getSkin() {
         return skin;
+    }
+
+    public void dispose(){
+        batch.dispose();
+        skin.dispose();
+        font.dispose();
+        if (currentView != null){
+            currentView.dispose();
+        }
     }
 
 }

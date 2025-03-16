@@ -14,9 +14,12 @@ public class GamePlayView extends BaseScreen {
     private Texture playerTexture;
     private float playerX, playerY;
 
-    public GamePlayView(int level) {
+//    public GamePlayView(int level) {
+//        super(GameController.getInstance());
+//        this.level = level;
+//    }
+    public GamePlayView() {
         super(GameController.getInstance());
-        this.level = level;
     }
 
     @Override

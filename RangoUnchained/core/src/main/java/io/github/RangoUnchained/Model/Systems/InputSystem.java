@@ -15,6 +15,10 @@ public class InputSystem {
     private List<Entity> entities = new ArrayList<>();
     private boolean multiplayer;
 
+    // Dette må endres så man ikke må lage en ny konstruktur og logikk hver gang man legger til player.
+    // Kanskje når vi legger til spillere har parameter for hvilke knapper som skal være høyre og venstre?
+    // Burde ha på samme måte som i andre systems en check når vi legger til entities i listen på om den har
+    // riktige komponenter
     public InputSystem(PlayerEntity player1, PlayerEntity player2) {
         entities.add(player1);
         entities.add(player2);

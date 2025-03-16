@@ -5,18 +5,21 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import io.github.RangoUnchained.Main;
+import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
-public class GameView extends BaseScreen {
+public class GamePlayView extends BaseScreen {
     private int level;
     private Texture playerTexture;
     private float playerX, playerY;
 
-    public GameView(Main game, int level) {
-        super(game);
-        this.level = level;
+//    public GamePlayView(int level) {
+//        super(GameController.getInstance());
+//        this.level = level;
+//    }
+    public GamePlayView() {
+        super(GameController.getInstance());
     }
 
     @Override
@@ -44,7 +47,7 @@ public class GameView extends BaseScreen {
         table.top().padTop(50);
 
         // Create Game Over button
-        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game, new GameOverView(game));
+        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game, "GAME_OVER");
 
         table.add(gameOverButton).center();
 

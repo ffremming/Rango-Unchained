@@ -1,8 +1,11 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.physics.box2d.Body;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.PositionComponent;
 import io.github.RangoUnchained.Model.Components.VelocityComponent;
@@ -15,16 +18,16 @@ public class MovementSystem {
     // Updates every playable entity's position based on input and velocity
     public void updateEntityPosition() {
         for (Entity e : entities) {
-            PositionComponent positionComponent = (PositionComponent) e.getComponent(PositionComponent.class);
-            VelocityComponent velocityComponent = (VelocityComponent) e.getComponent(VelocityComponent.class);
+            BodyComponent bodyComponent = (BodyComponent) e.getComponent(BodyComponent.class);
             InputComponent inputComponent = (InputComponent) e.getComponent(InputComponent.class);
 
             if (inputComponent.isShoot()) {
+                bodyComponent.getBody().setLinearVelocity(0, 0);
                 return; //Play animation?
             } else if (inputComponent.isLeft()) {
-                positionComponent.setPosX(positionComponent.getPosX() - velocityComponent.getVelocityX());
+                bodyComponent.getBody().setLinearVelocity(-5, 0);
             } else if (inputComponent.isRight()){
-                positionComponent.setPosX(positionComponent.getPosX() + velocityComponent.getVelocityX());
+                bodyComponent.getBody().setLinearVelocity(5, 0);
             }
         }
     }

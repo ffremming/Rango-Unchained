@@ -1,48 +1,61 @@
+
 package io.github.RangoUnchained.Controllers;
 
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+import io.github.RangoUnchained.Views.MainMenuView;
+
 public class GameController extends Game {
-    private SpriteBatch batch;
-    private Texture image;
-    private static ScreenController screenController;
-    private static final GameController gameController = new GameController();
 
-    private GameController() {
-    }
+    private static GameController GameController;
+    private static SpriteBatch batch;
+    private static BitmapFont font;
+    private static Skin skin;
+    private Screen currentView;
 
-    public static GameController getInstance(){
-        return gameController;
-    }
+    private GameController() {}
 
     @Override
     public void create() {
-        screenController = ScreenController.getInstance();
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        font = new BitmapFont();
+        skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
+
+        setView(new MainMenuView());
     }
 
-    @Override
-    public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        screenController.render(Gdx.graphics.getDeltaTime());
-        screenController.update(batch);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+    public static GameController getInstance(){
+        if (GameController == null) {
+            GameController = new GameController();
+        }
+        return GameController;
     }
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-        image.dispose();
-        screenController.dispose();
+    public void setView(Screen view){
+        if (currentView != null){
+            currentView.dispose();
+        }
+        currentView = view;
+        setScreen(currentView);
     }
+
+    public static SpriteBatch getBatch() {
+        if (batch == null) batch = new SpriteBatch();
+        return batch;
+    }
+
+    public static BitmapFont getFont() {
+        if (font == null) font = new BitmapFont();
+        return font;
+    }
+
+    public static Skin getSkin() {
+        return skin;
+    }
+
 }
 

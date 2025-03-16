@@ -2,7 +2,8 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import io.github.RangoUnchained.Main;
+
+import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -10,15 +11,15 @@ public class ScoreboardView extends BaseScreen {
 
     private static ScoreboardView instance;
 
-    public static ScoreboardView getInstance(Main game) {
+    public static ScoreboardView getInstance() {
         if (instance == null) {
-            instance = new ScoreboardView(game);
+            instance = new ScoreboardView();
         }
         return instance;
     }
 
-    private ScoreboardView(Main game) {
-        super(game);
+    private ScoreboardView() {
+        super(GameController.getInstance());
     }
 
     @Override
@@ -45,8 +46,8 @@ public class ScoreboardView extends BaseScreen {
             table.row();
         }
 
-        // Back button to Main Menu
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, new MainMenuView(game))).center().padTop(20);
+        // Back button to ScreenController Menu
+        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, "MAIN_MENU")).center().padTop(20);
 
         stage.addActor(table);
     }

@@ -7,12 +7,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class SpriteComponent implements Component {
 
     private Sprite sprite;
+    private Texture texture;
 
     public SpriteComponent(String path) {
-        sprite = new Sprite(new Texture(Gdx.files.internal(path)));
+        texture = new Texture(Gdx.files.internal(path));
+        sprite = new Sprite(texture);
     }
 
     public Sprite getSprite() {
         return sprite;
+    }
+    public Texture getTexture() {
+        return texture;
     }
 }

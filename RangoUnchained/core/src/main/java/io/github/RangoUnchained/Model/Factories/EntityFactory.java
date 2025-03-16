@@ -9,16 +9,20 @@ import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class EntityFactory {
-    public static PlayerEntity createPlayerEntity(BodyDef bodyDef, String spritePath) {
+
+    private EntityFactory() {}
+    public static PlayerEntity createPlayerEntity(float x, float y, String spritePath) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(x, y);
         BodyComponent body = new BodyComponent(bodyDef);
 
         SpriteComponent sprite = new SpriteComponent(spritePath);
+        sprite.getSprite().setPosition(x, y);
 
         InputComponent input = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity(body, sprite, input);
-
-        return player;
+        return new PlayerEntity(body, sprite, input);
     }
 
     public static BallEntity createBallEntity(BodyDef bodyDef, String spritePath) {

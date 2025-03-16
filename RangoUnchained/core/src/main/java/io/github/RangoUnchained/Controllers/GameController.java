@@ -18,14 +18,14 @@ public class GameController extends Game {
     private static Skin skin;
     private Screen currentView;
 
-    private GameController() {}
+    private GameController() {
+    }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
         skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
-
         setView(new MainMenuView());
     }
 

@@ -2,6 +2,7 @@ package io.github.RangoUnchained.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+
 import io.github.RangoUnchained.Controllers.GameController;
 
 /** Launches the desktop (LWJGL3) application. */

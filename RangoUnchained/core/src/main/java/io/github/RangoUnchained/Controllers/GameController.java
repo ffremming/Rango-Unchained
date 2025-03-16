@@ -26,7 +26,7 @@ public class GameController extends Game {
         font = new BitmapFont();
         skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
 
-        setView(new MainMenuView(), "");
+        setView(new MainMenuView());
     }
 
     public static GameController getInstance(){
@@ -36,7 +36,7 @@ public class GameController extends Game {
         return GameController;
     }
 
-    public void setView(Screen view, String level){
+    public void setView(Screen view){
         if (currentView != null){
             currentView.dispose();
         }

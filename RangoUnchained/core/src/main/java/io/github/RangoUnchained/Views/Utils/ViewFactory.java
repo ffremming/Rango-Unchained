@@ -16,7 +16,7 @@ public class ViewFactory {
             case "GAMEPLAY":
                 return new GamePlayView();
             case "SCORE_BOARD":
-                return ScoreboardView.getInstance();
+                return new ScoreboardView();
             case "LEVEL_SCREEN":
                 return new SelectLevelView();
             case "GAME_OVER":

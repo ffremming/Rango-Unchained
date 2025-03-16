@@ -30,11 +30,11 @@ public class GameOverView extends BaseScreen {
         table.row();
 
         // Retry button (goes back to level selection)
-        table.add(ButtonFactory.createButton("Play", 300, 60, getSkin(),  game,"LEVEL_SCREEN")).center().padBottom(20);
+        table.add(ButtonFactory.createButton("Play", 300, 60, getSkin(),  game, () -> game.setView(new SelectLevelView()))).center().padBottom(20);
         table.row();
 
         // Back to main menu button
-        table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,"MAIN_MENU")).center();
+        table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()))).center();
 
         stage.addActor(table);
     }

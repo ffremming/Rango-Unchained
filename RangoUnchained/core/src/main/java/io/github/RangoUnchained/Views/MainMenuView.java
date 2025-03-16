@@ -32,9 +32,9 @@ public class MainMenuView extends BaseScreen {
         table.row();
 
         // Add buttons
-        table.add(ButtonFactory.createButton("Game Level Selection", 300, 60, getSkin(), game,  "LEVEL_SCREEN")).center().padBottom(20);
+        table.add(ButtonFactory.createButton("Game Level Selection", 300, 60, getSkin(), game,  () -> game.setView(new SelectLevelView()))).center().padBottom(20);
         table.row();
-        table.add(ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(), game,"SCORE_BOARD")).center();
+        table.add(ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(), game,() -> game.setView(new ScoreboardView()))).center();
 
         // Add table to stage
         stage.addActor(table);

@@ -47,7 +47,7 @@ public class GamePlayView extends BaseScreen {
         table.top().padTop(50);
 
         // Create Game Over button
-        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game, "GAME_OVER");
+        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game, () -> game.setView(new GameOverView()));
 
         table.add(gameOverButton).center();
 

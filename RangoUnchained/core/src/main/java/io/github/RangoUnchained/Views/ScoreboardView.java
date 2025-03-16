@@ -8,17 +8,7 @@ import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
 public class ScoreboardView extends BaseScreen {
-
-    private static ScoreboardView instance;
-
-    public static ScoreboardView getInstance() {
-        if (instance == null) {
-            instance = new ScoreboardView();
-        }
-        return instance;
-    }
-
-    private ScoreboardView() {
+    public ScoreboardView() {
         super(GameController.getInstance());
     }
 
@@ -47,7 +37,7 @@ public class ScoreboardView extends BaseScreen {
         }
 
         // Back button to ScreenController Menu
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, "MAIN_MENU")).center().padTop(20);
+        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, () -> game.setView(new MainMenuView()))).center().padTop(20);
 
         stage.addActor(table);
     }

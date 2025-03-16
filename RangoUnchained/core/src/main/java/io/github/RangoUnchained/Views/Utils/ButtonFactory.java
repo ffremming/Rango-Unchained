@@ -11,14 +11,16 @@ import io.github.RangoUnchained.Controllers.GameController;
 
 public class ButtonFactory {
 
-    public static TextButton createButton(String text, float width, float height, Skin skin, GameController game, String nextScreen) {
+    public static TextButton createButton(String text, float width, float height, Skin skin, GameController game, Runnable onClickAction) {
         TextButton button = new TextButton(text, skin);
         button.setSize(width, height);
 
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setView(createView(nextScreen), "");
+                if (onClickAction != null) {
+                    onClickAction.run();
+                }
             }
         });
         return button;

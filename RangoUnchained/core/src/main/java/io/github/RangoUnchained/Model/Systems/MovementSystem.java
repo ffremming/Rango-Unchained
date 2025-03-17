@@ -36,6 +36,9 @@ public class MovementSystem implements Systems {
                 bodyComponent.getBody().setLinearVelocity(500, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
                 System.out.println("Right");
+            } else {
+                bodyComponent.getBody().setLinearVelocity(0, 0);
+                spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
             }
         }
     }

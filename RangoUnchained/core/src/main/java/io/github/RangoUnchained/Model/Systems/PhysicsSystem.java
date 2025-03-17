@@ -25,7 +25,7 @@ public class PhysicsSystem implements ContactListener, Systems {
     private SimpleBodyFactory simpleBodyFactory;
 
     public PhysicsSystem(float gravity) {
-        world = new World(new Vector2(0, gravity), true);
+        world = new World(new Vector2(0, gravity*1000), true);
         world.setContactListener(this);
         simpleBodyFactory = new SimpleBodyFactory(world);
     }

@@ -2,10 +2,23 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
 import io.github.RangoUnchained.Controllers.GameController;
+import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
+import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -13,6 +26,7 @@ public class GamePlayView extends BaseScreen {
     private int level;
     private Texture playerTexture;
     private float playerX, playerY;
+    private LevelController controller;
 
 //    public GamePlayView(int level) {
 //        super(GameController.getInstance());
@@ -20,14 +34,13 @@ public class GamePlayView extends BaseScreen {
 //    }
     public GamePlayView() {
         super(GameController.getInstance());
+        controller = LevelController.getInstance();
+        controller.initializeSystems();
     }
 
     @Override
     public void show() {
         super.show();
-        playerTexture = new Texture("Rango/Rango.png");
-        playerX = Gdx.graphics.getWidth() / 2f;
-        playerY = Gdx.graphics.getHeight() / 2f;
 
         createUI();
     }
@@ -35,9 +48,15 @@ public class GamePlayView extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-
         batch.begin();
-        batch.draw(playerTexture, playerX, playerY, 64, 64);
+        controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
+        for (Entity e : controller.getEntities()) {
+            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
+            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+            batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        }
+        controller.getInputSystem().handleInputSingleplayer();
+        controller.getMovementSystem().updateEntityPosition();
         batch.end();
     }
 
@@ -57,7 +76,7 @@ public class GamePlayView extends BaseScreen {
     @Override
     public void hide() {
         super.hide();
-        playerTexture.dispose();
+        controller.clearSystems();
     }
 
 }

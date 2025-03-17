@@ -18,7 +18,7 @@ import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
-public class PhysicsSystem implements ContactListener {
+public class PhysicsSystem implements ContactListener, Systems {
 
     private List<Entity> entities = new ArrayList<>();
     private World world;
@@ -40,6 +40,10 @@ public class PhysicsSystem implements ContactListener {
 
     public void removeEntity(Entity entity) {
         entities.remove(entity);
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     public void removeEntity(int index) {
@@ -65,5 +69,11 @@ public class PhysicsSystem implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
+    }
+
+    @Override
+    public void clearSystems() {
+        entities.clear();
+        world.dispose();
     }
 }

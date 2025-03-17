@@ -10,7 +10,7 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
-public class MovementSystem {
+public class MovementSystem implements Systems {
 
     private List<Entity> entities = new ArrayList<>();
 
@@ -26,13 +26,16 @@ public class MovementSystem {
             if (inputComponent.isShoot()) {
                 bodyComponent.getBody().setLinearVelocity(0, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+                System.out.println("SPACE");
                 return; //Play animation?
             } else if (inputComponent.isLeft()) {
-                bodyComponent.getBody().setLinearVelocity(-5, 0);
+                bodyComponent.getBody().setLinearVelocity(-500, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+                System.out.println("Left");
             } else if (inputComponent.isRight()){
-                bodyComponent.getBody().setLinearVelocity(5, 0);
+                bodyComponent.getBody().setLinearVelocity(500, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+                System.out.println("Right");
             }
         }
     }
@@ -55,6 +58,11 @@ public class MovementSystem {
 
     public void removeEntity(int index) {
         entities.remove(index);
+    }
+
+    @Override
+    public void clearSystems() {
+        entities.clear();
     }
 
     /*public static void main(String[] args) {

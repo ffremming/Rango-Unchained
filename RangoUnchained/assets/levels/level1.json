@@ -1,0 +1,31 @@
+{
+  "metaData": {
+    "levelName": "Forest of Trials",
+    "difficulty": 3,
+    "theme": "Forest",
+    "multiplayer": true
+  },
+  "entitiesData": [
+    {
+      "name": "Player",
+      "position": {
+        "x": 100,
+        "y": 150
+      }
+    },
+    {
+      "name": "Enemy",
+      "position": {
+        "x": 200,
+        "y": 250
+      }
+    },
+    {
+      "name": "Obstacle",
+      "position": {
+        "x": 300,
+        "y": 350
+      }
+    }
+  ]
+}

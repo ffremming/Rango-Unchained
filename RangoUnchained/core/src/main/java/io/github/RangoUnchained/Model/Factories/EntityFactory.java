@@ -6,6 +6,7 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,43 +26,58 @@ public class EntityFactory {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
+        bodyDef.fixedRotation = true;
+
+        Body body = world.createBody(bodyDef);
         BodyComponent bodyComponent = new BodyComponent(bodyDef);
+        bodyComponent.setBody(body);
 
         SpriteComponent spriteComponent = new SpriteComponent(spritePath);
         spriteComponent.getSprite().setPosition(x, y);
+        float width = spriteComponent.getSprite().getWidth();
+        float height = spriteComponent.getSprite().getHeight();
 
         InputComponent inputComponent = new InputComponent();
 
         PlayerEntity player = new PlayerEntity(bodyComponent, spriteComponent, inputComponent);
+        body.setUserData(player); // Attach entity to the body
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(width/2, height/2);
 
         FixtureDef fixtureDef = new FixtureDef();
-        Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
-        bodyComponent.setBody(body);
-        body.setUserData(player); // Attach entity to the body
-        fixtureDef.shape = new PolygonShape();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1.0f;
         fixtureDef.friction = 0.4f;
         body.createFixture(fixtureDef);
+        shape.dispose();
 
         return player;
     }
 
-    public static BallEntity createBallEntity(float x, float y, String spritePath, World world) {
+    public static BallEntity createBallEntity(float x, float y, float radius, String spritePath, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
-
         BodyComponent bodyComponent = new BodyComponent(bodyDef);
 
-        StatComponent stat = new StatComponent();
+        StatComponent statComponent = new StatComponent();
 
-        SpriteComponent sprite = new SpriteComponent(spritePath);
+        SpriteComponent spriteComponent = new SpriteComponent(spritePath);
+        spriteComponent.getSprite().setPosition(x, y);
 
-        BallEntity ball = new BallEntity(bodyComponent, stat, sprite);
+        BallEntity ball = new BallEntity(bodyComponent, statComponent, spriteComponent);
 
         FixtureDef fixtureDef = new FixtureDef();
         Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
+        bodyComponent.setBody(body);
         body.setUserData(ball); // Attach entity to the body
-
+        fixtureDef.shape = new CircleShape();
+        fixtureDef.shape.setRadius(radius);
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 1;
+        body.createFixture(fixtureDef);
 
         return ball;
     }
@@ -69,20 +85,21 @@ public class EntityFactory {
     public static ObstacleEntity createObstacleEntity(float x, float y, float width, float height, String spritePath, BodyDef.BodyType bodyType, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
-        bodyDef.position.set(x, y);
+        bodyDef.position.set(x + width/2, y + height/2);
 
         BodyComponent bodyComponent = new BodyComponent(bodyDef);
         Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
         bodyComponent.setBody(body);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(1000, 40);
+        shape.setAsBox(width/2, height/2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.friction = 0.4f;
 
         body.createFixture(fixtureDef);
+        shape.dispose();
 
         SpriteComponent spriteComponent = new SpriteComponent(spritePath);
 

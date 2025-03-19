@@ -50,16 +50,23 @@ public class GamePlayView extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        batch.begin();
+
+        // Update physics world first
+        controller.getWorld().step(1/60f, 6, 2);
+
+        // Handle input and movement after physics update
         controller.getInputSystem().handleInputSingleplayer();
         controller.getMovementSystem().updateEntityPosition();
 
+        // Update sprite positions based on physics bodies
+        controller.getPhysicsSystem().updatePhysics();
+
+        // Render everything
+        batch.begin();
         for (Entity e : controller.getEntities()) {
             Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
-            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
-        controller.getWorld().step(1/60f, 6, 2);
         batch.end();
     }
 

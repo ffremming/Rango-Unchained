@@ -56,7 +56,7 @@ public class LevelController {
         return entities;
     }
     public void clearSystems() {
-        World world = physicsSystem.getWorld();
+        World world = levelController.getWorld();
         for (Entity e : entities) {
             world.destroyBody(((BodyComponent) e.getComponent(BodyComponent.class)).getBody());
             ((SpriteComponent) e.getComponent(SpriteComponent.class)).getTexture().dispose();
@@ -71,13 +71,13 @@ public class LevelController {
     // Initializes systems with entities
     public void initializeSystems() {
         PlayerEntity player = EntityFactory.createPlayerEntity(200, 500, "Rango/Rango.png", world);
-//        physicsSystem.addEntity(player);
+        physicsSystem.addEntity(player);
         inputSystem.addEntity(player);
         movementSystem.addEntity(player);
         entities.add(player);
 
-        BallEntity ball = EntityFactory.createBallEntity(300, 500, "Balls/Big ball.png", world);
-//        physicsSystem.addEntity(ball);
+        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10,"Balls/Big ball.png", world);
+        physicsSystem.addEntity(ball);
         entities.add(ball);
 
         System.out.println("Initialiserte riktig");

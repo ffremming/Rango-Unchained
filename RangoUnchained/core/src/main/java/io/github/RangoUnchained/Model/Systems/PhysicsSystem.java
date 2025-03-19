@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
@@ -28,26 +30,27 @@ public class PhysicsSystem implements ContactListener, Systems {
 //    private SimpleBodyFactory simpleBodyFactory;
 
     public PhysicsSystem(World world) {
-//        world = new World(new Vector2(0, gravity*1000), true);
         world.setContactListener(this);
-//        simpleBodyFactory = new SimpleBodyFactory(world);
-        createPerimeters();
     }
 
-//    public void addEntity(Entity entity) {
-//        BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
-//        if (bodyComponent == null) {
-//            return;
-//        }
-//        bodyComponent.setBody(simpleBodyFactory.createBody(entity));
-//    }
+    public void updatePhysics() {
+        for (Entity e : entities) {
+            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
+            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+
+            sprite.setPosition(
+                body.getPosition().x - sprite.getWidth()/2,
+                body.getPosition().y - sprite.getHeight()/2
+            );
+        }
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+    }
 
     public void removeEntity(Entity entity) {
         entities.remove(entity);
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public void removeEntity(int index) {
@@ -56,7 +59,7 @@ public class PhysicsSystem implements ContactListener, Systems {
 
     public void createPerimeters() {
 
-        
+
         /* vi skulle legge til texture så vi kan se den.
         Problem: vi burde da lage entiteter som har body- og spritecomponent
         Problem: Hvis vi skal lage bodies må den vite om verdenen,

@@ -25,6 +25,7 @@ public class GameLevel {
         Json json = new Json();
         FileHandle file = Gdx.files.internal("levels/" + path);
 
+
         // Deserialize JSON into the GameLevel object (just names and positions for entities)
         GameLevel level = json.fromJson(GameLevel.class, file.readString());
 

@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Model.Components;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.Timer;
 
 public class SpriteComponent implements Component {
 
@@ -19,5 +20,18 @@ public class SpriteComponent implements Component {
     }
     public Texture getTexture() {
         return texture;
+    }
+
+    public void animateSprite(String spritePath, float delay){
+        Texture revertTexture = texture;
+
+        sprite.setTexture(new Texture(spritePath));
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                sprite.setTexture(revertTexture);
+            }
+        }, delay);
     }
 }

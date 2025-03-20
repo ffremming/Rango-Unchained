@@ -9,6 +9,7 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Factories.EntityFactory;
 
 public class MovementSystem implements Systems {
 
@@ -26,6 +27,8 @@ public class MovementSystem implements Systems {
             if (inputComponent.isShoot()) {
                 bodyComponent.getBody().setLinearVelocity(0, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+                spriteComponent.animateSprite("Rango/Rango-shoot.png", 1);
+//                EntityFactory.createProjectileEntity(body.getPosition().x, body.getPosition().y, "Rango/Tounge.gif", );
                 System.out.println("SPACE");
                 return; //Play animation?
             } else if (inputComponent.isLeft()) {

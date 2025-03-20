@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Model.Factories;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,6 +17,7 @@ import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.SimpleBodyFactory;
 
 public class EntityFactory {
@@ -114,6 +116,40 @@ public class EntityFactory {
         body.setUserData(obstacleEntity); // Attach entity to the body
 
         return obstacleEntity;
+    }
+
+    public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath,  World world) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(x, y);
+
+        BodyComponent bodyComponent = new BodyComponent(bodyDef);
+        Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
+        bodyComponent.setBody(body);
+
+        PolygonShape shape = new PolygonShape();
+
+        SpriteComponent spriteComponent = new SpriteComponent(spritePath);
+        spriteComponent.getSprite().setPosition(x, y);
+        float width = spriteComponent.getSprite().getWidth();
+        float height = spriteComponent.getSprite().getHeight();
+        shape.setAsBox(width/2, height/2);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.friction = 0.4f;
+
+        body.createFixture(fixtureDef);
+        shape.dispose();
+
+        spriteComponent.getSprite().setSize(width, height);
+        spriteComponent.getSprite().setPosition(x, y);
+        spriteComponent.getSprite().setRegion(0, 0, width / 64, height / 64);
+
+        ProjectileEntity projectileEntity = new ProjectileEntity(bodyComponent, spriteComponent);
+        body.setUserData(projectileEntity); // Attach entity to the body
+
+        return projectileEntity;
     }
 
     // Flere public entity-metoder på samme format. Følg logical view

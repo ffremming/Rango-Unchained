@@ -31,7 +31,7 @@ public class LevelController {
     private LevelController () {
         entities = new ArrayList<>();
         movementSystem = new MovementSystem();
-        world = new World(new Vector2(0f,-10000), true);
+        world = new World(new Vector2(0f,-10f), true);
         physicsSystem = new PhysicsSystem(world);
         inputSystem = new InputSystem();
     }
@@ -76,7 +76,7 @@ public class LevelController {
         movementSystem.addEntity(player);
         entities.add(player);
 
-        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10,"Balls/Big ball.png", world);
+        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10f,"Balls/Big ball.png", world);
         physicsSystem.addEntity(ball);
         entities.add(ball);
 
@@ -84,10 +84,10 @@ public class LevelController {
     }
 
     public void initializeWorld() {
-        entities.add(EntityFactory.createObstacleEntity(Gdx.graphics.getWidth(), 0, -300,Gdx.graphics.getHeight(), "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world));
-        entities.add(EntityFactory.createObstacleEntity(0,Gdx.graphics.getHeight(), Gdx.graphics.getWidth(),-300, "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world));
-        entities.add(EntityFactory.createObstacleEntity(0,0, Gdx.graphics.getWidth(),300, "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world));
-        entities.add(EntityFactory.createObstacleEntity(0,0, 300,Gdx.graphics.getHeight(), "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world));
+        entities.add(EntityFactory.createObstacleEntity(Gdx.graphics.getWidth(), 0, -30f,Gdx.graphics.getHeight(), "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world)); // RIGHT WALL
+        entities.add(EntityFactory.createObstacleEntity(0,Gdx.graphics.getHeight(), Gdx.graphics.getWidth(),-30f, "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world)); // ROOF
+        entities.add(EntityFactory.createObstacleEntity(0,0, Gdx.graphics.getWidth(),30f, "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world)); // GROUND
+        entities.add(EntityFactory.createObstacleEntity(0,0, 30f,Gdx.graphics.getHeight(), "Rango/Tongue.gif", BodyDef.BodyType.StaticBody, world)); // LEFT WALL
     }
 
     public MovementSystem getMovementSystem() {

@@ -1,6 +1,6 @@
 {
   "metaData": {
-    "number": 1,
+    "number": 2,
     "theme": "Forest",
     "completed": false,
     "multiplayer": false
@@ -14,16 +14,32 @@
       }
     },
     {
-      "name": "BallBig",
+      "name": "Player",
       "position": {
         "x": 200,
         "y": 250
       }
     },
     {
-      "name": "BallSmall",
+      "name": "BallMedium",
       "position": {
         "x": 300,
+        "y": 350
+      }
+    },
+
+    {
+      "name": "BallSmall",
+      "position": {
+        "x": 400,
+        "y": 350
+      }
+    },
+
+    {
+      "name": "ballBig",
+      "position": {
+        "x": 500,
         "y": 350
       }
     }

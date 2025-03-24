@@ -5,6 +5,7 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -57,13 +58,15 @@ public class EntityFactory {
         return player;
     }
 
-    public static BallEntity createBallEntity(float x, float y, float radius, String spritePath, World world) {
+    public static BallEntity createBallEntity(float x, float y, float radius, String spritePath,
+                                              World world, int timesPopped, Vector2 velocity) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
         BodyComponent bodyComponent = new BodyComponent(bodyDef);
 
         StatComponent statComponent = new StatComponent();
+        statComponent.setTimesPopped(timesPopped);
 
         SpriteComponent spriteComponent = new SpriteComponent(spritePath);
         spriteComponent.getSprite().setPosition(x, y);
@@ -72,13 +75,14 @@ public class EntityFactory {
 
         FixtureDef fixtureDef = new FixtureDef();
         Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
+        body.setLinearVelocity(velocity);
         bodyComponent.setBody(body);
         body.setUserData(ball); // Attach entity to the body
         fixtureDef.shape = new CircleShape();
         fixtureDef.shape.setRadius(radius);
         fixtureDef.density = 1f;
         fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 1;
+        fixtureDef.restitution = 2;
         body.createFixture(fixtureDef);
 
         return ball;

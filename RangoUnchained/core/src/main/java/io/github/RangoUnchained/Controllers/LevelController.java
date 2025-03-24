@@ -2,6 +2,7 @@ package io.github.RangoUnchained.Controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -71,6 +72,31 @@ public class LevelController {
         entities.clear();
     }
 
+    public void handleSpawnRequests() {
+        for (PhysicsSystem.SpawnRequest request : physicsSystem.getSpawnRequests()) {
+            BallEntity newBall = EntityFactory.createBallEntity(
+                request.x, request.y, request.radius, request.spritePath, physicsSystem.getWorld(),
+            request.timesPopped, request.velocity);
+
+            physicsSystem.addEntity(newBall);
+        }
+        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        physicsSystem.clearSpawnRequests();
+
+    }
+
+    public void removeEntities() {
+        for (Entity e : physicsSystem.getRemovalQueue()) {
+            entities.remove(e);
+
+            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+            if (body != null) {
+                world.destroyBody(body);
+            }
+        }
+        physicsSystem.clearRemovalQueue();
+    }
+
     // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems() {
@@ -81,7 +107,7 @@ public class LevelController {
         movementSystem.addEntity(player);
         entities.add(player);
 
-        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10f,"Balls/Big ball.png", world);
+        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10f,"Balls/Big ball.png", world, 0, new Vector2());
         physicsSystem.addEntity(ball);
         entities.add(ball);
 

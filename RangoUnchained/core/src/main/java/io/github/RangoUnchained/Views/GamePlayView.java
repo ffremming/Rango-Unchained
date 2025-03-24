@@ -3,31 +3,25 @@ package io.github.RangoUnchained.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
-import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
-import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
-import io.github.RangoUnchained.Model.Entities.PlayerEntity;
-import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
 public class GamePlayView extends BaseScreen {
     private int level;
     private Texture playerTexture;
+    private Touchpad touchpad;
     private float playerX, playerY;
     private LevelController controller;
     private Box2DDebugRenderer box2DDebugRenderer;
@@ -51,6 +45,7 @@ public class GamePlayView extends BaseScreen {
         super.show();
 
         createUI();
+        controller.getInputSystem().setTouchpad(touchpad);
     }
 
     @Override
@@ -85,16 +80,39 @@ public class GamePlayView extends BaseScreen {
     }
 
     private void createUI() {
+        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game,
+            () -> game.setView(new GameOverView()));
+        TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
+            () -> controller.getInputSystem().handleShoot());
+
+        createTable(shootButton).bottom().right().pad(20);
+        createTable(gameOverButton).top().padTop(50);
+        createJoystick();
+    }
+
+    private Table createTable(Button button){
         Table table = new Table();
         table.setFillParent(true);
-        table.top().padTop(50);
-
-        // Create Game Over button
-        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game, () -> game.setView(new GameOverView()));
-
-        table.add(gameOverButton).center();
+        table.add(button);
 
         stage.addActor(table);
+        return table;
+    }
+
+    private void createJoystick() {
+        Skin skin = getSkin();
+        Texture joystickTexture = new Texture("joyStick.png");
+        Image joystickImage = new Image(joystickTexture);
+
+        Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
+        touchpadStyle.background = joystickImage.getDrawable();
+        touchpadStyle.knob = new Image(skin.getDrawable("default-round")).getDrawable();
+
+        touchpad = new Touchpad(10, touchpadStyle);
+        touchpad.setBounds(50, 50, 100, 100);
+        stage.addActor(touchpad);
+
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

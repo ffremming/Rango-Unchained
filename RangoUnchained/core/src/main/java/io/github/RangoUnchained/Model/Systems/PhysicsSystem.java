@@ -29,7 +29,6 @@ public class PhysicsSystem implements ContactListener, Systems {
 
     private List<Entity> entities = new ArrayList<>();
     private World world;
-//    private SimpleBodyFactory simpleBodyFactory;
     private List<SpawnRequest> spawnRequests = new ArrayList<>();
     private List<Entity> removalQueue = new ArrayList<>();
 
@@ -47,21 +46,6 @@ public class PhysicsSystem implements ContactListener, Systems {
                 body.getPosition().x - sprite.getWidth()/2,
                 body.getPosition().y - sprite.getHeight()/2
             );
-
-//            if (e instanceof BallEntity) {
-//                StatComponent statComponent = (StatComponent) e.getComponent(StatComponent.class);
-//                if (statComponent.getTimesPopped() >= 2) {
-//                    return;
-//                    //Dette er den minste ballen. ikke spawn ny ball
-//                }
-//
-//                //Slett ball
-//                System.out.println("COCKCKCKCKCKKKKKKKKKKKKKKKKKKK");
-//                removeEntity(e);
-//
-//                //Lag 2 nye baller med halvparten radius timepsPopped ++;
-//
-//            }
         }
     }
 
@@ -75,46 +59,6 @@ public class PhysicsSystem implements ContactListener, Systems {
 
     public void removeEntity(int index) {
         entities.remove(index);
-    }
-
-    public void createPerimeters() {
-
-
-        /* vi skulle legge til texture så vi kan se den.
-        Problem: vi burde da lage entiteter som har body- og spritecomponent
-        Problem: Hvis vi skal lage bodies må den vite om verdenen,
-        derfor bruker vi simplebodyfactory, fordi det blir mer coupling/dependencies
-        om vi gjør entity factory avhengig av et world objekt. Bodies burde altså lages
-        et eget sted (simplebodyfactory) som hører til et physicssystem, fordi den uansett
-        trenger bodies til å interacte med.
-        */
-
-
-        /* BodyDef leftWallBodyDef = new BodyDef();
-        leftWallBodyDef.type = BodyDef.BodyType.StaticBody;
-        leftWallBodyDef.position.set(500, 50);
-        PolygonShape leftWallBox = new PolygonShape();
-        leftWallBox.setAsBox(1000, 40);
-        Body leftWallBody = world.createBody(leftWallBodyDef);
-        leftWallBody.createFixture(leftWallBox, 0f);
-
-        BodyDef groundBodyDef = new BodyDef();
-        groundBodyDef.type = BodyDef.BodyType.StaticBody;
-        groundBodyDef.position.set(500, 50);
-        PolygonShape groundBox = new PolygonShape();
-        groundBox.setAsBox(1000, 40);
-        Body groundBody = world.createBody(groundBodyDef);
-        groundBody.createFixture(groundBox, 0f);
-
-
-        BodyDef groundBodyDef = new BodyDef();
-        groundBodyDef.type = BodyDef.BodyType.StaticBody;
-        groundBodyDef.position.set(500, 50);
-        PolygonShape groundBox = new PolygonShape();
-        groundBox.setAsBox(1000, 40);
-        Body groundBody = world.createBody(groundBodyDef);
-        groundBody.createFixture(groundBox, 0f);
- */
     }
 
 
@@ -134,7 +78,6 @@ public class PhysicsSystem implements ContactListener, Systems {
         removalQueue.add(ball);
 
         if (timesPopped == 0) {
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             spawnRequests.add(new SpawnRequest(xPos - 5f, yPos, 5f,
                 "Balls/Medium ball.png", 1, newVelocity));
             spawnRequests.add(new SpawnRequest(xPos + 5f, yPos, 5f,

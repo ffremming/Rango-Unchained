@@ -81,7 +81,6 @@ public class LevelController {
 
             physicsSystem.addEntity(newBall);
         }
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         physicsSystem.clearSpawnRequests();
 
     }

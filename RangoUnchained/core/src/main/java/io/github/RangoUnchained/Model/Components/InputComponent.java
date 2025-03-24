@@ -25,9 +25,7 @@ public class InputComponent implements Component {
         this.right = right;
     }
 
-    public boolean isShoot() {
-        return shoot;
-    }
+    public boolean isShoot() {return shoot;}
 
     public void setShoot(boolean shoot) {
         this.shoot = shoot;

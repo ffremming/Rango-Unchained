@@ -13,6 +13,7 @@ import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 
 public class SimpleBodyFactory {
@@ -23,14 +24,14 @@ public class SimpleBodyFactory {
         this.world = world;
     }
 
-    public Body createBody(Entity entity) {
+    public Body createBody(Entity entity, float width, float height) {
 
         SpriteComponent spriteComponent = (SpriteComponent) entity.getComponent(SpriteComponent.class);
         BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
         FixtureDef fixtureDef = new FixtureDef();
         Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
         body.setUserData(entity); // Attach entity to the body
-
+        
         // If statements to edit the values of fixture.
         if (entity instanceof PlayerEntity) {
             // Logic for playerentities
@@ -60,6 +61,16 @@ public class SimpleBodyFactory {
                 body.setLinearVelocity(3, 2);
             }
         }
+
+        if (entity instanceof ObstacleEntity) {
+            // Logic for playerentities
+            PolygonShape groundBox = new PolygonShape();
+            groundBox.setAsBox(width, height);
+            Body groundBody = world.createBody(bodyComponent.getBodyDef());
+            groundBody.createFixture(groundBox, 0f);
+            /* Hvordan blir det her med sprites? den må ha samme størrelse */
+        }
+
 
         // Set the fixture of the body corresponding to the fixturedef of the correct entity
         Fixture fixture = body.createFixture(fixtureDef);

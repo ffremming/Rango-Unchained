@@ -1,5 +1,4 @@
 package io.github.RangoUnchained.Model.Factories;
-
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 
@@ -23,6 +22,8 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 
 public class EntityFactory {
+
+    public static final float PIXELS_TO_METERS = 1 / 64f; // Define this in a constants file
 
     private EntityFactory() {}
 
@@ -50,7 +51,22 @@ public class EntityFactory {
         SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
         InputComponent input = new InputComponent();
 
-        return new PlayerEntity(body, sprite, input);
+        InputComponent inputComponent = new InputComponent();
+
+        PlayerEntity player = new PlayerEntity(bodyComponent, spriteComponent, inputComponent);
+        body.setUserData(player); // Attach entity to the body
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(width/2, height/2);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.4f;
+        body.createFixture(fixtureDef);
+        shape.dispose();
+
+        return player;
     }
 
      // Ball Entity (overloaded)

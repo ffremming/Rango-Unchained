@@ -5,10 +5,14 @@ import com.badlogic.gdx.physics.box2d.Body;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Factories.EntityFactory;
 
 public class MovementSystem implements Systems {
 
@@ -26,8 +30,10 @@ public class MovementSystem implements Systems {
             if (inputComponent.isShoot()) {
                 bodyComponent.getBody().setLinearVelocity(0, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+                LevelController.getInstance().getEntities().add(EntityFactory.createProjectileEntity(body.getPosition().x+7, body.getPosition().y + 160
+                , "tongue/3.png",LevelController.getInstance().getWorld()));
+                inputComponent.setShoot(false);
                 System.out.println("SPACE");
-                return; //Play animation?
             } else if (inputComponent.isLeft()) {
                 bodyComponent.getBody().setLinearVelocity(-500, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
@@ -67,15 +73,5 @@ public class MovementSystem implements Systems {
     public void clearSystems() {
         entities.clear();
     }
-
-    /*public static void main(String[] args) {
-        PositionComponent positionComponent = new PositionComponent();
-        Entity player = new PlayerEntity();
-        MovementSystem movementSystem = new MovementSystem();
-        player.addComponent(positionComponent);
-        movementSystem.addEntity(player);
-        System.out.println(player.getComponent(PositionComponent.class));
-        System.out.println("HEi");
-    }*/
 
 }

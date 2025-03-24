@@ -22,6 +22,12 @@ public class AnimationSystem implements Systems{
         if(p1_input.isShoot()){
             animateSprite(p1_sprite, "Rango/Rango.png", "Rango/Rango-shoot.png", 1);
         }
+        if(p1_input.isLeft()){
+            animateSprite(p1_sprite, "Rango/Rango.png", "Rango/Rango-left.png", 0);
+        }
+        if(p1_input.isRight()){
+            animateSprite(p1_sprite, "Rango/Rango.png", "Rango/Rango-right.png", 0);
+        }
     }
 
     private void animateSprite(Sprite sprite, String revertSpritePath, String spritePath, float delay){

@@ -2,6 +2,7 @@ package io.github.RangoUnchained.Model.Systems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 public class InputSystem implements Systems {
 
     private List<Entity> entities = new ArrayList<>();
+    private Touchpad touchpad;
     private boolean multiplayer;
 
     // Dette må endres så man ikke må lage en ny konstruktur og logikk hver gang man legger til player.
@@ -34,13 +36,13 @@ public class InputSystem implements Systems {
 
     }
     // Method that can be called for controllers, delegates to correct handler based on gamemode
-    public void handleInputs() {
-        if (multiplayer) {
-            handleInputMultiplayer();
-        } else {
-            handleInputSingleplayer();
-        }
-    }
+//    public void handleInputs() {
+//        if (multiplayer) {
+//            handleInputMultiplayer();
+//        } else {
+//            handleInputSingleplayer();
+//        }
+//    }
 
     public void addEntity(Entity entity) {
         entities.add(entity);
@@ -53,11 +55,28 @@ public class InputSystem implements Systems {
         p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
         p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
         p1_input.setShoot(Gdx.input.isKeyPressed(Input.Keys.SPACE));
+
+
+        if (Gdx.input.isTouched()){
+            System.out.println(touchpad.getKnobX());
+            p1_input.setLeft(touchpad.getKnobPercentX() < 0);
+            p1_input.setRight(0.5 < touchpad.getKnobPercentX());
+            System.out.println(-0.5 < touchpad.getKnobPercentX());
+        }
+    }
+
+    public void setTouchpad(Touchpad touchpad){
+        this.touchpad = touchpad;
     }
 
     // Updates the input components of the players in multiplayer
     public void handleInputMultiplayer() {
 
+    }
+
+    public void handleShoot(){
+        InputComponent p1_input = (InputComponent) entities.get(0).getComponent(InputComponent.class);
+        p1_input.setShoot(true);
     }
 
 

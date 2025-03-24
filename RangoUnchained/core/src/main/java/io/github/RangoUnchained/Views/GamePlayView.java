@@ -26,6 +26,7 @@ import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 public class GamePlayView extends BaseScreen {
     private int level;
     private Texture playerTexture;
+    private Touchpad touchpad;
     private float playerX, playerY;
     private LevelController controller;
 
@@ -45,6 +46,7 @@ public class GamePlayView extends BaseScreen {
         super.show();
 
         createUI();
+        controller.getInputSystem().setTouchpad(touchpad);
     }
 
     @Override
@@ -74,16 +76,39 @@ public class GamePlayView extends BaseScreen {
     }
 
     private void createUI() {
+        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game,
+            () -> game.setView(new GameOverView()));
+        TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
+            () -> controller.getInputSystem().handleShoot());
+
+        createTable(shootButton).bottom().right().pad(20);
+        createTable(gameOverButton).top().padTop(50);
+        createJoystick();
+    }
+
+    private Table createTable(Button button){
         Table table = new Table();
         table.setFillParent(true);
-        table.top().padTop(50);
-
-        // Create Game Over button
-        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game, () -> game.setView(new GameOverView()));
-
-        table.add(gameOverButton).center();
+        table.add(button);
 
         stage.addActor(table);
+        return table;
+    }
+
+    private void createJoystick() {
+        Skin skin = getSkin();
+        Texture joystickTexture = new Texture("joyStick.png");
+        Image joystickImage = new Image(joystickTexture);
+
+        Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
+        touchpadStyle.background = joystickImage.getDrawable();
+        touchpadStyle.knob = new Image(skin.getDrawable("default-round")).getDrawable();
+
+        touchpad = new Touchpad(10, touchpadStyle);
+        touchpad.setBounds(50, 50, 100, 100);
+        stage.addActor(touchpad);
+
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

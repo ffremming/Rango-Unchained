@@ -103,13 +103,9 @@ public class GameLevel {
     /**
      * Removes all entities from the level.
      */
-    public void clearLevel() {
+    public void clear() {
         entities.clear();
-
-        for (Systems system: systems){
-            system.clearSystems();
-        }
-
+        //TODO more logic? disposing?
     }
 
     /**

@@ -15,6 +15,9 @@ import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Factories.EntityFactory;
+import io.github.RangoUnchained.Model.level.GameLevel;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -31,13 +34,11 @@ public class GamePlayView extends BaseScreen {
 //        super(GameController.getInstance());
 //        this.level = level;
 //    }
-    public GamePlayView() {
+    public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
         box2DDebugRenderer = new Box2DDebugRenderer();
         controller = LevelController.getInstance();
-        controller.initializeSystems();
-        controller.initializeWorld();
-        debugRenderer = new Box2DDebugRenderer();
+        controller.initializeSystems(levelNumber);
     }
 
     @Override
@@ -68,6 +69,10 @@ public class GamePlayView extends BaseScreen {
 
         // Render everything
         batch.begin();
+
+        controller.update();
+
+        //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
             Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
@@ -77,6 +82,7 @@ public class GamePlayView extends BaseScreen {
         debugRenderer.render(controller.getWorld(), camera.combined);
 
         batch.end();
+
     }
 
     private void createUI() {
@@ -119,6 +125,7 @@ public class GamePlayView extends BaseScreen {
     public void hide() {
         super.hide();
         controller.clearSystems();
+        game.setView(new MainMenuView());
     }
 
 }

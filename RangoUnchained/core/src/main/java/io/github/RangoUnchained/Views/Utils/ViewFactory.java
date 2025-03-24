@@ -14,7 +14,7 @@ public class ViewFactory {
             case "MAIN_MENU":
                 return new MainMenuView();
             case "GAMEPLAY":
-                return new GamePlayView();
+                return new GamePlayView(1);
             case "SCORE_BOARD":
                 return new ScoreboardView();
             case "LEVEL_SCREEN":

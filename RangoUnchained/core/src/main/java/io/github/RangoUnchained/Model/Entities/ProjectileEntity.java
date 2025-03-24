@@ -5,15 +5,17 @@ import java.util.Map;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
+import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 
 public class ProjectileEntity implements Entity{
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    public ProjectileEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent) {
+    public ProjectileEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, LifeTimeComponent lifeTimeComponent) {
         addComponent(bodyComponent);
         addComponent(spriteComponent);
+        addComponent(lifeTimeComponent);
     }
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {
@@ -22,6 +24,4 @@ public class ProjectileEntity implements Entity{
     private <T extends Component> void addComponent(T component) {
         components.put(component.getClass(), component);
     }
-
-
 }

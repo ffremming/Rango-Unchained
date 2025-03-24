@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -38,6 +40,8 @@ public class GamePlayView extends BaseScreen {
     private Touchpad touchpad;
     private float playerX, playerY;
     private LevelController controller;
+    private Box2DDebugRenderer box2DDebugRenderer;
+    private Box2DDebugRenderer debugRenderer;
 
 //    public GamePlayView(int level) {
 //        super(GameController.getInstance());
@@ -45,9 +49,11 @@ public class GamePlayView extends BaseScreen {
 //    }
     public GamePlayView() {
         super(GameController.getInstance());
+        box2DDebugRenderer = new Box2DDebugRenderer();
         controller = LevelController.getInstance();
         controller.initializeSystems();
         controller.initializeWorld();
+        debugRenderer = new Box2DDebugRenderer();
     }
 
     @Override
@@ -64,11 +70,14 @@ public class GamePlayView extends BaseScreen {
 
         // Update physics world first
         controller.getWorld().step(1/60f, 6, 2);
+        controller.handleSpawnRequests();
+        controller.removeEntities();
 
         // Handle input and movement after physics update
         controller.getInputSystem().handleInputSingleplayer();
         controller.getAnimationSystem().designAnimation();
         controller.getMovementSystem().updateEntityPosition();
+        controller.getLifeTimeSystem().update(controller.getEntities(),controller);
 
         // Update sprite positions based on physics bodies
         controller.getPhysicsSystem().updatePhysics();
@@ -80,6 +89,8 @@ public class GamePlayView extends BaseScreen {
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
 
+        box2DDebugRenderer.render(controller.getWorld(), camera.combined);
+        debugRenderer.render(controller.getWorld(), camera.combined);
 
         batch.end();
     }

@@ -2,6 +2,7 @@ package io.github.RangoUnchained.Controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -12,14 +13,13 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.Systems.AnimationSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
+import io.github.RangoUnchained.Model.Systems.LifeTimeSystem;
 import io.github.RangoUnchained.Model.Systems.MovementSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
-import io.github.RangoUnchained.Model.Systems.SimpleBodyFactory;
 
 public class LevelController {
 
@@ -30,6 +30,7 @@ public class LevelController {
     private PhysicsSystem physicsSystem;
     private InputSystem inputSystem;
     private AnimationSystem animationSystem;
+    private LifeTimeSystem lifeTimeSystem;
     private LevelController () {
         entities = new ArrayList<>();
         movementSystem = new MovementSystem();
@@ -37,6 +38,7 @@ public class LevelController {
         physicsSystem = new PhysicsSystem(world);
         inputSystem = new InputSystem();
         animationSystem = new AnimationSystem();
+        lifeTimeSystem = new LifeTimeSystem();
     }
 
     /* Hvordan skal vi legge til height og width. (Og sette det til spirte og body)
@@ -71,6 +73,31 @@ public class LevelController {
         entities.clear();
     }
 
+    public void handleSpawnRequests() {
+        for (PhysicsSystem.SpawnRequest request : physicsSystem.getSpawnRequests()) {
+            BallEntity newBall = EntityFactory.createBallEntity(
+                request.x, request.y, request.radius, request.spritePath, physicsSystem.getWorld(),
+            request.timesPopped, request.velocity);
+
+            physicsSystem.addEntity(newBall);
+        }
+        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        physicsSystem.clearSpawnRequests();
+
+    }
+
+    public void removeEntities() {
+        for (Entity e : physicsSystem.getRemovalQueue()) {
+            entities.remove(e);
+
+            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+            if (body != null) {
+                world.destroyBody(body);
+            }
+        }
+        physicsSystem.clearRemovalQueue();
+    }
+
     // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems() {
@@ -81,7 +108,7 @@ public class LevelController {
         movementSystem.addEntity(player);
         entities.add(player);
 
-        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10f,"Balls/Big ball.png", world);
+        BallEntity ball = EntityFactory.createBallEntity(300, 500, 10f,"Balls/Big ball.png", world, 0, new Vector2());
         physicsSystem.addEntity(ball);
         entities.add(ball);
 
@@ -112,5 +139,9 @@ public class LevelController {
 
     public World getWorld() {
         return world;
+    }
+
+    public LifeTimeSystem getLifeTimeSystem() {
+        return lifeTimeSystem;
     }
 }

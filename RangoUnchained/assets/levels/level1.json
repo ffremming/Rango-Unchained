@@ -14,14 +14,14 @@
       }
     },
     {
-      "name": "Ball",
+      "name": "BallBig",
       "position": {
         "x": 200,
         "y": 250
       }
     },
     {
-      "name": "Wall",
+      "name": "BallSmall",
       "position": {
         "x": 300,
         "y": 350

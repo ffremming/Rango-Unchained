@@ -19,6 +19,7 @@ import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
+import io.github.RangoUnchained.Model.level.GameLevel;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -32,10 +33,10 @@ public class GamePlayView extends BaseScreen {
 //        super(GameController.getInstance());
 //        this.level = level;
 //    }
-    public GamePlayView() {
+    public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
         controller = LevelController.getInstance();
-        controller.initializeSystems();
+        controller.initializeSystems(levelNumber);
     }
 
     @Override
@@ -49,15 +50,23 @@ public class GamePlayView extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         batch.begin();
-        controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
+
+        controller.update();
+
+        //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
             Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
             Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
-        controller.getInputSystem().handleInputSingleplayer();
-        controller.getMovementSystem().updateEntityPosition();
+
+
+        //controller.getInputSystem().handleInputSingleplayer();
+        //controller.getMovementSystem().updateEntityPosition();
+
+
         batch.end();
+
     }
 
     private void createUI() {
@@ -77,6 +86,7 @@ public class GamePlayView extends BaseScreen {
     public void hide() {
         super.hide();
         controller.clearSystems();
+        game.setView(new MainMenuView());
     }
 
 }

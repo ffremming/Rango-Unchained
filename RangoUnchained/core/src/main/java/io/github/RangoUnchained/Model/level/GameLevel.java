@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Model.level;
 
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -7,7 +8,10 @@ import java.util.ArrayList;
 
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
-import io.github.RangoUnchained.Model.level.ScoreManager;
+import io.github.RangoUnchained.Model.Systems.InputSystem;
+import io.github.RangoUnchained.Model.Systems.MovementSystem;
+import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
+import io.github.RangoUnchained.Model.Systems.Systems;
 
 /**
  * Represents a game level, containing metadata and entities.
@@ -15,39 +19,85 @@ import io.github.RangoUnchained.Model.level.ScoreManager;
  */
 public class GameLevel {
     private ArrayList<Entity> entities = new ArrayList<>();
-    private MetaData metaData;
-    private ArrayList<EntityData> entitiesData;
+    private World world;
+    private LevelData.MetaData metaData;
+    private ArrayList<LevelData.EntityData> entitiesData;
     public ScoreManager scoreManager = new ScoreManager();
 
-    private GameLevel() {}
+    private ArrayList<Systems> systems = new ArrayList<>();
+
+    public GameLevel(int number) {
+        initializeSystems();
+        loadLevel(number);
+        loadSystemsWithEntities();
+    }
 
     /**
      * Loads a game level from a JSON file.
      *
-     * @param path The relative path to the level file within the "levels" directory.
+     * @param number the identificator of the specific level.
      * @return A new GameLevel instance populated with metadata and entities.
      */
-    public static GameLevel loadLevel(String path) {
+    public void loadLevel(int number) {
+        System.out.println("run");
         Json json = new Json();
-        FileHandle file = Gdx.files.internal("levels/" + path);
+        FileHandle file = Gdx.files.internal("levels/level" + number+".json");
 
-        GameLevel level = json.fromJson(GameLevel.class, file.readString());
+        LevelData levelData = json.fromJson(LevelData.class, file.readString());
 
-        if (level.entitiesData == null) {
+        if (levelData.entitiesData == null) {
             Gdx.app.log("JSON_Error", "No entitiesData found in JSON file.");
-            level.entitiesData = new ArrayList<>();
+            levelData.entitiesData = new ArrayList<>();
         }
 
-        Gdx.app.log("JSON_testing", "levelName: " + level.metaData.number);
+        Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
-        for (EntityData entityData : level.entitiesData) {
+        for (LevelData.EntityData entityData : levelData.entitiesData) {
             Gdx.app.log("JSON_testing", "Name: " + entityData.name);
             Gdx.app.log("JSON_testing", "Position: (" + entityData.position.x + ", " + entityData.position.y + ")");
 
-            Entity entity = EntityFactory.createPlayerEntity(entityData.position.x, entityData.position.y, entityData.name);
-            level.entities.add(entity);
+            Entity entity = EntityFactory.createEntity(entityData.position.x, entityData.position.y, entityData.name, world);
+            if (entity!= null){
+                entities.add(entity);
+            }
         }
-        return level;
+    }
+
+    public void update(){
+        for (Systems system: systems) {
+            system.update();
+        }
+    }
+
+    public void addSystem(Systems system){
+        systems.add(system);
+    }
+
+    private void initializeSystems(){
+
+        MovementSystem movementSystem = new MovementSystem();
+        PhysicsSystem physicsSystem = new PhysicsSystem(-10);
+        InputSystem inputSystem = new InputSystem();
+
+        world = physicsSystem.getWorld();
+
+        systems.add(movementSystem);
+        systems.add(physicsSystem);
+        systems.add(inputSystem);
+    }
+
+    private void loadSystemsWithEntities(){
+        for (Systems system: systems) {
+            for (Entity entity:entities){
+                system.addEntity(entity);
+            }
+        }
+    }
+
+    private void addEntityToSystem(Entity entity){
+        for (Systems system: systems) {
+                system.addEntity(entity);
+        }
     }
 
     /**
@@ -55,6 +105,11 @@ public class GameLevel {
      */
     public void clearLevel() {
         entities.clear();
+
+        for (Systems system: systems){
+            system.clearSystems();
+        }
+
     }
 
     /**
@@ -64,6 +119,7 @@ public class GameLevel {
      * @return {@code true} if the entity was successfully added.
      */
     public boolean addEntity(Entity entity) {
+        addEntityToSystem(entity);
         return entities.add(entity);
     }
 
@@ -76,29 +132,35 @@ public class GameLevel {
         return entities;
     }
 
-    /**
-     * Represents entity data used for JSON deserialization.
-     */
-    public static class EntityData {
-        public String name;
-        public Position position;
+
+    public static class LevelData {
+        public MetaData metaData;
+        public ArrayList<EntityData> entitiesData;
+    
+        /**
+         * Represents entity data used for JSON deserialization.
+         */
+        public static class EntityData {
+            public String name;
+            public Position position;
+
+            /**
+             * Represents a 2D position with x and y coordinates.
+             */
+            public static class Position {
+                public float x;
+                public float y;
+            }
+        }
 
         /**
-         * Represents a 2D position with x and y coordinates.
+         * Represents metadata associated with a game level.
          */
-        public static class Position {
-            public float x;
-            public float y;
+        public static class MetaData {
+            public int number;
+            public String theme;
+            public boolean completed;
+            public boolean multiplayer;
         }
-    }
-
-    /**
-     * Represents metadata associated with a game level.
-     */
-    public static class MetaData {
-        public int number;
-        public String theme;
-        public boolean completed;
-        public boolean multiplayer;
     }
 }

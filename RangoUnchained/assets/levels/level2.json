@@ -14,16 +14,32 @@
       }
     },
     {
-      "name": "Ball",
+      "name": "Player",
       "position": {
         "x": 200,
         "y": 250
       }
     },
     {
-      "name": "Wall",
+      "name": "BallMedium",
       "position": {
         "x": 300,
+        "y": 350
+      }
+    },
+
+    {
+      "name": "BallSmall",
+      "position": {
+        "x": 400,
+        "y": 350
+      }
+    },
+
+    {
+      "name": "ballBig",
+      "position": {
+        "x": 500,
         "y": 350
       }
     }

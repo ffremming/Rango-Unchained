@@ -22,16 +22,4 @@ public class SpriteComponent implements Component {
         return texture;
     }
 
-    public void animateSprite(String spritePath, float delay){
-        Texture revertTexture = texture;
-
-        sprite.setTexture(new Texture(spritePath));
-
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                sprite.setTexture(revertTexture);
-            }
-        }, delay);
-    }
 }

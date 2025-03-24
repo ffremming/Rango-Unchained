@@ -56,6 +56,7 @@ public class GamePlayView extends BaseScreen {
 
         // Handle input and movement after physics update
         controller.getInputSystem().handleInputSingleplayer();
+        controller.getAnimationSystem().designAnimation();
         controller.getMovementSystem().updateEntityPosition();
 
         // Update sprite positions based on physics bodies
@@ -67,6 +68,8 @@ public class GamePlayView extends BaseScreen {
             Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
+
+
         batch.end();
     }
 

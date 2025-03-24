@@ -15,6 +15,7 @@ public class MovementSystem implements Systems {
 
     private List<Entity> entities = new ArrayList<>();
 
+
     // Updates every playable entity's position based on input and velocity
     // Method called from controllers for updates
     public void updateEntityPosition() {
@@ -27,10 +28,8 @@ public class MovementSystem implements Systems {
             if (inputComponent.isShoot()) {
                 bodyComponent.getBody().setLinearVelocity(0, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
-                spriteComponent.animateSprite("Rango/Rango-shoot.png", 1);
-//                EntityFactory.createProjectileEntity(body.getPosition().x, body.getPosition().y, "Rango/Tounge.gif", );
+                inputComponent.setShoot(false);
                 System.out.println("SPACE");
-                return; //Play animation?
             } else if (inputComponent.isLeft()) {
                 bodyComponent.getBody().setLinearVelocity(-500, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);

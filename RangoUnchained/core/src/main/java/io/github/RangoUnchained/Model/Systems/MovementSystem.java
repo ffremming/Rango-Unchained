@@ -9,13 +9,14 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 
 public class MovementSystem implements Systems {
 
     private List<Entity> entities = new ArrayList<>();
-
 
     // Updates every playable entity's position based on input and velocity
     // Method called from controllers for updates

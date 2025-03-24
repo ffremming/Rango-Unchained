@@ -46,8 +46,9 @@ public class GameLevel {
      * Clears all entities in the current level.
      * This removes all the entities from the level's entity list.
      */
-    public void clearLevel() {
+    public void clear() {
         entities.clear();
+        //TODO more logic? disposing?
     }
 
     /**

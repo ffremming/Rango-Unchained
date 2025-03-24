@@ -14,7 +14,6 @@ import io.github.RangoUnchained.Model.Factories.EntityFactory;
 public class MovementSystem implements Systems {
 
     private List<Entity> entities = new ArrayList<>();
-    private AnimationSystem animationSystem = new AnimationSystem();
 
 
     // Updates every playable entity's position based on input and velocity
@@ -29,10 +28,8 @@ public class MovementSystem implements Systems {
             if (inputComponent.isShoot()) {
                 bodyComponent.getBody().setLinearVelocity(0, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
-                animationSystem.animateSprite(e, "Rango/Rango.png","Rango/Rango-shoot.png", 1);
                 inputComponent.setShoot(false);
                 System.out.println("SPACE");
-                return; //Play animation?
             } else if (inputComponent.isLeft()) {
                 bodyComponent.getBody().setLinearVelocity(-500, 0);
                 spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);

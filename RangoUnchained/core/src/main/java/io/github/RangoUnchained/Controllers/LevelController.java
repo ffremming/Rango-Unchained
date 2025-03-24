@@ -15,6 +15,7 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
+import io.github.RangoUnchained.Model.Systems.AnimationSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.MovementSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
@@ -28,12 +29,14 @@ public class LevelController {
     private MovementSystem movementSystem;
     private PhysicsSystem physicsSystem;
     private InputSystem inputSystem;
+    private AnimationSystem animationSystem;
     private LevelController () {
         entities = new ArrayList<>();
         movementSystem = new MovementSystem();
         world = new World(new Vector2(0f,-10f), true);
         physicsSystem = new PhysicsSystem(world);
         inputSystem = new InputSystem();
+        animationSystem = new AnimationSystem();
     }
 
     /* Hvordan skal vi legge til height og width. (Og sette det til spirte og body)
@@ -64,6 +67,7 @@ public class LevelController {
         physicsSystem.clearSystems();
         inputSystem.clearSystems();
         movementSystem.clearSystems();
+        animationSystem.clearSystems();
         entities.clear();
     }
 
@@ -73,6 +77,7 @@ public class LevelController {
         PlayerEntity player = EntityFactory.createPlayerEntity(200, 500, "Rango/Rango.png", world);
         physicsSystem.addEntity(player);
         inputSystem.addEntity(player);
+        animationSystem.addEntity(player);
         movementSystem.addEntity(player);
         entities.add(player);
 
@@ -92,6 +97,9 @@ public class LevelController {
 
     public MovementSystem getMovementSystem() {
         return movementSystem;
+    }
+    public AnimationSystem getAnimationSystem() {
+        return animationSystem;
     }
 
     public PhysicsSystem getPhysicsSystem() {

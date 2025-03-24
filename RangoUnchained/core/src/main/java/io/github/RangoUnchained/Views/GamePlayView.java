@@ -15,25 +15,17 @@ import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Entities.PlayerEntity;
-import io.github.RangoUnchained.Model.Factories.EntityFactory;
-import io.github.RangoUnchained.Model.level.GameLevel;
+import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
 public class GamePlayView extends BaseScreen {
-    private int level;
-    private Texture playerTexture;
+
     private Touchpad touchpad;
-    private float playerX, playerY;
     private LevelController controller;
     private Box2DDebugRenderer box2DDebugRenderer;
     private Box2DDebugRenderer debugRenderer;
 
-//    public GamePlayView(int level) {
-//        super(GameController.getInstance());
-//        this.level = level;
-//    }
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
         box2DDebugRenderer = new Box2DDebugRenderer();
@@ -46,7 +38,7 @@ public class GamePlayView extends BaseScreen {
         super.show();
 
         createUI();
-        controller.getInputSystem().setTouchpad(touchpad);
+        controller.getSystem(InputSystem.class).setTouchpad(touchpad);
     }
 
     @Override
@@ -54,18 +46,11 @@ public class GamePlayView extends BaseScreen {
         super.render(delta);
 
         // Update physics world first
-        controller.getWorld().step(1/60f, 6, 2);
-        controller.handleSpawnRequests();
-        controller.removeEntities();
+        controller.step(1/60f, 6, 2);
+        
+        controller.excecuteSpawnQueue();
+        controller.excecuteRemovelQueue();
 
-        // Handle input and movement after physics update
-        controller.getInputSystem().handleInputSingleplayer();
-        controller.getAnimationSystem().designAnimation();
-        controller.getMovementSystem().updateEntityPosition();
-        controller.getLifeTimeSystem().update(controller.getEntities(),controller);
-
-        // Update sprite positions based on physics bodies
-        controller.getPhysicsSystem().updatePhysics();
 
         // Render everything
         batch.begin();
@@ -89,7 +74,7 @@ public class GamePlayView extends BaseScreen {
         TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game,
             () -> game.setView(new GameOverView()));
         TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
-            () -> controller.getInputSystem().handleShoot());
+            () -> controller.getSystem(InputSystem.class).handleShoot());
 
         createTable(shootButton).bottom().right().pad(20);
         createTable(gameOverButton).top().padTop(50);

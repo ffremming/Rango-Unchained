@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Model.Components;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.Timer;
 
 public class SpriteComponent implements Component {
 

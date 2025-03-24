@@ -1,9 +1,9 @@
 package io.github.RangoUnchained.Model.Factories;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -27,7 +27,7 @@ public class EntityFactory {
 
     private EntityFactory() {}
 
-    public static Entity createEntity(float x, float y, String name, World world) {
+    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity) {
         if (name.equals("Player")) {
             return createPlayerEntity(x, y, world);
 
@@ -45,45 +45,56 @@ public class EntityFactory {
         return null;
     }
 
-    // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world) {
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(32, 32));
-        SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
-        InputComponent input = new InputComponent();
+ // Player Entity
+ public static PlayerEntity createPlayerEntity2(float x, float y, World world) {
+    BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(32, 32));
+    SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
+    InputComponent input = new InputComponent();
 
-        InputComponent inputComponent = new InputComponent();
+    InputComponent inputComponent = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity(bodyComponent, spriteComponent, inputComponent);
-        body.setUserData(player); // Attach entity to the body
+    PlayerEntity player = new PlayerEntity(bodyComponent, spriteComponent, inputComponent);
+    body.setUserData(player); // Attach entity to the body
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width/2, height/2);
+    PolygonShape shape = new PolygonShape();
+    shape.setAsBox(width/2, height/2);
 
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
-        fixtureDef.friction = 0.4f;
-        body.createFixture(fixtureDef);
-        shape.dispose();
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    body.createFixture(fixtureDef);
+    shape.dispose();
 
-        return player;
-    }
+    return player;
+}
 
-     // Ball Entity (overloaded)
+
+// Player Entity
+public static PlayerEntity createPlayerEntity(float x, float y, World world) {
+    BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(32, 32));
+    SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
+    InputComponent input = new InputComponent();
+
+    return new PlayerEntity(body, sprite, input);
+
+}
+
+
+
+    private static final int BIGBALLRADIUS = 20;
+    private static final int MEDIUMBALLRADIUS = 15;
+    private static final int SMALLBALLRADIUS = 10;
+
+     // general method for creating all balls - called from factory method
      public static BallEntity createBallEntity(float x, float y, String name, World world) {
-        float radius = name.endsWith("Big") ? 20 : name.endsWith("Medium") ? 15 : 10;
-        String newName = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
+        float radius = name.endsWith("Big") ? BIGBALLRADIUS : name.endsWith("Medium") ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
+        String path = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
 
-        return createBallEntity(x, y, radius, "Balls/" + newName + ".png", world);
-    }
-
-    public static BallEntity createBallEntity(float x, float y, float radius, String spritePath, World world) {
-        //BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(radius));
-        SpriteComponent sprite = new SpriteComponent(spritePath);
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(radius));
+        SpriteComponent sprite = new SpriteComponent(path);
         StatComponent stats = new StatComponent();
 
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(32, 32));
-        //SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
         return new BallEntity(body, stats, sprite);
     }
 
@@ -98,27 +109,8 @@ public class EntityFactory {
     public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath, World world) {
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(10, 10));
         SpriteComponent sprite = new SpriteComponent(spritePath);
-        return new ProjectileEntity(body, sprite);
-    }
-
-
-
-    public static BallEntity createBallEntity(float x, float y, String name) {
-        SpriteComponent sprite;
-        if (name.endsWith("Big")){
-            sprite = new SpriteComponent("Balls/Big ball.png");
-        } else if (name.endsWith("Medium")){
-            sprite = new SpriteComponent("Balls/Medium ball.png");
-        } else {
-            sprite = new SpriteComponent("Balls/Small ball.png");
-        }
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
-        BodyComponent body = new BodyComponent(bodyDef);
-        StatComponent stat = new StatComponent(); // Initialize with appropriate stats
-        sprite.getSprite().setPosition(x, y);
-        return new BallEntity(body, stat, sprite);
+        LifeTimeComponent lifeTime = new LifeTimeComponent(40); // 1.5 seconds
+        return new ProjectileEntity(body, sprite, lifeTime);
     }
 
     // Universal Body Creation Method
@@ -139,21 +131,18 @@ public class EntityFactory {
         return bodyComponent;
     }
 
-    // ✅ Box Fixture (for players, obstacles)
     private static FixtureDef createBoxFixture(float width, float height) {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width / 2, height / 2);
         return createFixture(shape, 1f, 0.4f, 0.5f); // Default values for density, friction, and restitution
     }
 
-    // ✅ Circle Fixture (for balls)
     private static FixtureDef createCircleFixture(float radius) {
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
         return createFixture(shape, 1f, 0.4f, 0.5f); // Default values for density, friction, and restitution
     }
 
-    // ✅ Generalized Fixture Definition with customizable parameters
     private static FixtureDef createFixture(Shape shape, float density, float friction, float restitution) {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

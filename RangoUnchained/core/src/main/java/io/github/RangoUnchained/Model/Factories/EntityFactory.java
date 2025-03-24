@@ -1,9 +1,7 @@
 package io.github.RangoUnchained.Model.Factories;
-
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
-
-import com.badlogic.gdx.graphics.Color;
+import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -21,6 +19,8 @@ import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.SimpleBodyFactory;
 
 public class EntityFactory {
+
+    public static final float PIXELS_TO_METERS = 1 / 64f; // Define this in a constants file
 
     private EntityFactory() {}
 
@@ -118,39 +118,47 @@ public class EntityFactory {
         return obstacleEntity;
     }
 
-    public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath,  World world) {
+
+    public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
-        bodyDef.position.set(x, y);
-
+        bodyDef.position.set(x * PIXELS_TO_METERS, y * PIXELS_TO_METERS); // Convert position to meters
+    
         BodyComponent bodyComponent = new BodyComponent(bodyDef);
-        Body body = world.createBody(bodyComponent.getBodyDef()); // Create body and attach to world from PhysicsSystem
+        Body body = world.createBody(bodyComponent.getBodyDef());
         bodyComponent.setBody(body);
-
-        PolygonShape shape = new PolygonShape();
-
+    
         SpriteComponent spriteComponent = new SpriteComponent(spritePath);
-        spriteComponent.getSprite().setPosition(x, y);
-        float width = spriteComponent.getSprite().getWidth();
-        float height = spriteComponent.getSprite().getHeight();
-        shape.setAsBox(width/2, height/2);
-
+        float spriteWidth = spriteComponent.getSprite().getWidth();
+        float spriteHeight = spriteComponent.getSprite().getHeight();
+    
+        float scaledWidth = spriteWidth * 5;
+        float scaledHeight = spriteHeight * 5;
+    
+        // Set sprite size
+        spriteComponent.getSprite().setSize(scaledWidth, scaledHeight);
+    
+        // Set sprite position so it's centered on the body
+        spriteComponent.getSprite().setPosition(x - scaledWidth / 2, y - scaledHeight / 2);
+        
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox((scaledWidth / 2) * PIXELS_TO_METERS, (scaledHeight / 2) * PIXELS_TO_METERS); // Convert size to meters
+    
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.friction = 0.4f;
-
+    
         body.createFixture(fixtureDef);
         shape.dispose();
-
-        spriteComponent.getSprite().setSize(width, height);
-        spriteComponent.getSprite().setPosition(x, y);
-        spriteComponent.getSprite().setRegion(0, 0, width / 64, height / 64);
-
-        ProjectileEntity projectileEntity = new ProjectileEntity(bodyComponent, spriteComponent);
-        body.setUserData(projectileEntity); // Attach entity to the body
-
+    
+        // Attach sprite to entity
+        ProjectileEntity projectileEntity = new ProjectileEntity(bodyComponent, spriteComponent, new LifeTimeComponent(45));
+        body.setUserData(projectileEntity);
+    
         return projectileEntity;
     }
+    
+    
 
     // Flere public entity-metoder på samme format. Følg logical view
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
@@ -28,6 +29,7 @@ public class GamePlayView extends BaseScreen {
     private Texture playerTexture;
     private float playerX, playerY;
     private LevelController controller;
+    private Box2DDebugRenderer debugRenderer;
 
 //    public GamePlayView(int level) {
 //        super(GameController.getInstance());
@@ -38,6 +40,7 @@ public class GamePlayView extends BaseScreen {
         controller = LevelController.getInstance();
         controller.initializeSystems();
         controller.initializeWorld();
+        debugRenderer = new Box2DDebugRenderer();
     }
 
     @Override
@@ -58,6 +61,7 @@ public class GamePlayView extends BaseScreen {
         controller.getInputSystem().handleInputSingleplayer();
         controller.getAnimationSystem().designAnimation();
         controller.getMovementSystem().updateEntityPosition();
+        controller.getLifeTimeSystem().update(controller.getEntities(),controller);
 
         // Update sprite positions based on physics bodies
         controller.getPhysicsSystem().updatePhysics();
@@ -69,6 +73,7 @@ public class GamePlayView extends BaseScreen {
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
 
+        debugRenderer.render(controller.getWorld(), camera.combined);
 
         batch.end();
     }

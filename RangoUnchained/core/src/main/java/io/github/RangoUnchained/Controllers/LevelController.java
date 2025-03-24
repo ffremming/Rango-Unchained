@@ -12,14 +12,13 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.Systems.AnimationSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
+import io.github.RangoUnchained.Model.Systems.LifeTimeSystem;
 import io.github.RangoUnchained.Model.Systems.MovementSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
-import io.github.RangoUnchained.Model.Systems.SimpleBodyFactory;
 
 public class LevelController {
 
@@ -30,6 +29,7 @@ public class LevelController {
     private PhysicsSystem physicsSystem;
     private InputSystem inputSystem;
     private AnimationSystem animationSystem;
+    private LifeTimeSystem lifeTimeSystem;
     private LevelController () {
         entities = new ArrayList<>();
         movementSystem = new MovementSystem();
@@ -37,6 +37,7 @@ public class LevelController {
         physicsSystem = new PhysicsSystem(world);
         inputSystem = new InputSystem();
         animationSystem = new AnimationSystem();
+        lifeTimeSystem = new LifeTimeSystem();
     }
 
     /* Hvordan skal vi legge til height og width. (Og sette det til spirte og body)
@@ -112,5 +113,9 @@ public class LevelController {
 
     public World getWorld() {
         return world;
+    }
+
+    public LifeTimeSystem getLifeTimeSystem() {
+        return lifeTimeSystem;
     }
 }

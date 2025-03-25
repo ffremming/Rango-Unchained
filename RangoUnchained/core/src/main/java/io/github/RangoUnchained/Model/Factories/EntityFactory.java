@@ -46,28 +46,7 @@ public class EntityFactory {
     }
 
  // Player Entity
- public static PlayerEntity createPlayerEntity2(float x, float y, World world) {
-    BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(32, 32));
-    SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
-    InputComponent input = new InputComponent();
 
-    InputComponent inputComponent = new InputComponent();
-
-    PlayerEntity player = new PlayerEntity(bodyComponent, spriteComponent, inputComponent);
-    body.setUserData(player); // Attach entity to the body
-
-    PolygonShape shape = new PolygonShape();
-    shape.setAsBox(width/2, height/2);
-
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.4f;
-    body.createFixture(fixtureDef);
-    shape.dispose();
-
-    return player;
-}
 
 
 // Player Entity

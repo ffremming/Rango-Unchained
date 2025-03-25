@@ -1,17 +1,18 @@
 package io.github.RangoUnchained.Model.level;
 
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.ArrayList;
 
+import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
-import io.github.RangoUnchained.Model.Systems.InputSystem;
-import io.github.RangoUnchained.Model.Systems.MovementSystem;
-import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
-import io.github.RangoUnchained.Model.Systems.Systems;
 
 /**
  * Represents a game level, containing metadata and entities.
@@ -24,12 +25,8 @@ public class GameLevel {
     private ArrayList<LevelData.EntityData> entitiesData;
     public ScoreManager scoreManager = new ScoreManager();
 
-    private ArrayList<Systems> systems = new ArrayList<>();
-
     public GameLevel(int number) {
-        initializeSystems();
         loadLevel(number);
-        loadSystemsWithEntities();
     }
 
     /**
@@ -39,7 +36,6 @@ public class GameLevel {
      * @return A new GameLevel instance populated with metadata and entities.
      */
     public void loadLevel(int number) {
-        System.out.println("run");
         Json json = new Json();
         FileHandle file = Gdx.files.internal("levels/level" + number+".json");
 
@@ -56,49 +52,18 @@ public class GameLevel {
             Gdx.app.log("JSON_testing", "Name: " + entityData.name);
             Gdx.app.log("JSON_testing", "Position: (" + entityData.position.x + ", " + entityData.position.y + ")");
 
-            Entity entity = EntityFactory.createEntity(entityData.position.x, entityData.position.y, entityData.name, world);
+            Entity entity = EntityFactory.createEntity(entityData.position.x, entityData.position.y, entityData.name, LevelController.getInstance().getWorld(),new Vector2(0,0));
             if (entity!= null){
                 entities.add(entity);
             }
         }
     }
 
-    public void update(){
-        for (Systems system: systems) {
-            system.update();
-        }
+    public World getWorld() {
+        return world;
     }
 
-    public void addSystem(Systems system){
-        systems.add(system);
-    }
 
-    private void initializeSystems(){
-
-        MovementSystem movementSystem = new MovementSystem();
-        PhysicsSystem physicsSystem = new PhysicsSystem(-10);
-        InputSystem inputSystem = new InputSystem();
-
-        world = physicsSystem.getWorld();
-
-        systems.add(movementSystem);
-        systems.add(physicsSystem);
-        systems.add(inputSystem);
-    }
-
-    private void loadSystemsWithEntities(){
-        for (Systems system: systems) {
-            for (Entity entity:entities){
-                system.addEntity(entity);
-            }
-        }
-    }
-
-    private void addEntityToSystem(Entity entity){
-        for (Systems system: systems) {
-                system.addEntity(entity);
-        }
-    }
 
     /**
      * Removes all entities from the level.
@@ -115,7 +80,6 @@ public class GameLevel {
      * @return {@code true} if the entity was successfully added.
      */
     public boolean addEntity(Entity entity) {
-        addEntityToSystem(entity);
         return entities.add(entity);
     }
 
@@ -132,7 +96,7 @@ public class GameLevel {
     public static class LevelData {
         public MetaData metaData;
         public ArrayList<EntityData> entitiesData;
-    
+
         /**
          * Represents entity data used for JSON deserialization.
          */
@@ -158,5 +122,24 @@ public class GameLevel {
             public boolean completed;
             public boolean multiplayer;
         }
+    }
+
+
+    public void addEntities(ArrayList<Entity> spawningEntities) {
+        entities.addAll(spawningEntities);
+    }
+
+    public void removeEntities(ArrayList<Entity> removalEntities) {
+
+        for (Entity e : removalEntities){
+
+
+            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+            if (body != null) {
+                world.destroyBody(body);
+            }
+        }
+
+        entities.removeAll(removalEntities);
     }
 }

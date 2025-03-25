@@ -1,25 +1,28 @@
 package io.github.RangoUnchained.Controllers;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
+
+import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
+import io.github.RangoUnchained.Model.Systems.RemovalQueue;
+import io.github.RangoUnchained.Model.Systems.SpawnQueue;
+import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameLevel;
 
 public class LevelController {
 
     private static LevelController levelController;
-    
+
     private GameLevel level;
     private SystemManager systemManager;
+    private SpawnQueue spawnQueue;
+    private RemovalQueue removalQueue;
     private LevelController () {
     }
-
-    /* Hvordan skal vi legge til height og width. (Og sette det til spirte og body)
-    * Dependencies:
-    * - Simple burde bli kalt av Physics
-    * - Simple : Height og width (Hvor skal det bli implementert)
-    *
-    * - Entity : Avhengig
-    * */
-
 
     public static LevelController getInstance(){
         if (levelController == null) {
@@ -33,36 +36,39 @@ public class LevelController {
         level.clear();
     }
 
-    public void handleSpawnRequests() {
-        for (PhysicsSystem.SpawnRequest request : physicsSystem.getSpawnRequests()) {
-            BallEntity newBall = EntityFactory.createBallEntity(
-                request.x, request.y, request.radius, request.spritePath, physicsSystem.getWorld(),
-            request.timesPopped, request.velocity);
+    /** should be handled differently */
 
-            physicsSystem.addEntity(newBall);
-        }
-        physicsSystem.clearSpawnRequests();
+    /** adds entity to level */
+    public void addEntity(Entity e) {
+        level.addEntity(e);
+    }
+
+    public void handleRemovalRequests(Entity entity) {
+       removalQueue.addRemovalRequest(entity);
+    }
+
+    public void handleSpawnRequests(float xPos ,float yPos,int width, int height, String name, Vector2 velocity, int amount) {
+
+            spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld(), amount);
 
     }
 
-    public void removeEntities() {
-        for (Entity e : physicsSystem.getRemovalQueue()) {
-            entities.remove(e);
 
-            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
-            if (body != null) {
-                world.destroyBody(body);
-            }
-        }
-        physicsSystem.clearRemovalQueue();
+    public void excecuteSpawnQueue() {
+        level.addEntities(spawnQueue.retrieveSpawningEntities());
+    }
+
+    public void excecuteRemovelQueue() {
+        level.removeEntities(removalQueue.getRemovalEntities(getWorld()));
     }
 
     // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems(int levelNumber) {
+        systemManager = new SystemManager();
         level = new GameLevel(levelNumber);
-        SystemManager systemManager = new SystemManager();
-        System.out.println("Initialiserte riktig");
+        spawnQueue = new SpawnQueue();
+        removalQueue = new RemovalQueue();
     }
 
     /**updates all entities with the appropiate systems */
@@ -70,11 +76,19 @@ public class LevelController {
         systemManager.update(level.getEntities());
     }
 
-    public World getWorld() {
-        return world;
+    public void step(float f, int i, int j) {
+        systemManager.getWorld().step(f, i, j);
     }
 
-    public LifeTimeSystem getLifeTimeSystem() {
-        return lifeTimeSystem;
+    public ArrayList<Entity> getEntities(){
+        return level.getEntities();
+    }
+
+    public World getWorld() {
+        return getSystem(PhysicsSystem.class).getWorld();
+    }
+
+    public <T extends System> T getSystem(Class<T> systemClass) {
+        return systemManager.getSystem(systemClass);
     }
 }

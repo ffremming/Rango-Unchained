@@ -3,67 +3,50 @@ package io.github.RangoUnchained.Model.Systems;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
-import io.github.RangoUnchained.Model.Factories.EntityFactory;
 
-public class PhysicsSystem implements ContactListener, Systems {
+public class PhysicsSystem implements ContactListener, System {
 
-    private List<Entity> entities = new ArrayList<>();
     private World world;
-    private List<SpawnRequest> spawnRequests = new ArrayList<>();
-    private List<Entity> removalQueue = new ArrayList<>();
 
-    public PhysicsSystem(World world) {
-        this.world = world;
+    public PhysicsSystem() {
+        world = new World(new Vector2(0, -10), true);
         world.setContactListener(this);
+
+        filter
+        .require(BodyComponent.class)
+        .require(SpriteComponent.class);
     }
 
-    public void updatePhysics() {
-        for (Entity e : entities) {
-            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
-            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+    @Override
+        public void updateEntity(Entity entity) {
+            Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
+            Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
 
             sprite.setPosition(
                 body.getPosition().x - sprite.getWidth()/2,
                 body.getPosition().y - sprite.getHeight()/2
             );
         }
-    }
-
-    public void addEntity(Entity entity) {
-        entities.add(entity);
-    }
-
-    public void removeEntity(Entity entity) {
-        entities.remove(entity);
-    }
-
-    public void removeEntity(int index) {
-        entities.remove(index);
-    }
 
 
     private void handleBallPlayerCollision(BallEntity ball, PlayerEntity player) {
-        System.out.println("BallPlayerCollision");
 
         SpriteComponent spriteComponent = (SpriteComponent) ball.getComponent(SpriteComponent.class);
         StatComponent statComponent = (StatComponent) ball.getComponent(StatComponent.class);
@@ -75,57 +58,16 @@ public class PhysicsSystem implements ContactListener, Systems {
         Vector2 oldVelocity = bodyComponent.getBody().getLinearVelocity();
         Vector2 newVelocity = new Vector2(-(oldVelocity.x), -(oldVelocity.y));
 
-        removalQueue.add(ball);
+        LevelController.getInstance().handleRemovalRequests(ball);
 
         if (timesPopped == 0) {
-            spawnRequests.add(new SpawnRequest(xPos - 5f, yPos, 5f,
-                "Balls/Medium ball.png", 1, newVelocity));
-            spawnRequests.add(new SpawnRequest(xPos + 5f, yPos, 5f,
-                "Balls/Medium ball.png", 1, newVelocity));
+            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 10, 10,
+                "BallMedium", newVelocity, 2);
+
         } else if (timesPopped == 1) {
-            spawnRequests.add(new SpawnRequest(xPos - 2.5f, yPos, 2.5f,
-                "Balls/Small ball.png", 2, newVelocity));
-            spawnRequests.add(new SpawnRequest(xPos + 2.5f, yPos, 2.5f,
-                "Balls/Small ball.png", 2, newVelocity));
+            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 5, 5,
+                "BallSmall", newVelocity, 2);
         }
-    }
-
-
-    public static class SpawnRequest {
-        public float x, y, radius;
-        public String spritePath;
-        public int timesPopped;
-        public Vector2 velocity;
-        public SpawnRequest(float x, float y, float radius, String spritePath, int timesPopped,
-                            Vector2 velocity) {
-            this.x = x;
-            this.y = y;
-            this.radius = radius;
-            this.spritePath = spritePath;
-            this.timesPopped = timesPopped;
-            this.velocity = velocity;
-        }
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-
-    public List<SpawnRequest> getSpawnRequests() {
-        return spawnRequests;
-    }
-
-    public List<Entity> getRemovalQueue() {
-        return removalQueue;
-    }
-
-    public void clearRemovalQueue() {
-        removalQueue.clear();
-    }
-
-    public void clearSpawnRequests() {
-        spawnRequests.clear();
     }
 
 
@@ -167,9 +109,7 @@ public class PhysicsSystem implements ContactListener, Systems {
 
     }
 
-    @Override
-    public void clearSystems() {
-        entities.clear();
-        world.dispose();
+    public World getWorld() {
+        return world;
     }
 }

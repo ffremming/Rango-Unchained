@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Model.Components;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class BodyComponent implements Component {
 

@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.Model.Systems;
+package io.github.RangoUnchained.Model.level;
 
 import java.util.ArrayList;
 

@@ -5,6 +5,8 @@ public class InputComponent implements Component {
     private boolean left;
     private boolean right;
     private boolean shoot;
+    private int inputLock = 0;
+
 
     public InputComponent() {
     }
@@ -29,5 +31,20 @@ public class InputComponent implements Component {
 
     public void setShoot(boolean shoot) {
         this.shoot = shoot;
+    }
+
+
+    public void setTimer(int duration){
+        inputLock = duration;
+    }
+
+    public boolean isLocked(){
+        return inputLock>0;
+    }
+
+    public void decrementInputLock(){
+        if (inputLock>0){
+            inputLock--;
+        }
     }
 }

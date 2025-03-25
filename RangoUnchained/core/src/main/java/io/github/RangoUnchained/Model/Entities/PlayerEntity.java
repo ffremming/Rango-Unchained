@@ -7,6 +7,7 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.Components.TransformationComponent;
 
 public class PlayerEntity implements Entity{
 
@@ -16,6 +17,7 @@ public class PlayerEntity implements Entity{
         addComponent(bodyComponent);
         addComponent(spriteComponent);
         addComponent(inputComponent);
+        //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));
     }
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {

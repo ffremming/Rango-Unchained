@@ -12,6 +12,16 @@ public class SpriteComponent implements Component {
     public SpriteComponent(String path) {
         texture = new Texture(Gdx.files.internal(path));
         sprite = new Sprite(texture);
+        sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        
+    }
+
+    public SpriteComponent(String path, float width, float height) {
+        texture = new Texture(Gdx.files.internal(path));
+        sprite = new Sprite(texture);
+        sprite.setSize(width, height);
+        sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+
     }
 
     public Sprite getSprite() {

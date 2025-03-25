@@ -73,7 +73,7 @@ public class GamePlayView extends BaseScreen {
         TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game,
             () -> game.setView(new GameOverView()));
         TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
-            () -> controller.getSystem(InputSystem.class).handleShoot());
+            () -> controller.handleShoot());
 
         createTable(shootButton).bottom().right().pad(20);
         createTable(gameOverButton).top().padTop(50);

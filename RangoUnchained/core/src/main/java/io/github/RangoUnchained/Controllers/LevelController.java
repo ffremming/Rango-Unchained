@@ -6,9 +6,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
-import io.github.RangoUnchained.Model.Systems.RemovalQueue;
-import io.github.RangoUnchained.Model.Systems.SpawnQueue;
+import io.github.RangoUnchained.Model.level.RemovalQueue;
+import io.github.RangoUnchained.Model.level.SpawnQueue;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameLevel;
@@ -90,5 +91,10 @@ public class LevelController {
 
     public <T extends System> T getSystem(Class<T> systemClass) {
         return systemManager.getSystem(systemClass);
+    }
+
+    /**methdo for shooting, called from view */
+    public void handleShoot(){
+        getSystem(InputSystem.class).handleShoot(level.getEntities());
     }
 }

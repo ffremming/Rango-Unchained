@@ -9,6 +9,7 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class MovementSystem implements System {
 
@@ -33,20 +34,19 @@ public class MovementSystem implements System {
 
         if (inputComponent.isShoot()) {
             bodyComponent.getBody().setLinearVelocity(0, 0);
-            spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+            //spriteComponent.getSprite().setPosition(Constants.metersToPixels(body.getPosition().x), Constants.metersToPixels(body.getPosition().y));
             java.lang.System.out.println();
-            LevelController.getInstance().handleSpawnRequests(body.getPosition().x+7, body.getPosition().y + 160,0,0,"Projectile",new Vector2(0,0),1);
 
             inputComponent.setShoot(false);
         } else if (inputComponent.isLeft()) {
             bodyComponent.getBody().setLinearVelocity(-500, 0);
-            spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+            //spriteComponent.getSprite().setPosition(Constants.metersToPixels(body.getPosition().x), Constants.metersToPixels(body.getPosition().y));
         } else if (inputComponent.isRight()){
             bodyComponent.getBody().setLinearVelocity(500, 0);
-            spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+            //spriteComponent.getSprite().setPosition(Constants.metersToPixels(body.getPosition().x), Constants.metersToPixels(body.getPosition().y));
         } else {
             bodyComponent.getBody().setLinearVelocity(0, 0);
-            spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
+            //spriteComponent.getSprite().setPosition(Constants.metersToPixels(body.getPosition().x), Constants.metersToPixels(body.getPosition().y));
         }
     }
 

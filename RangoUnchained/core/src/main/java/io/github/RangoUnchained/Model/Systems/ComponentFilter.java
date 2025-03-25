@@ -10,14 +10,19 @@ public class ComponentFilter {
 
     public ComponentFilter require(Class<? extends Component> componentClass) {
         requiredComponents.add(componentClass);
-        return this; // Allow chaining
+        return this;
+    }
+
+    public ComponentFilter ignore(Class<? extends Component> componentClass) {
+        requiredComponents.add(componentClass);
+        return this;
     }
 
     public boolean matches(Entity entity) {
         // Check if the entity has all required components
         for (Class<? extends Component> required : requiredComponents) {
             if (entity.getComponent(required) == null) {
-                return false; // Missing a required component
+                return false; 
             }
         }
         return true;

@@ -15,15 +15,19 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Components.TransformationComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class EntityFactory {
 
     public static final float PIXELS_TO_METERS = 1 / 64f; // Define this in a constants file
+    public static final float METERS_TO_PIXELS = 64f / 1; // Define this in a constants file
+
 
     private EntityFactory() {}
 
@@ -41,7 +45,7 @@ public class EntityFactory {
             return createObstacleEntity(x, y, 64, 64, "Obstacles/Obstacle.png", BodyDef.BodyType.StaticBody, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "tongue/3.png", world);
+            return createProjectileEntity(x, y, "tongue/3Cropped.png", world);
         }
         // More entity types can be added here
         return null;
@@ -49,8 +53,12 @@ public class EntityFactory {
 
 // Player Entity
 public static PlayerEntity createPlayerEntity(float x, float y, World world) {
-    BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(32, 32));
     SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
+
+    float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
+    float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+
+    BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(width, height),true);
     InputComponent input = new InputComponent();
 
     return new PlayerEntity(body, sprite, input);
@@ -64,9 +72,12 @@ public static PlayerEntity createPlayerEntity(float x, float y, World world) {
      public static BallEntity createBallEntity(float x, float y, String name, World world) {
         float radius = name.endsWith("Big") ? BIGBALLRADIUS : name.endsWith("Medium") ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
         String path = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
-
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(radius));
+        
         SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png");
+
+        float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
+        float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2),true);
         StatComponent stats = new StatComponent();
 
         return new BallEntity(body, stats, sprite);
@@ -74,24 +85,36 @@ public static PlayerEntity createPlayerEntity(float x, float y, World world) {
 
     // 🔹 Obstacle Entity
     public static ObstacleEntity createObstacleEntity(float x, float y, float width, float height, String spritePath, BodyDef.BodyType bodyType, World world) {
-        BodyComponent body = createBody(world, x, y, bodyType, createBoxFixture(width, height));
+        BodyComponent body = createBody(world, x, y, bodyType, createBoxFixture(width, height),true);
         SpriteComponent sprite = new SpriteComponent(spritePath);
         return new ObstacleEntity(body, sprite);
     }
 
     // 🔹 Projectile Entity
     public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath, World world) {
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(10, 10));
-        SpriteComponent sprite = new SpriteComponent(spritePath);
-        LifeTimeComponent lifeTime = new LifeTimeComponent(40); // 1.5 seconds
-        return new ProjectileEntity(body, sprite, lifeTime);
+        SpriteComponent sprite = new SpriteComponent(spritePath);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
+
+        float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
+        float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height),true);
+       
+        LifeTimeComponent lifeTime = new LifeTimeComponent(120); // 1.5 seconds
+        TransformationComponent transComp = new TransformationComponent(10, 1, 1, 60
+        ,TransformationComponent.RECTANGLE,
+        TransformationComponent.UP
+        ,true);
+        transComp.setAutoReverse(true);
+        transComp.setAlwaysReverse(false);
+        return new ProjectileEntity(body, sprite, lifeTime,transComp);
     }
 
     // Universal Body Creation Method
-    private static BodyComponent createBody(World world, float x, float y, BodyDef.BodyType type, FixtureDef fixtureDef) {
+    private static BodyComponent createBody(World world, float x, float y, BodyDef.BodyType type, FixtureDef fixtureDef,boolean fixedRotation) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = type;
         bodyDef.position.set(x, y);
+        bodyDef.fixedRotation = fixedRotation;
 
         BodyComponent bodyComponent = new BodyComponent(bodyDef);
         Body body = world.createBody(bodyDef);

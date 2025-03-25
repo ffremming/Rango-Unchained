@@ -47,6 +47,7 @@ public class SystemManager {
     /**initializes all systems and adds them to system list */
     private void initializeSystems(){
 
+        TransformationSystem transformationSystem = new TransformationSystem();
         MovementSystem movementSystem = new MovementSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem();
         InputSystem inputSystem = new InputSystem();
@@ -58,6 +59,7 @@ public class SystemManager {
         systems.add(physicsSystem);
         systems.add(inputSystem);
         systems.add(lifeTimeSystem);
+        systems.add(transformationSystem);
     }
 
     /** method for getting world

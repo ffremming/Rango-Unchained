@@ -29,24 +29,38 @@ public class InputSystem implements System {
 
     @Override
     public void updateEntity(Entity entity) {
-       
+        
         InputComponent p1_input = (InputComponent) entity.getComponent(InputComponent.class);
+        if (!p1_input.isLocked()){
+            handleInput(p1_input, entity);
+        } else {
+            p1_input.decrementInputLock();
+        }
+    }
 
-        p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
-        p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
-        p1_input.setShoot(Gdx.input.isKeyPressed(Input.Keys.SPACE));
+    private synchronized void handleInput(InputComponent p1_input, Entity entity) {
 
+        p1_input.setShoot(false);
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !p1_input.isShoot()){
+            p1_input.setShoot(true);
+            handleShoot(entity);
+            p1_input.setLeft(false);
+            p1_input.setRight(false);
+            p1_input.setTimer(100);
+
+        } else {
+            p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
+            p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
+        }
+        
         if (Gdx.input.isTouched()){
             p1_input.setLeft(touchpad.getKnobPercentX() < 0);
             p1_input.setRight(0.5 < touchpad.getKnobPercentX());
         }
-        if (p1_input.isShoot()){
-            handleShoot(entity);
-        }
     }
 
-    public void handleShoot(ArrayList<Entity> entities) {
-
+    public synchronized void handleShoot(ArrayList<Entity> entities) {
+        
         for(Entity entity : entities){
             if(filter.matches(entity)){
                 handleShoot(entity);
@@ -55,11 +69,15 @@ public class InputSystem implements System {
     }
 
     private void handleShoot(Entity entity){
-        Gdx.app.log("input","shoot"+ entity.getClass().getName());
+        InputComponent p1_input = (InputComponent) entity.getComponent(InputComponent.class);
+        if (!p1_input.isLocked()){
 
-        if(filter.matches(entity)){
-            Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
-            LevelController.getInstance().handleSpawnRequests(body.getPosition().x+7, body.getPosition().y + 160,0,0,"Projectile",new Vector2(0,0),1);
+            filter.require(BodyComponent.class);
+            if(filter.matches(entity)){
+                Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
+                LevelController.getInstance().handleSpawnRequests(body.getPosition().x, body.getPosition().y +42,0,0,"Projectile",new Vector2(0,0),1);
+            }
+            filter.ignore(BodyComponent.class);
         }
     }
 

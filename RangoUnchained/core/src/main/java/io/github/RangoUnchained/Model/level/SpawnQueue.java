@@ -11,6 +11,8 @@ import io.github.RangoUnchained.Model.Factories.EntityFactory;
 
 public class SpawnQueue {
     ArrayList<Entity> spawningEntities = new ArrayList<Entity>();
+
+    
     public ArrayList<Entity> retrieveSpawningEntities() {
         ArrayList<Entity> temp = new ArrayList<Entity>(spawningEntities);
         spawningEntities.clear();

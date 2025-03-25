@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -34,14 +35,17 @@ public class PhysicsSystem implements ContactListener, System {
 
     @Override
         public void updateEntity(Entity entity) {
-
             Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
             Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
 
-            sprite.setPosition(
-                body.getPosition().x - sprite.getWidth()/2,
-                body.getPosition().y - sprite.getHeight()/2
-            );
+            // Convert physics position to screen position
+            float screenX =((float)1.9)*(body.getPosition().x) - (sprite.getWidth()/2);
+            float screenY = ((float)1.9)*(body.getPosition().y) - (sprite.getHeight());
+
+            Gdx.app.log("physicsUpdate",screenX+ "," + screenY +","+body.getPosition().x+","+ body.getPosition().y);
+
+            sprite.setPosition(screenX, screenY);
+
         }
 
 

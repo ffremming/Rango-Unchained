@@ -8,7 +8,7 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 
 
 public class SystemManager {
-    
+
     /**all systems */
     private ArrayList<System> systems = new ArrayList<>();
     private World world;
@@ -16,9 +16,10 @@ public class SystemManager {
     public SystemManager() {
         initializeSystems();
     }
+
     /**
      * Returns a system of the specified class type.
-     * 
+     *
      * @param <T> the type of the system
      * @param systemClass the class of the system to return
      * @return the system of the specified class type, or null if not found
@@ -34,17 +35,13 @@ public class SystemManager {
 
     /** method for updating all systems
      * systems should filter out entities that they can handle in their update method
-     * @param entities list of all entities 
-     * 
+     * @param entities list of all entities
+     *
      */
     public void update(ArrayList<Entity> entities) {
         for (System system : systems) {
             system.update(entities);
         }
-    }
-
-    public void addSystem(System system){
-        systems.add(system);
     }
 
     /**initializes all systems and adds them to system list */
@@ -53,12 +50,14 @@ public class SystemManager {
         MovementSystem movementSystem = new MovementSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem();
         InputSystem inputSystem = new InputSystem();
+        LifeTimeSystem lifeTimeSystem = new LifeTimeSystem();
 
         world = physicsSystem.getWorld();
 
         systems.add(movementSystem);
         systems.add(physicsSystem);
         systems.add(inputSystem);
+        systems.add(lifeTimeSystem);
     }
 
     /** method for getting world

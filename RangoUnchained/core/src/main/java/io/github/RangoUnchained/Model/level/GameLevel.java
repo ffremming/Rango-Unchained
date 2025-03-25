@@ -20,7 +20,6 @@ import io.github.RangoUnchained.Model.Factories.EntityFactory;
  */
 public class GameLevel {
     private ArrayList<Entity> entities = new ArrayList<>();
-    private World world;
     private LevelData.MetaData metaData;
     private ArrayList<LevelData.EntityData> entitiesData;
     public ScoreManager scoreManager = new ScoreManager();
@@ -59,9 +58,6 @@ public class GameLevel {
         }
     }
 
-    public World getWorld() {
-        return world;
-    }
 
 
 
@@ -133,10 +129,9 @@ public class GameLevel {
 
         for (Entity e : removalEntities){
 
-
             Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
             if (body != null) {
-                world.destroyBody(body);
+                LevelController.getInstance().getWorld().destroyBody(body);
             }
         }
 

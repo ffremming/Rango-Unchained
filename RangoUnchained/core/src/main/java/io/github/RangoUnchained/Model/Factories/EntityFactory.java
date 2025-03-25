@@ -3,6 +3,7 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,8 +12,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.GdxNativesLoader;
-
 
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
@@ -29,14 +28,14 @@ public class EntityFactory {
     private EntityFactory() {}
 
     public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity) {
-        GdxNativesLoader.load();
+
+        Gdx.app.log("entity factory", "Name: " + name);
 
         if (name.equals("Player")) {
             return createPlayerEntity(x, y, world);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world);
-            //return createBallEntity(x, y, name);
 
         } else if (name.startsWith("Obstacle")) {
             return createObstacleEntity(x, y, 64, 64, "Obstacles/Obstacle.png", BodyDef.BodyType.StaticBody, world);
@@ -47,7 +46,6 @@ public class EntityFactory {
         // More entity types can be added here
         return null;
     }
-
 
 // Player Entity
 public static PlayerEntity createPlayerEntity(float x, float y, World world) {

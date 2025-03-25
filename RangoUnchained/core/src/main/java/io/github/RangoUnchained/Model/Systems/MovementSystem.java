@@ -12,6 +12,8 @@ import io.github.RangoUnchained.Model.Factories.EntityFactory;
 
 public class MovementSystem implements System {
 
+    private ComponentFilter filter = new ComponentFilter();
+
     public MovementSystem() {
         filter
         .require(BodyComponent.class)
@@ -32,7 +34,7 @@ public class MovementSystem implements System {
         if (inputComponent.isShoot()) {
             bodyComponent.getBody().setLinearVelocity(0, 0);
             spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
-
+            java.lang.System.out.println();
             LevelController.getInstance().handleSpawnRequests(body.getPosition().x+7, body.getPosition().y + 160,0,0,"Projectile",new Vector2(0,0),1);
 
             inputComponent.setShoot(false);
@@ -46,5 +48,10 @@ public class MovementSystem implements System {
             bodyComponent.getBody().setLinearVelocity(0, 0);
             spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
         }
+    }
+
+    @Override
+    public boolean filter(Entity entity) {
+        return (filter.matches(entity));
     }
 }

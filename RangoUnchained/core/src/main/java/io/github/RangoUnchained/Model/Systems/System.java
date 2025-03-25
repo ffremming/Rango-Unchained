@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
 public interface System {
-    public static final ComponentFilter filter = new ComponentFilter();
-
     /**
      * Updates all entities that match the filter of the system
      * @param entities list of all entities
      */
     public default void update(ArrayList<Entity> entities){
+
         for(Entity entity : entities){
-            if(filter.matches(entity)){
+            if (filter(entity)){
                 updateEntity(entity);
             }
         }
@@ -25,4 +24,6 @@ public interface System {
      * @param entity entity to be updated
      */
     abstract void updateEntity(Entity entity);
+
+    abstract boolean filter(Entity entity);
 }

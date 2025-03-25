@@ -10,9 +10,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
@@ -24,6 +21,7 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 public class PhysicsSystem implements ContactListener, System {
 
     private World world;
+    private ComponentFilter filter = new ComponentFilter();
 
     public PhysicsSystem() {
         world = new World(new Vector2(0, -10), true);
@@ -36,6 +34,7 @@ public class PhysicsSystem implements ContactListener, System {
 
     @Override
         public void updateEntity(Entity entity) {
+
             Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
             Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
 
@@ -111,5 +110,10 @@ public class PhysicsSystem implements ContactListener, System {
 
     public World getWorld() {
         return world;
+    }
+
+    @Override
+    public boolean filter(Entity entity) {
+        return (filter.matches(entity));
     }
 }

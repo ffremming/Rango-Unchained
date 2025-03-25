@@ -10,6 +10,8 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 
 public class AnimationSystem implements System{
     
+    private ComponentFilter filter = new ComponentFilter();
+
     public AnimationSystem() {
         filter
         .require(InputComponent.class);
@@ -40,5 +42,10 @@ public class AnimationSystem implements System{
                sprite.setTexture(new Texture(revertSpritePath));
             }
         }, delay);
+    }
+
+    @Override
+    public boolean filter(Entity entity) {
+        return (filter.matches(entity));
     }
 }

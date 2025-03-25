@@ -6,7 +6,7 @@ import io.github.RangoUnchained.Model.Components.Component;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
 public class ComponentFilter {
-    private final Set<Class<? extends Component>> requiredComponents = new HashSet<>();
+    private Set<Class<? extends Component>> requiredComponents = new HashSet<>();
 
     public ComponentFilter require(Class<? extends Component> componentClass) {
         requiredComponents.add(componentClass);

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.RemovalQueue;
 import io.github.RangoUnchained.Model.Systems.SpawnQueue;
 import io.github.RangoUnchained.Model.Systems.System;
@@ -15,7 +16,7 @@ import io.github.RangoUnchained.Model.level.GameLevel;
 public class LevelController {
 
     private static LevelController levelController;
-    
+
     private GameLevel level;
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
@@ -47,11 +48,11 @@ public class LevelController {
     }
 
     public void handleSpawnRequests(float xPos ,float yPos,int width, int height, String name, Vector2 velocity, int amount) {
-        
+
             spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld(), amount);
-        
+
     }
-    
+
 
     public void excecuteSpawnQueue() {
         level.addEntities(spawnQueue.retrieveSpawningEntities());
@@ -64,8 +65,8 @@ public class LevelController {
     // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems(int levelNumber) {
-        level = new GameLevel(levelNumber);
         systemManager = new SystemManager();
+        level = new GameLevel(levelNumber);
         spawnQueue = new SpawnQueue();
         removalQueue = new RemovalQueue();
     }
@@ -84,7 +85,7 @@ public class LevelController {
     }
 
     public World getWorld() {
-        return level.getWorld();
+        return getSystem(PhysicsSystem.class).getWorld();
     }
 
     public <T extends System> T getSystem(Class<T> systemClass) {

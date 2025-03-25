@@ -24,7 +24,6 @@ public class GamePlayView extends BaseScreen {
     private Touchpad touchpad;
     private LevelController controller;
     private Box2DDebugRenderer box2DDebugRenderer;
-    private Box2DDebugRenderer debugRenderer;
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
@@ -47,7 +46,7 @@ public class GamePlayView extends BaseScreen {
 
         // Update physics world first
         controller.step(1/60f, 6, 2);
-        
+
         controller.excecuteSpawnQueue();
         controller.excecuteRemovelQueue();
 
@@ -64,7 +63,7 @@ public class GamePlayView extends BaseScreen {
         }
 
         box2DDebugRenderer.render(controller.getWorld(), camera.combined);
-        debugRenderer.render(controller.getWorld(), camera.combined);
+
 
         batch.end();
 

@@ -6,7 +6,7 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 
 public interface System {
     public static final ComponentFilter filter = new ComponentFilter();
-    
+
     /**
      * Updates all entities that match the filter of the system
      * @param entities list of all entities
@@ -24,5 +24,5 @@ public interface System {
      * all entities that matches filter will be updated using this method
      * @param entity entity to be updated
      */
-    void updateEntity(Entity entity);
+    abstract void updateEntity(Entity entity);
 }

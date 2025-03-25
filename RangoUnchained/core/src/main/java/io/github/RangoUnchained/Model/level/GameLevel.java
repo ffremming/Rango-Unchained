@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
+import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
@@ -51,7 +52,7 @@ public class GameLevel {
             Gdx.app.log("JSON_testing", "Name: " + entityData.name);
             Gdx.app.log("JSON_testing", "Position: (" + entityData.position.x + ", " + entityData.position.y + ")");
 
-            Entity entity = EntityFactory.createEntity(entityData.position.x, entityData.position.y, entityData.name, world, new Vector2(0, 0));
+            Entity entity = EntityFactory.createEntity(entityData.position.x, entityData.position.y, entityData.name, LevelController.getInstance().getWorld(),new Vector2(0,0));
             if (entity!= null){
                 entities.add(entity);
             }
@@ -62,7 +63,7 @@ public class GameLevel {
         return world;
     }
 
-    
+
 
     /**
      * Removes all entities from the level.
@@ -95,7 +96,7 @@ public class GameLevel {
     public static class LevelData {
         public MetaData metaData;
         public ArrayList<EntityData> entitiesData;
-    
+
         /**
          * Represents entity data used for JSON deserialization.
          */

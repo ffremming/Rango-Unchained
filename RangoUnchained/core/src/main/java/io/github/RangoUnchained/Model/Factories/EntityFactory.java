@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
@@ -28,6 +29,8 @@ public class EntityFactory {
     private EntityFactory() {}
 
     public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity) {
+        GdxNativesLoader.load();
+
         if (name.equals("Player")) {
             return createPlayerEntity(x, y, world);
 
@@ -39,14 +42,11 @@ public class EntityFactory {
             return createObstacleEntity(x, y, 64, 64, "Obstacles/Obstacle.png", BodyDef.BodyType.StaticBody, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "Projectiles/Projectile.png", world);
+            return createProjectileEntity(x, y, "tongue/3.png", world);
         }
         // More entity types can be added here
         return null;
     }
-
- // Player Entity
-
 
 
 // Player Entity
@@ -58,9 +58,6 @@ public static PlayerEntity createPlayerEntity(float x, float y, World world) {
     return new PlayerEntity(body, sprite, input);
 
 }
-
-
-
     private static final int BIGBALLRADIUS = 20;
     private static final int MEDIUMBALLRADIUS = 15;
     private static final int SMALLBALLRADIUS = 10;
@@ -71,7 +68,7 @@ public static PlayerEntity createPlayerEntity(float x, float y, World world) {
         String path = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(radius));
-        SpriteComponent sprite = new SpriteComponent(path);
+        SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png");
         StatComponent stats = new StatComponent();
 
         return new BallEntity(body, stats, sprite);

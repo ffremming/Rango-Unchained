@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import io.github.RangoUnchained.Controllers.LevelController;
@@ -17,7 +18,7 @@ public class MovementSystem implements System {
         .require(InputComponent.class)
         .require(SpriteComponent.class);
     }
-    
+
 
     // Updates every playable entity's position based on input and velocity
     // Method called from controllers for updates
@@ -31,8 +32,9 @@ public class MovementSystem implements System {
         if (inputComponent.isShoot()) {
             bodyComponent.getBody().setLinearVelocity(0, 0);
             spriteComponent.getSprite().setPosition(body.getPosition().x, body.getPosition().y);
-            LevelController.getInstance().getEntities().add(EntityFactory.createProjectileEntity(body.getPosition().x+7, body.getPosition().y + 160
-            , "tongue/3.png",LevelController.getInstance().getWorld()));
+
+            LevelController.getInstance().handleSpawnRequests(body.getPosition().x+7, body.getPosition().y + 160,0,0,"Projectile",new Vector2(0,0),1);
+
             inputComponent.setShoot(false);
         } else if (inputComponent.isLeft()) {
             bodyComponent.getBody().setLinearVelocity(-500, 0);

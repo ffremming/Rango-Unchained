@@ -32,7 +32,7 @@ public class MovementSystem implements System {
         Body body = bodyComponent.getBody();
         
         // Define your desired speed (in meters per second)
-        float moveSpeed = 500f;
+        float moveSpeed = 5;
         
         // Get the current velocity (we'll preserve the y-component, for example)
         Vector2 currentVelocity = body.getLinearVelocity();

@@ -33,7 +33,6 @@ public class InputComponent implements Component {
         this.shoot = shoot;
     }
 
-
     public void setTimer(int duration){
         inputLock = duration;
     }

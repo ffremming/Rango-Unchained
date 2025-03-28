@@ -61,14 +61,13 @@ public class EntityFactory {
     public static PlayerEntity createPlayerEntity(float x, float y, World world) {
         SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
 
-        float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
-        float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+        float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
+        float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height),true);
         InputComponent input = new InputComponent();
 
         return new PlayerEntity(body, sprite, input);
-
     }
 
     private static final int BIGBALLRADIUS = 20;
@@ -82,8 +81,8 @@ public class EntityFactory {
         
         SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png",64,64);
 
-        float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
-        float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+        float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
+        float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2),true);
         StatComponent stats = new StatComponent();
 
@@ -111,19 +110,19 @@ public class EntityFactory {
         float pxl = 1.9f;
 
         if (name.endsWith("Left") || name.endsWith("Right")){
-            width = 32;
-            height = 500;
+            width = 32/Constants.PPM;
+            height = 1000/Constants.PPM;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
-            sprite = new SpriteComponent("Background/red.png",width*pxl,height *pxl);
+            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
        
 
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
-            width = 733;
-            height = 64;
+            width = 733/Constants.PPM*2;
+            height = 64/Constants.PPM;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
-            sprite = new SpriteComponent("Background/red.png",width*pxl,height*pxl);
+            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
         }
 
         
@@ -132,18 +131,20 @@ public class EntityFactory {
 
     // 🔹 Projectile Entity
     public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath, World world) {
-        SpriteComponent sprite = new SpriteComponent(spritePath);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
+        SpriteComponent sprite = new SpriteComponent(spritePath,4*4,32*3);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
 
-        float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
-        float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+        float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
+        float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height),true);
        
-        LifeTimeComponent lifeTime = new LifeTimeComponent(120); // 1.5 seconds
-        TransformationComponent transComp = new TransformationComponent(10, 1, 1, 60
+        LifeTimeComponent lifeTime = new LifeTimeComponent(50); // 1.5 seconds
+        TransformationComponent transComp = new TransformationComponent(5, 1, 1, 20
         ,TransformationComponent.RECTANGLE,
         TransformationComponent.UP
-        ,true);
+        ,true,
+        15
+        );
         transComp.setAutoReverse(true);
         transComp.setAlwaysReverse(false);
         return new ProjectileEntity(body, sprite, lifeTime,transComp);
@@ -153,7 +154,7 @@ public class EntityFactory {
     private static BodyComponent createBody(World world, float x, float y, BodyDef.BodyType type, FixtureDef fixtureDef,boolean fixedRotation) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = type;
-        bodyDef.position.set(x, y);
+        bodyDef.position.set(x/Constants.PPM, y/Constants.PPM);
         bodyDef.fixedRotation = fixedRotation;
 
         BodyComponent bodyComponent = new BodyComponent(bodyDef);

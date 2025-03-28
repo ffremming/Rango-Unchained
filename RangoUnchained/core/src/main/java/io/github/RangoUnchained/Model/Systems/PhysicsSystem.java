@@ -18,6 +18,7 @@ import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class PhysicsSystem implements ContactListener, System {
 
@@ -25,7 +26,7 @@ public class PhysicsSystem implements ContactListener, System {
     private ComponentFilter filter = new ComponentFilter();
 
     public PhysicsSystem() {
-        world = new World(new Vector2(0, -100), true);
+        world = new World(new Vector2(0, -10), true);
         world.setContactListener(this);
 
         filter
@@ -34,7 +35,6 @@ public class PhysicsSystem implements ContactListener, System {
     }
 
         // Define a conversion factor (pixels per meter) – adjust as needed
-    private static final float PPM = 1.9f;
 
     @Override
     public void updateEntity(Entity entity) {
@@ -42,9 +42,12 @@ public class PhysicsSystem implements ContactListener, System {
         Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
 
         // Convert physics (meters) position to screen (pixels) position
-        float screenX = body.getPosition().x * PPM - sprite.getWidth() / 2f;
-        float screenY = body.getPosition().y * PPM - sprite.getHeight() / 2f;
+        float screenX = ((body.getPosition().x * Constants.PPM) - sprite.getWidth() / 2f);
+        float screenY = ((body.getPosition().y * Constants.PPM) - sprite.getHeight() / 2f);
         
+        Gdx.app.log("spritePos",screenX+","+screenY);
+        Gdx.app.log("pos", entity.getClass().getName()+body.getPosition().y+","+body.getPosition().x);
+
         sprite.setPosition(screenX, screenY);
     }
 

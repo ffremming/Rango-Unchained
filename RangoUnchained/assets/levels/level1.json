@@ -1,7 +1,7 @@
 {
   "metaData": {
     "number": 1,
-    "theme": "Forest",
+    "theme": "Desert",
     "completed": false,
     "multiplayer": false
   },
@@ -34,6 +34,19 @@
       "position": {
         "x": 300,
         "y": 400
+      }
+    },{
+      "name": "BallBig",
+      "position": {
+        "x": 600,
+        "y": 450
+      }
+    },
+    {
+      "name": "BallMedium",
+      "position": {
+        "x": 900,
+        "y": 500
       }
     },
 

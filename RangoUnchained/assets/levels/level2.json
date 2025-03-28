@@ -6,6 +6,15 @@
     "multiplayer": false
   },
   "entitiesData": [
+
+    {
+      "name": "Background",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+
     {
       "name": "Player",
       "position": {
@@ -14,34 +23,55 @@
       }
     },
     {
-      "name": "Player",
+      "name": "BallBig",
       "position": {
         "x": 200,
-        "y": 250
-      }
-    },
-    {
-      "name": "BallMedium",
-      "position": {
-        "x": 300,
         "y": 350
       }
     },
-
     {
       "name": "BallSmall",
       "position": {
-        "x": 400,
-        "y": 350
+        "x": 300,
+        "y": 400
       }
     },
 
     {
-      "name": "ballBig",
+      "name": "ObsticleLeft",
       "position": {
-        "x": 500,
-        "y": 350
+        "x": 17,
+        "y": 400
       }
     }
+    ,
+
+    {
+      "name": "ObsticleRight",
+      "position": {
+        "x": 1500,
+        "y": 480
+      }
+    }
+    ,
+
+    {
+      "name": "ObsticleRoof",
+      "position": {
+        "x": 750,
+        "y": 900
+      }
+    }
+    ,
+
+    {
+      "name": "ObsticleFloor",
+      "position": {
+        "x": 750,
+        "y": 32
+      }
+    }
+
+    
   ]
 }

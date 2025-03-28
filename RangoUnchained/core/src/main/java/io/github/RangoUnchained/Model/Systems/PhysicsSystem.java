@@ -25,7 +25,7 @@ public class PhysicsSystem implements ContactListener, System {
     private ComponentFilter filter = new ComponentFilter();
 
     public PhysicsSystem() {
-        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(0, -100), true);
         world.setContactListener(this);
 
         filter
@@ -33,20 +33,20 @@ public class PhysicsSystem implements ContactListener, System {
         .require(SpriteComponent.class);
     }
 
+        // Define a conversion factor (pixels per meter) – adjust as needed
+    private static final float PPM = 1.9f;
+
     @Override
-        public void updateEntity(Entity entity) {
-            Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
-            Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
+    public void updateEntity(Entity entity) {
+        Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
+        Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
 
-            // Convert physics position to screen position
-            float screenX =((float)1.9)*(body.getPosition().x) - (sprite.getWidth()/2);
-            float screenY = ((float)1.9)*(body.getPosition().y) - (sprite.getHeight());
-
-            Gdx.app.log("physicsUpdate",screenX+ "," + screenY +","+body.getPosition().x+","+ body.getPosition().y);
-
-            sprite.setPosition(screenX, screenY);
-
-        }
+        // Convert physics (meters) position to screen (pixels) position
+        float screenX = body.getPosition().x * PPM - sprite.getWidth() / 2f;
+        float screenY = body.getPosition().y * PPM - sprite.getHeight() / 2f;
+        
+        sprite.setPosition(screenX, screenY);
+    }
 
 
     private void handleBallPlayerCollision(BallEntity ball, PlayerEntity player) {

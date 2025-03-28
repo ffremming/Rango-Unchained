@@ -6,6 +6,15 @@
     "multiplayer": false
   },
   "entitiesData": [
+
+    {
+      "name": "Background",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+
     {
       "name": "Player",
       "position": {
@@ -26,6 +35,43 @@
         "x": 300,
         "y": 350
       }
+    },
+
+    {
+      "name": "ObsticleLeft",
+      "position": {
+        "x": 17,
+        "y": 230
+      }
     }
+    ,
+
+    {
+      "name": "ObsticleRight",
+      "position": {
+        "x": 782,
+        "y": 230
+      }
+    }
+    ,
+
+    {
+      "name": "ObsticleRoof",
+      "position": {
+        "x": 399,
+        "y": 450
+      }
+    }
+    ,
+
+    {
+      "name": "ObsticleFloor",
+      "position": {
+        "x": 400,
+        "y": 0
+      }
+    }
+
+    
   ]
 }

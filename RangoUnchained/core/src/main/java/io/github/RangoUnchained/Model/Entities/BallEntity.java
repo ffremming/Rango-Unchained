@@ -18,16 +18,6 @@ public class BallEntity implements Entity{
         addComponent(bodyComponent);
         addComponent(statComponent);
         addComponent(spriteComponent);
-
-        TransformationComponent transComp = new TransformationComponent(1, 1, 2, 60
-        ,TransformationComponent.CIRCLE,
-        TransformationComponent.CENTER
-        ,true);
-        transComp.setAutoReverse(true);
-        transComp.setAlwaysReverse(true);
-
-        addComponent(transComp);
-
     }
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {

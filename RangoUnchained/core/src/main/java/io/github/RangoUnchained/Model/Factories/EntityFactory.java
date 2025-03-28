@@ -17,6 +17,7 @@ import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
+import io.github.RangoUnchained.Model.Entities.BasicEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
@@ -41,29 +42,35 @@ public class EntityFactory {
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world);
 
-        } else if (name.startsWith("Obstacle")) {
-            return createObstacleEntity(x, y, 64, 64, "Obstacles/Obstacle.png", BodyDef.BodyType.StaticBody, world);
+        } else if (name.startsWith("Obsticle")) {
+            return createObstacleEntity(x, y, name, world);
 
         } else if (name.startsWith("Projectile")) {
             return createProjectileEntity(x, y, "tongue/3Cropped.png", world);
         }
+        else if (name.startsWith("Background")) {
+            return createBackground();
+        }
+
+
         // More entity types can be added here
         return null;
     }
 
-// Player Entity
-public static PlayerEntity createPlayerEntity(float x, float y, World world) {
-    SpriteComponent sprite = new SpriteComponent("Rango/Rango.png");
+    // Player Entity
+    public static PlayerEntity createPlayerEntity(float x, float y, World world) {
+        SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
 
-    float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
-    float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
+        float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
+        float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
 
-    BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createBoxFixture(width, height),true);
-    InputComponent input = new InputComponent();
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height),true);
+        InputComponent input = new InputComponent();
 
-    return new PlayerEntity(body, sprite, input);
+        return new PlayerEntity(body, sprite, input);
 
-}
+    }
+
     private static final int BIGBALLRADIUS = 20;
     private static final int MEDIUMBALLRADIUS = 15;
     private static final int SMALLBALLRADIUS = 10;
@@ -73,20 +80,53 @@ public static PlayerEntity createPlayerEntity(float x, float y, World world) {
         float radius = name.endsWith("Big") ? BIGBALLRADIUS : name.endsWith("Medium") ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
         String path = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
         
-        SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png");
+        SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png",64,64);
 
         float width = (float)(1/1.9)*(sprite.getSprite().getWidth());
         float height = (float)(1/1.9)*(sprite.getSprite().getHeight());
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2),true);
         StatComponent stats = new StatComponent();
 
+        body.getBody().setLinearDamping(0);
+        body.getBody().setAngularDamping(0);
         return new BallEntity(body, stats, sprite);
     }
 
+    public static BasicEntity createBackground(){
+        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(800*1.9),(int)(480*1.9));
+        BasicEntity bg = new BasicEntity();
+        bg.addComponent(sprite);
+        return bg;
+    }
+
+
     // 🔹 Obstacle Entity
-    public static ObstacleEntity createObstacleEntity(float x, float y, float width, float height, String spritePath, BodyDef.BodyType bodyType, World world) {
-        BodyComponent body = createBody(world, x, y, bodyType, createBoxFixture(width, height),true);
-        SpriteComponent sprite = new SpriteComponent(spritePath);
+    public static ObstacleEntity createObstacleEntity(float x, float y, String name, World world) {
+
+        BodyComponent body = null;
+        SpriteComponent sprite = null;
+        float width;
+        float height;
+
+        float pxl = 1.9f;
+
+        if (name.endsWith("Left") || name.endsWith("Right")){
+            width = 32;
+            height = 500;
+            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
+            sprite = new SpriteComponent("Background/red.png",width*pxl,height *pxl);
+        }
+
+       
+
+        else if (name.endsWith("Roof")||name.endsWith("Floor")){
+            width = 733;
+            height = 64;
+            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
+            sprite = new SpriteComponent("Background/red.png",width*pxl,height*pxl);
+        }
+
+        
         return new ObstacleEntity(body, sprite);
     }
 
@@ -122,22 +162,29 @@ public static PlayerEntity createPlayerEntity(float x, float y, World world) {
         if (body == null) {
             throw new IllegalStateException("Failed to create body in the world");
         }
+        body.setLinearDamping(0f);
 
         body.createFixture(fixtureDef);
         bodyComponent.setBody(body);
         return bodyComponent;
     }
 
-    private static FixtureDef createBoxFixture(float width, float height) {
+    private static FixtureDef createNoxBounceBoxFixture(float width,float height){
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width / 2, height / 2);
         return createFixture(shape, 1f, 0.4f, 0.5f); // Default values for density, friction, and restitution
     }
 
+    private static FixtureDef createBoxFixture(float width, float height) {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(width / 2, height / 2);
+        return createFixture(shape, 1f, 0.4f, 0f); // Default values for density, friction, and restitution
+    }
+
     private static FixtureDef createCircleFixture(float radius) {
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
-        return createFixture(shape, 1f, 0.4f, 0.5f); // Default values for density, friction, and restitution
+        return createFixture(shape, 1f, 0.0f, 0.99f); // Default values for density, friction, and restitution
     }
 
     private static FixtureDef createFixture(Shape shape, float density, float friction, float restitution) {

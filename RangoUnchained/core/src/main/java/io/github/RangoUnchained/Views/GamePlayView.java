@@ -62,7 +62,7 @@ public class GamePlayView extends BaseScreen {
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
 
-        box2DDebugRenderer.render(controller.getWorld(), camera.combined);
+        //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
 
 
         batch.end();

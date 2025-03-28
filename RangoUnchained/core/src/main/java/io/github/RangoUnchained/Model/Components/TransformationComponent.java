@@ -147,7 +147,7 @@ public class TransformationComponent implements Component {
         }
     
         public void alertCompletion(){
-
+            
             if (alwaysReverse){
                 if (!isReversed){
                     reverse();

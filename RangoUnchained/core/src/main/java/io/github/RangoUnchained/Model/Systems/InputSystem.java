@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class InputSystem implements System {
 
@@ -46,7 +49,7 @@ public class InputSystem implements System {
             handleShoot(entity);
             p1_input.setLeft(false);
             p1_input.setRight(false);
-            p1_input.setTimer(100);
+            p1_input.setTimer(60);
 
         } else {
             p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
@@ -69,13 +72,17 @@ public class InputSystem implements System {
     }
 
     private void handleShoot(Entity entity){
+        SpriteComponent spriteComp = (SpriteComponent)entity.getComponent(SpriteComponent.class);
         InputComponent p1_input = (InputComponent) entity.getComponent(InputComponent.class);
         if (!p1_input.isLocked()){
 
             filter.require(BodyComponent.class);
+            filter.require(SpriteComponent.class);
+
             if(filter.matches(entity)){
+                Sprite sprite = spriteComp.getSprite(); 
                 Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
-                LevelController.getInstance().handleSpawnRequests(body.getPosition().x, body.getPosition().y +42,0,0,"Projectile",new Vector2(0,0),1);
+                LevelController.getInstance().handleSpawnRequests(body.getPosition().x*Constants.PPM , body.getPosition().y*Constants.PPM +sprite.getHeight()/2+16 ,0,0,"Projectile",new Vector2(0,0));
             }
             filter.ignore(BodyComponent.class);
         }

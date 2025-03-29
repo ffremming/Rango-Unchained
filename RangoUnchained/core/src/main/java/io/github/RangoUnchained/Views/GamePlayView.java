@@ -46,9 +46,9 @@ public class GamePlayView extends BaseScreen {
 
         // Update physics world first
         controller.step(1/60f, 6, 2);
-
-        controller.excecuteSpawnQueue();
         controller.excecuteRemovelQueue();
+        controller.excecuteSpawnQueue();
+        
 
 
         // Render everything
@@ -62,10 +62,12 @@ public class GamePlayView extends BaseScreen {
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
 
-        box2DDebugRenderer.render(controller.getWorld(), camera.combined);
+        //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
 
 
         batch.end();
+        stage.draw();
+
 
     }
 

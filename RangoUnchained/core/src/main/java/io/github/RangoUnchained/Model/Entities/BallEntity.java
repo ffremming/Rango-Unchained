@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
+import io.github.RangoUnchained.Model.Components.PhysicsComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
@@ -18,16 +19,10 @@ public class BallEntity implements Entity{
         addComponent(bodyComponent);
         addComponent(statComponent);
         addComponent(spriteComponent);
-
-        TransformationComponent transComp = new TransformationComponent(1, 1, 2, 60
-        ,TransformationComponent.CIRCLE,
-        TransformationComponent.CENTER
-        ,true);
-        transComp.setAutoReverse(true);
-        transComp.setAlwaysReverse(true);
-
-        addComponent(transComp);
-
+        PhysicsComponent phyComp = new PhysicsComponent();
+        phyComp.setContactLock(60);
+        addComponent(phyComp);
+       
     }
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {

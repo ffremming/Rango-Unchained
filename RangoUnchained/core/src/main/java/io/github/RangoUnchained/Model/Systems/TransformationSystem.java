@@ -14,6 +14,9 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Views.Utils.Constants;
+
+
 
 public class TransformationSystem implements System{
 
@@ -51,13 +54,44 @@ public class TransformationSystem implements System{
                 scaleCircle(transComp, body, oldFixture, sprite);
                 break;
             }
-            transComp.decrementDuration();
+        }
+        decrementDuration(transComp);
 
-            if (transComp.getDuration()<=0){
-                transComp.alertCompletion();
+        setSpritePos(body, sprite);
+    }
+
+    private void setSpritePos(Body body,Sprite sprite){
+
+        
+
+        //sprite.setPosition(body.getPosition().x * Constants.PPM - ((sprite.getWidth())/2), body.getPosition().y * Constants.PPM  - sprite.getHeight());
+
+    }
+
+    private void decrementDuration(TransformationComponent transComp){
+        transComp.decrementDuration();
+
+
+        if (transComp.getDuration()<=0){
+            if (transComp.getPause()>0){
+                transComp.decrementPauser();
+            } else {
+
+                if (transComp.getReverse()){
+                    if (!transComp.isReversed()){
+                        transComp.setTransformationStepsReverse();
+                        transComp.setDuration(transComp.getLifeTime());
+                    
+                    }else if (transComp.getAlwaysReverse()){
+                        transComp.setTransformationSteps();
+                        transComp.setDuration(transComp.getLifeTime());
+                    }
+                }
             }
         }
     }
+        
+
 
     private void scaleCircle(TransformationComponent transComp, Body body, Fixture oldFixture, Sprite sprite){
         Shape oldShape = (Shape) oldFixture.getShape();
@@ -114,7 +148,7 @@ public class TransformationSystem implements System{
         Vector2 vertex = new Vector2();
         oldShape.getVertex(0, vertex);
         float halfWidth = Math.abs(vertex.x);
-        float halfHeight = Math.abs(vertex.y);
+        float halfHeight =  Math.abs(vertex.y);
         
         // Compute new dimensions
         float newHalfWidth = (float)(halfWidth*transComp.getTransformationWidthStep());
@@ -148,8 +182,8 @@ public class TransformationSystem implements System{
         }
 
         // Transform the sprite size and position
-        sprite.setSize(newHalfWidth * 2, newHalfHeight * 2);
-        sprite.setPosition(body.getPosition().x - newHalfWidth, body.getPosition().y - newHalfHeight);
+        sprite.setSize(newHalfWidth * Constants.PPM*2 , newHalfHeight * Constants.PPM *2);
+        //sprite.setPosition((body.getPosition().x*Constants.PPM  - ((newHalfWidth*Constants.PPM ))/2), (body.getPosition().y*Constants.PPM - newHalfHeight*Constants.PPM)/2);
         Gdx.app.log("scale",newHalfWidth+ ",height"+newHalfHeight + ",offsetX "+offsetX+ ",offsetY" + offsetY );
 
         // Remove old fixture
@@ -158,7 +192,7 @@ public class TransformationSystem implements System{
         // Create a new polygon shape with scaled size
         PolygonShape newShape = new PolygonShape();
         newShape.setAsBox(newHalfWidth, newHalfHeight);
-    
+        
         // Create new fixture definition
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = newShape;

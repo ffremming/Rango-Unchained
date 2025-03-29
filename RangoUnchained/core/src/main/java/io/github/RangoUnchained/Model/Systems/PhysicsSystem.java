@@ -13,11 +13,15 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.PhysicsComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class PhysicsSystem implements ContactListener, System {
 
@@ -30,46 +34,58 @@ public class PhysicsSystem implements ContactListener, System {
 
         filter
         .require(BodyComponent.class)
-        .require(SpriteComponent.class);
+        .require(SpriteComponent.class)
+        .require(PhysicsComponent.class);
     }
 
+        // Define a conversion factor (pixels per meter) – adjust as needed
+
     @Override
-        public void updateEntity(Entity entity) {
-            Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
-            Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
+    public void updateEntity(Entity entity) {
+        Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
+        Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
+        PhysicsComponent physComp = ((PhysicsComponent)entity.getComponent(PhysicsComponent.class));
 
-            // Convert physics position to screen position
-            float screenX =((float)1.9)*(body.getPosition().x) - (sprite.getWidth()/2);
-            float screenY = ((float)1.9)*(body.getPosition().y) - (sprite.getHeight());
+        // Convert physics (meters) position to screen (pixels) position
+        float screenX = ((body.getPosition().x * Constants.PPM) - sprite.getWidth() / 2f);
+        float screenY = ((body.getPosition().y * Constants.PPM) - sprite.getHeight() / 2f);
+        
+        //Gdx.app.log("spritePos",screenX+","+screenY);
+        //Gdx.app.log("pos", entity.getClass().getName()+body.getPosition().y+","+body.getPosition().x);
 
-            Gdx.app.log("physicsUpdate",screenX+ "," + screenY +","+body.getPosition().x+","+ body.getPosition().y);
-
-            sprite.setPosition(screenX, screenY);
-
-        }
+        sprite.setPosition(screenX, screenY);
+        physComp.decrementContactLock();
+    }
 
 
-    private void handleBallPlayerCollision(BallEntity ball, PlayerEntity player) {
+    private void handleProjectileBallCollision(BallEntity ball, ProjectileEntity player) {
 
         SpriteComponent spriteComponent = (SpriteComponent) ball.getComponent(SpriteComponent.class);
         StatComponent statComponent = (StatComponent) ball.getComponent(StatComponent.class);
         BodyComponent bodyComponent = (BodyComponent) ball.getComponent(BodyComponent.class);
 
         float xPos = spriteComponent.getSprite().getX();
-        float yPos = spriteComponent.getSprite().getY();
+        float yPos = spriteComponent.getSprite().getY()+50;
         int timesPopped = statComponent.getTimesPopped();
-        Vector2 oldVelocity = bodyComponent.getBody().getLinearVelocity();
-        Vector2 newVelocity = new Vector2(-(oldVelocity.x), -(oldVelocity.y));
+       
+        Vector2 newVelocity = new Vector2((0), (5));
 
         LevelController.getInstance().handleRemovalRequests(ball);
 
         if (timesPopped == 0) {
-            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 10, 10,
-                "BallMedium", newVelocity, 2);
+            newVelocity.x = -3;
+
+            LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 10, 10,
+                "BallMedium", newVelocity);
+            LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 10, 10,
+            "BallMedium", newVelocity);
 
         } else if (timesPopped == 1) {
-            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 5, 5,
-                "BallSmall", newVelocity, 2);
+            newVelocity.x = 3;
+            LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 5, 5,
+                "BallSmall", newVelocity);
+                LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 5, 5,
+                "BallSmall", newVelocity);
         }
     }
 
@@ -86,17 +102,59 @@ public class PhysicsSystem implements ContactListener, System {
         if (dataA == null || dataB == null) return;
         if (!(dataA instanceof Entity) || !(dataB instanceof Entity)) return;
 
+        //check locks
+        if (((PhysicsComponent)((Entity) dataA).getComponent(PhysicsComponent.class))
+        .isContactLocked()){return;}
+        if (((PhysicsComponent)((Entity) dataB).getComponent(PhysicsComponent.class))
+        .isContactLocked()){return;}
+
         Entity entityA = (Entity) dataA;
         Entity entityB = (Entity) dataB;
 
+        Gdx.app.log("collision","basic");
+
+
         // Check ball-player collision
-        if (entityA instanceof BallEntity && entityB instanceof PlayerEntity) {
-            handleBallPlayerCollision((BallEntity) entityA, (PlayerEntity) entityB);
-        } else if (entityA instanceof PlayerEntity && entityB instanceof BallEntity) {
-            handleBallPlayerCollision((BallEntity) entityB, (PlayerEntity) entityA);
+        if (entityA instanceof BallEntity && entityB instanceof ProjectileEntity) {
+            handleProjectileBallCollision((BallEntity) entityA, (ProjectileEntity) entityB);
+        } else if (entityA instanceof ProjectileEntity && entityB instanceof BallEntity) {
+            handleProjectileBallCollision((BallEntity) entityB, (ProjectileEntity) entityA);
+        } else if (entityA instanceof ObstacleEntity && entityB instanceof BallEntity) {
+            handleBallObstacleCollision(entityA, entityB);
+        } else if (entityA instanceof BallEntity  && entityB instanceof ObstacleEntity) {
+            handleBallObstacleCollision(entityA, entityB);
         }
     }
+            
+                    
+                
+    private void handleBallObstacleCollision(Entity entityA, Entity entityB) {
+        BallEntity ball;
+        ObstacleEntity obstacle;
+        Gdx.app.log("collision","11");
 
+        if (entityA instanceof BallEntity) {
+            ball = (BallEntity) entityA;
+            obstacle = (ObstacleEntity) entityB;
+        } else {
+            ball = (BallEntity) entityB;
+            obstacle = (ObstacleEntity) entityA;
+        }
+
+        BodyComponent ballBodyComponent = (BodyComponent) ball.getComponent(BodyComponent.class);
+        Body ballBody = ballBodyComponent.getBody();
+
+
+        final float BOOST_AMOUNT = 200.0f;
+
+
+        // Apply a small upward boost to the ball
+        Vector2 currentVelocity = ballBody.getLinearVelocity();
+        ballBody.applyLinearImpulse(new Vector2(0, BOOST_AMOUNT),
+                                  ballBody.getWorldCenter(), true);
+    }      
+                
+            
     @Override
     public void endContact(Contact contact) {
 

@@ -31,12 +31,14 @@ public class TransformationComponent implements Component {
     final boolean REVERSE;
     final int LIFETIME;
 
+    private int pause = 0;
+
 
     /**duration in frames */
     int duration;
        
     
-        public TransformationComponent(int heightScale, int widthScale, int radiusScale, int duration, int type, int direction, boolean reverse){
+        public TransformationComponent(int heightScale, int widthScale, int radiusScale, int duration, int type, int direction, boolean reverse, int pause){
             this.heightScale = heightScale;
             this.widthScale = widthScale;
             this.radiusScale = radiusScale;
@@ -47,18 +49,17 @@ public class TransformationComponent implements Component {
             LIFETIME = duration;
             setTransformationSteps();
             REVERSE = reverse;
+
+            this.pause = pause;
         }
     
-        private void setTransformationSteps(){
+        public void setTransformationSteps(){
             this.transformationHeightStep = (float) Math.pow(heightScale, 1.0 / LIFETIME);
             this.transformationWidthStep = (float) Math.pow(widthScale, 1.0 / LIFETIME);
             this.transformationRadiusStep = (float) Math.pow(radiusScale, 1.0 / LIFETIME);
         }
     
-        private void setTransformationStepsReverse(){
-    
-            //if i have the value 2 and scale 4. i get 8. now i have 8 and want to scale back. i still have value 4 as scale. what value can i multiply 8 with for duration times until it becomes 2 again?
-    
+        public void setTransformationStepsReverse(){    
             this.transformationHeightStep = calculateInverseScalingFactor(heightScale,LIFETIME);
             this.transformationWidthStep = calculateInverseScalingFactor(widthScale,LIFETIME);
             this.transformationRadiusStep = calculateInverseScalingFactor(radiusScale,LIFETIME);
@@ -66,9 +67,7 @@ public class TransformationComponent implements Component {
     
         // Method to calculate the inverse scaling factor
         public static double calculateInverseScalingFactor(double scale, int durations) {
-            // Calculate the inverse scaling factor
-            Gdx.app.log("scale2", String.valueOf(Math.pow(scale, -durations)));
-            return Math.pow(scale, -1.0 / durations);  // Raising scale to -1/n
+            return Math.pow(scale, -1.0 / durations); 
         }
     
         private void setType(int type){
@@ -145,36 +144,9 @@ public class TransformationComponent implements Component {
         public void setAutoReverse(boolean autoReverse){
             this.autoReverse = autoReverse;
         }
-    
-        public void alertCompletion(){
 
-            if (alwaysReverse){
-                if (!isReversed){
-                    reverse();
-                    isReversed = true;
-                } else {
-                    setTransformationSteps();
-                    setDuration(LIFETIME);
-                    isReversed = false;
-                }
-            } else if (REVERSE){
-                if (!isReversed){
-                    reverse();
-                    isReversed = true;
-                }
-            }
-        }
-    
-        public void reverse(){
-            if (REVERSE){
-                if (!isReversed){
-                    setTransformationStepsReverse();
-                    setDuration(LIFETIME);
-                } else if (alwaysReverse){
-                    setTransformationSteps();
-                    setDuration(LIFETIME);
-                }
-            }
+        public int getPause(){
+            return pause;
         }
     
         public int getDirection() {
@@ -184,5 +156,25 @@ public class TransformationComponent implements Component {
         public void setAlwaysReverse(boolean alwaysReverse) {
             this.alwaysReverse = alwaysReverse;
     }
+
+		public int getLifeTime() {
+			return LIFETIME;
+		}
+
+        public boolean getReverse() {
+            return REVERSE;
+        }
+
+        public boolean isReversed() {
+            return isReversed;
+        }
+
+        public boolean getAlwaysReverse() {
+           return alwaysReverse;
+        }
+
+        public void decrementPauser() {
+            pause --;
+        }
 
 }

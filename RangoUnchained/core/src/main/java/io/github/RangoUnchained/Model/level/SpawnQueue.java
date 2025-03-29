@@ -2,30 +2,32 @@ package io.github.RangoUnchained.Model.level;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
-import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Factories.EntityFactory;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Position;
 
 public class SpawnQueue {
-    ArrayList<Entity> spawningEntities = new ArrayList<Entity>();
+    ArrayList<EntityData> spawningEntities = new ArrayList<EntityData>();
 
     
-    public ArrayList<Entity> retrieveSpawningEntities() {
-        ArrayList<Entity> temp = new ArrayList<Entity>(spawningEntities);
+    public ArrayList<EntityData> retrieveSpawningEntities() {
+        ArrayList<EntityData> temp = new ArrayList<EntityData>(spawningEntities);
         spawningEntities.clear();
         return temp;
     }
 
-    public void addSpawnRequest(float xPos, float yPos, int width, int width2, String name, Vector2 velocity, World world, int amount) {
+    public void addSpawnRequest(float xPos, float yPos, int width, int width2, String name, Vector2 velocity, World world) {
         //method for adding new entities using factory - TODO should be generalised
-        for (int i = 0; i < amount; i++) {
-            Entity newBall = EntityFactory.createEntity(xPos, yPos, name, world, velocity);
-            spawningEntities.add(newBall);
-        }
+        
+            GameLevel.LevelData.EntityData data = new EntityData();
+            data.name = name;
+            data.position = new Position();
+            data.position.x = xPos;
+            data.position.y = yPos;
+            data.velocity = velocity;
 
-        Gdx.app.log("spawn",name);
+            spawningEntities.add(data);
     }
 }

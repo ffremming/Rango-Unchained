@@ -48,15 +48,14 @@ public class LevelController {
        removalQueue.addRemovalRequest(entity);
     }
 
-    public void handleSpawnRequests(float xPos ,float yPos,int width, int height, String name, Vector2 velocity, int amount) {
+    public void handleSpawnRequests(float xPos ,float yPos,int width, int height, String name, Vector2 velocity) {
 
-            spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld(), amount);
-
+            spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld());
     }
 
 
     public void excecuteSpawnQueue() {
-        level.addEntities(spawnQueue.retrieveSpawningEntities());
+        level.spawn(spawnQueue.retrieveSpawningEntities());
     }
 
     public void excecuteRemovelQueue() {

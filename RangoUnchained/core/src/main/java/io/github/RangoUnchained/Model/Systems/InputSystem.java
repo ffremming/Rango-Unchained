@@ -82,7 +82,7 @@ public class InputSystem implements System {
             if(filter.matches(entity)){
                 Sprite sprite = spriteComp.getSprite(); 
                 Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
-                LevelController.getInstance().handleSpawnRequests(body.getPosition().x*Constants.PPM , body.getPosition().y*Constants.PPM +sprite.getHeight()/2+16 ,0,0,"Projectile",new Vector2(0,0),1);
+                LevelController.getInstance().handleSpawnRequests(body.getPosition().x*Constants.PPM , body.getPosition().y*Constants.PPM +sprite.getHeight()/2+16 ,0,0,"Projectile",new Vector2(0,0));
             }
             filter.ignore(BodyComponent.class);
         }

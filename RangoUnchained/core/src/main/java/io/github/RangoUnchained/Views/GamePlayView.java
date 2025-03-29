@@ -46,9 +46,13 @@ public class GamePlayView extends BaseScreen {
 
         // Update physics world first
         controller.step(1/60f, 6, 2);
+        if (!controller.getWorld().isLocked()) {
 
-        controller.excecuteSpawnQueue();
         controller.excecuteRemovelQueue();
+        controller.excecuteSpawnQueue();
+        } else {
+            Gdx.app.log("lock","world is locked");
+        }
 
 
         // Render everything
@@ -66,6 +70,7 @@ public class GamePlayView extends BaseScreen {
 
 
         batch.end();
+
 
     }
 

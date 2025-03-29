@@ -13,6 +13,7 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
 /**
  * Represents a game level, containing metadata and entities.
@@ -47,15 +48,7 @@ public class GameLevel {
 
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
-        for (LevelData.EntityData entityData : levelData.entitiesData) {
-            Gdx.app.log("JSON_testing", "Name: " + entityData.name);
-            Gdx.app.log("JSON_testing", "Position: (" + entityData.position.x + ", " + entityData.position.y + ")");
-
-            Entity entity = EntityFactory.createEntity(entityData.position.x, entityData.position.y, entityData.name, LevelController.getInstance().getWorld(),new Vector2(0,0));
-            if (entity!= null){
-                entities.add(entity);
-            }
-        }
+        spawn(levelData.entitiesData);
     }
 
 
@@ -99,6 +92,7 @@ public class GameLevel {
         public static class EntityData {
             public String name;
             public Position position;
+            public Vector2 velocity;
 
             /**
              * Represents a 2D position with x and y coordinates.
@@ -136,5 +130,17 @@ public class GameLevel {
         }
 
         entities.removeAll(removalEntities);
+    }
+
+    public void spawn(ArrayList<EntityData> spawningEntities) {
+        for (EntityData data: spawningEntities){
+            Gdx.app.log("JSON_testing", "Name: " + data.name);
+            Gdx.app.log("JSON_testing", "Position: (" + data.position.x + ", " + data.position.y + ")");
+            Vector2 velocity = data.velocity == null ? new Vector2() : data.velocity;
+            Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity);
+            if (entity!= null){
+                entities.add(entity);
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 package io.github.RangoUnchained.Model.level;
 
+import com.badlogic.gdx.Gdx;
+
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
@@ -11,7 +13,7 @@ public class ScoreManager implements ContactStrategy{
 
     int score = 0;
     public ScoreManager(){
-        //LevelController.getInstance().getWorld().setContactListener(this);
+        setContactStrategies();
     }
 
     public void setScore(int score){this.score = score;}
@@ -19,11 +21,10 @@ public class ScoreManager implements ContactStrategy{
     public void addScore(int score){this.score += score;}
 
     public int getScore(){return score;}
-
-    
     
     private void handleBallProjectileCollision(CollisionEvent contact){
         //TODO do we want different scores for different balls?
+        Gdx.app.log("contact",""+score);
         addScore(1);
     }
 

@@ -53,6 +53,7 @@ public class SystemManager {
         InputSystem inputSystem = new InputSystem();
         LifeTimeSystem lifeTimeSystem = new LifeTimeSystem();
         ContactSystem contactSystem = new ContactSystem(physicsSystem.getWorld());
+        HealthSystem healthSystem = new HealthSystem();
 
         world = physicsSystem.getWorld();
 
@@ -62,6 +63,7 @@ public class SystemManager {
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);
         systems.add(contactSystem);
+        systems.add(healthSystem);
     }
 
     /** method for getting world

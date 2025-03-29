@@ -17,6 +17,7 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
+import io.github.RangoUnchained.Model.level.GameLevel;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -69,6 +70,12 @@ public class GamePlayView extends BaseScreen {
         batch.end();
         stage.draw();
 
+
+        Label scoreLabel = stage.getRoot().findActor("scoreLabel");
+        if (scoreLabel != null) {
+            int newScore = LevelController.getInstance().getScore();
+            scoreLabel.setText("Score: " + newScore);
+        }
 
     }
 

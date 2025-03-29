@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
+import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
@@ -76,6 +77,9 @@ public class LevelController {
         ContactStrategies ContactStrategies = new ContactStrategies();
 
         getSystem(PhysicsSystem.class).setContactStrategies();
+        getSystem(HealthSystem.class).setContactStrategies();
+
+        
     }
 
     /**updates all entities with the appropiate systems */
@@ -102,5 +106,9 @@ public class LevelController {
     /**methdo for shooting, called from view */
     public void handleShoot(){
         getSystem(InputSystem.class).handleShoot(level.getEntities());
+    }
+
+    public int getScore(){
+        return level.scoreManager.getScore();
     }
 }

@@ -46,7 +46,6 @@ public class GamePlayView extends BaseScreen {
 
         // Update physics world first
         controller.step(1/60f, 6, 2);
-
         controller.excecuteSpawnQueue();
         controller.excecuteRemovelQueue();
 
@@ -66,6 +65,7 @@ public class GamePlayView extends BaseScreen {
 
 
         batch.end();
+        stage.draw();
 
     }
 

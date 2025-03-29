@@ -1,6 +1,6 @@
 package io.github.RangoUnchained.Model.Components;
 
-public class PhysicsComponent implements Component{
+public class ContactComponent implements Component{
     
     int contactLock;
 

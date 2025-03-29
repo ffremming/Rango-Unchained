@@ -19,6 +19,7 @@ import io.github.RangoUnchained.Model.Components.TransformationComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.BasicEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
@@ -140,7 +141,15 @@ public class EntityFactory {
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
         }
-
+        ObstacleEntity obstacle;
+        if (name.endsWith("Floor")){
+            //uses floorentity for identification later (in physicssystem)
+             obstacle = new FloorEntity(body, sprite);
+        } else { 
+            obstacle = new ObstacleEntity(body, sprite);
+        }
+        
+        body.getBody().setUserData(obstacle);
         
         return new ObstacleEntity(body, sprite);
     }

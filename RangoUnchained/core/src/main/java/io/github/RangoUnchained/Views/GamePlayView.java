@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -76,13 +77,28 @@ public class GamePlayView extends BaseScreen {
             () -> game.setView(new GameOverView()));
         TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
             () -> controller.handleShoot());
+        
+
 
         createTable(shootButton).bottom().right().pad(20);
         createTable(gameOverButton).top().padTop(50);
         createJoystick();
+       createScoreLabel();
     }
 
-    private Table createTable(Button button){
+    private void createScoreLabel() {
+        Skin skin = getSkin();
+
+        // Create a label to display the score
+        Label scoreLabel = new Label("Score: 0", skin);
+        scoreLabel.setName("scoreLabel"); // Set a name to easily update it later
+       
+        scoreLabel.setBounds(50, -30, 100, 100);
+
+        stage.addActor(scoreLabel);
+    }
+
+    private Table createTable(Button button) {
         Table table = new Table();
         table.setFillParent(true);
         table.add(button);

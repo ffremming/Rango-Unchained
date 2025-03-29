@@ -20,7 +20,7 @@ public class BallEntity implements Entity{
         addComponent(statComponent);
         addComponent(spriteComponent);
         PhysicsComponent phyComp = new PhysicsComponent();
-        phyComp.setContactLock(30);
+        phyComp.setContactLock(60);
         addComponent(phyComp);
        
     }

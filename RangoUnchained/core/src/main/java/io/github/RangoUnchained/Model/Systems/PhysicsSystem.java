@@ -31,7 +31,7 @@ public class PhysicsSystem implements ContactListener, System {
     public PhysicsSystem() {
         world = new World(new Vector2(0, -10), true);
         world.setContactListener(this);
-        
+
         filter
         .require(BodyComponent.class)
         .require(SpriteComponent.class)
@@ -73,18 +73,18 @@ public class PhysicsSystem implements ContactListener, System {
         LevelController.getInstance().handleRemovalRequests(ball);
 
         if (timesPopped == 0) {
-            newVelocity.x = -5;
+            newVelocity.x = -3;
 
-            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 10, 10,
+            LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 10, 10,
                 "BallMedium", newVelocity);
-            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 10, 10,
+            LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 10, 10,
             "BallMedium", newVelocity);
 
         } else if (timesPopped == 1) {
-            newVelocity.x = 5;
-            LevelController.getInstance().handleSpawnRequests(xPos, yPos, 5, 5,
+            newVelocity.x = 3;
+            LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 5, 5,
                 "BallSmall", newVelocity);
-                LevelController.getInstance().handleSpawnRequests(xPos, yPos, 5, 5,
+                LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 5, 5,
                 "BallSmall", newVelocity);
         }
     }

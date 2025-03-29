@@ -27,6 +27,9 @@
       "position": {
         "x": 200,
         "y": 350
+      },
+      "velocity":{
+        "x":3
       }
     },
     {
@@ -34,12 +37,20 @@
       "position": {
         "x": 300,
         "y": 400
+      },
+      "velocity":{
+        "x":-3
       }
-    },{
+    },
+      
+    {
       "name": "BallBig",
       "position": {
         "x": 600,
         "y": 450
+      },
+      "velocity":{
+        "x":2
       }
     },
     {
@@ -47,6 +58,9 @@
       "position": {
         "x": 900,
         "y": 500
+      },
+      "velocity":{
+        "x":-2
       }
     },
 

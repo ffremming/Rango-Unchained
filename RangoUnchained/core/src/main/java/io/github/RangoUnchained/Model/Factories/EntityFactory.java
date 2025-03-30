@@ -13,8 +13,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
@@ -24,6 +26,7 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
@@ -64,11 +67,29 @@ public class EntityFactory {
         }
         else if (name.startsWith("Background")) {
             return createBackground();
+        } else if (name.startsWith("SpeedPowerUp")) {
+            return createPowerUp(x, y, "Rango/Rango.png", world, 0);
         }
 
 
         // More entity types can be added here
         return null;
+    }
+
+    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpType) {
+
+        SpriteComponent sprite = new SpriteComponent(spritePath,500,128);
+
+        float width = (sprite.getSprite().getWidth()/ Constants.PPM);
+        float height = (sprite.getSprite().getHeight()/ Constants.PPM);
+
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height),true);
+
+        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpType);
+        PowerUpEntity powerUp = new PowerUpEntity(body, sprite, powerUpComponent);
+        body.getBody().setUserData(powerUp);
+
+        return powerUp;
     }
 
     // Player Entity
@@ -101,13 +122,13 @@ public class EntityFactory {
     private static final float BIGPULSE = 0.03f;
 
 
-    
+
 
 
 
      // general method for creating all balls - called from factory method
      public static BallEntity createBallEntity(float x, float y, String name, World world, Vector2 velocity) {
-        
+
         //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "armedillo" : "tumbleweed";
         int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("TumbleWeed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
@@ -137,7 +158,7 @@ public class EntityFactory {
 
         BallEntity ball = new BallEntity(body, stats, sprite,bounceComp,ballComp);
         body.getBody().setUserData(ball);
-        
+
         return ball;
     }
 
@@ -208,6 +229,7 @@ public class EntityFactory {
         }
 
         body.getBody().setUserData(obstacle);
+
         return new ObstacleEntity(body, sprite);
     }
 
@@ -296,3 +318,4 @@ public class EntityFactory {
         return fixtureDef;
     }
 }
+

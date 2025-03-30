@@ -1,14 +1,17 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import io.github.RangoUnchained.Controllers.LevelController;
-import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
+import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
 import io.github.RangoUnchained.Model.PowerUps.PowerUpStrategy;
 import io.github.RangoUnchained.Model.PowerUps.SpeedUpPowerUp;
 import io.github.RangoUnchained.Model.contactListener.ContactStrategy;
@@ -19,7 +22,7 @@ public class PowerUpSystem implements System, ContactStrategy {
 
 
     public PowerUpSystem() {
-        filter.require(PowerUpComponent.class);
+        filter.require(SpeedComponent.class);
 
         // Put all strategies TODO
         powerUpStrategies.put(0, new SpeedUpPowerUp());
@@ -27,7 +30,18 @@ public class PowerUpSystem implements System, ContactStrategy {
 
     @Override
     public void updateEntity(Entity entity) {
-        PowerUpComponent powerUp = (PowerUpComponent) entity.getComponent(PowerUpComponent.class);
+
+        SpeedComponent speed = (SpeedComponent) entity.getComponent(SpeedComponent.class);
+
+        if (speed.getSpeedBoostTimer() > 0) {
+            float delta = Gdx.graphics.getDeltaTime();
+            speed.speedBoostTimer -= delta;
+
+            if (speed.getSpeedBoostTimer() <= 0) {
+                speed.setCurrentSpeed(speed.getBaseSpeed());
+                speed.setSpeedBoostTimer(0);
+            }
+        }
     }
 
     private void kill(Entity entity) {
@@ -39,13 +53,14 @@ public class PowerUpSystem implements System, ContactStrategy {
     public void setContactStrategies() {
         ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
         centralContactListener.subscribe(
-            BallEntity.class, PlayerEntity.class,
-            this::applyPowerUp, // For beginContact
-            null);
+            PlayerEntity.class, PowerUpEntity.class,
+            null, // For beginContact
+            this::applyPowerUp);
     }
 
     /**contact strategy between playerEntity and Ballentity */
     private void applyPowerUp(ContactSystem.CollisionEvent collisionEvent) {
+        Gdx.app.log("poop" ,"collision" );
         PlayerEntity player;
         Entity powerUpEntity;
 
@@ -65,11 +80,12 @@ public class PowerUpSystem implements System, ContactStrategy {
 
     public void applyPowerUpToPlayer(int powerUpType, PlayerEntity player) {
         PowerUpStrategy strategy = powerUpStrategies.get(powerUpType);
-
+        Gdx.app.log("poop" ,"collision" );
         if (strategy != null) {
             strategy.apply(player);
         }
     }
+
 
     @Override
     public boolean filter(Entity entity) {

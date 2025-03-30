@@ -21,6 +21,7 @@ public class SpeedUpPowerUp implements PowerUpStrategy {
 
         if (speed != null) {
             speed.setCurrentSpeed(speed.getCurrentSpeed() * 2);
+            speed.setSpeedBoostTimer(5);
         }
     }
 }

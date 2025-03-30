@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Model.Factories;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.BounceComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
@@ -98,6 +99,9 @@ public class EntityFactory {
         float radius = name.endsWith("Big") ? BIGBALLRADIUS : name.endsWith("Medium") ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
         String path = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
+        int bounceType = name.endsWith("Big") ? BounceComponent.HIGH : name.endsWith("Medium") ? BounceComponent.MEDIUM : BounceComponent.LOW;
+
+        BounceComponent bounceComp = new BounceComponent(bounceType);
 
         //Stats
         StatComponent stats = new StatComponent();
@@ -114,7 +118,7 @@ public class EntityFactory {
         body.getBody().setLinearDamping(0);
         body.getBody().setAngularDamping(0);
 
-        BallEntity ball = new BallEntity(body, stats, sprite);
+        BallEntity ball = new BallEntity(body, stats, sprite,bounceComp);
         body.getBody().setUserData(ball);
         return ball;
     }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.BounceComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
@@ -73,9 +74,8 @@ public class PhysicsSystem implements System, ContactStrategy {
 
         Vector2 currentVelocity = ballBody.getLinearVelocity();
 
-        final float  STANDARDYVELOCITY = 8;
+        final float  STANDARDYVELOCITY = (float)((BounceComponent) ball.getComponent(BounceComponent.class)).type;
         final float  STANDARDXVELOCITY = 5;
-
 
         final float YTRESHOLD = -10;
         final float MAXIMUMXTRESHOLD = 5;

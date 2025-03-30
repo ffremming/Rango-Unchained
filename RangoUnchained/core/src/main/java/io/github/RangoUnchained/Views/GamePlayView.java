@@ -22,6 +22,7 @@ import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.level.GameLevel;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class GamePlayView extends BaseScreen {
 
@@ -52,6 +53,7 @@ public class GamePlayView extends BaseScreen {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         camera.update();
         viewport.apply();
+        controller.update(delta);
         drawGame();
 
         if (!pauseMenu.isPaused()) {
@@ -73,8 +75,6 @@ public class GamePlayView extends BaseScreen {
 
     private void drawGame() {
         batch.begin();
-
-        controller.update(delta);
 
         //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
@@ -110,7 +110,7 @@ public class GamePlayView extends BaseScreen {
             int newScore = LevelController.getInstance().getScore();
             scoreLabel.setText("Score: " + newScore);
         }
-        
+
         // Retrieve the time label from the stage
         Label timeLabel = stage.getRoot().findActor("timeLabel");
         if (timeLabel != null) {
@@ -120,7 +120,7 @@ public class GamePlayView extends BaseScreen {
         System.out.println(timeLabel.getX() +","+timeLabel.getY());
     }
 
-    private void updateHearts(SpriteBatch batch){ 
+    private void updateHearts(SpriteBatch batch){
 
         Texture texture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
         Sprite sprite = new Sprite(texture);
@@ -147,9 +147,9 @@ public class GamePlayView extends BaseScreen {
         // Create a label to display the score
         Label timeLabel = new Label("0 s", skin);
         timeLabel.setName("timeLabel"); // Set a name to easily update it later
-       
-        timeLabel.setBounds(WORLD_WIDTH-100,WORLD_HEIGHT-50, 100, 50);
-        
+
+        timeLabel.setBounds(Constants.WORLD_WIDTH-100, Constants.WORLD_HEIGHT-50, 100, 50);
+
         stage.addActor(timeLabel);
     }
 

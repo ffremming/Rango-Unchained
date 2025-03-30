@@ -6,11 +6,16 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonWriter;
 
+import java.io.FileWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
@@ -53,13 +58,53 @@ public class GameLevel {
     }
 
     public void checkpoint(float delta) {
-        if (checkpointCounter < 5) {
+        if (checkpointCounter < 3) {
             checkpointCounter += delta;
             System.out.println("Before checkpoint: " + checkpointCounter);
             return;
         }
         // TODO: Logic for writing to JSON
-        System.out.println("After checkpoint: " + checkpointCounter);
+        StringWriter writer = new StringWriter();
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+        json.setWriter(new JsonWriter(writer));
+        json.writeObjectStart();
+
+        LevelData levelData = new LevelData();
+        ArrayList<LevelData.EntityData> entitiesData = new ArrayList<>();
+
+        for (Entity entity : entities) {
+
+            //TODO: Need a way to add the walls/obstacles.
+
+            EntityData entityData = new EntityData(); // Normal java object - not JSON object
+
+            if (entity instanceof BallEntity) {
+                // Fetch needed components
+                BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+                int timesPopped = ((StatComponent) entity.getComponent(StatComponent.class)).getTimesPopped();
+
+                // Set the name property
+                entityData.name = timesPopped == 0 ? "BallBig" : timesPopped == 1 ? "BallMedium" : "BallSmall";
+
+                // Set the position property
+                EntityData.Position entityPosition = new EntityData.Position();
+                entityPosition.x = body.getBodyDef().position.x;
+                entityPosition.y = body.getBodyDef().position.y;
+                entityData.position = entityPosition;
+
+                // Set the velocity property
+                entityData.velocity = body.getBody().getLinearVelocity();
+            }
+            entitiesData.add(entityData);
+        }
+
+        json.writeValue("entitiesData", entitiesData); // Write JSON object out of the entitiesData list
+        //TODO: write metadata to json
+        json.writeObjectEnd();
+
+        System.out.println("After checkpoint: " + writer.toString());
+        checkpointCounter = 0;
     }
 
 

@@ -30,6 +30,17 @@ public class EntityFactory {
     public static final float PIXELS_TO_METERS = 1 / 64f; // Define this in a constants file
     public static final float METERS_TO_PIXELS = 64f / 1; // Define this in a constants file
 
+    //categories
+    public static final short CATEGORY_PLAYER     = 0x0001;
+    public static final short CATEGORY_BALL       = 0x0002;
+    public static final short CATEGORY_OBSTACLE   = 0x0004;
+    public static final short CATEGORY_PROJECTILE = 0x0008;
+
+    //masks for what should collide with what
+    public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE;         // Player ignores projectiles, for instance.
+    public static final short MASK_BALL       = CATEGORY_PLAYER | CATEGORY_OBSTACLE | CATEGORY_PROJECTILE;       // Balls might ignore projectiles too.
+    public static final short MASK_OBSTACLE   = CATEGORY_PLAYER | CATEGORY_BALL;
+    public static final short MASK_PROJECTILE = CATEGORY_BALL;
 
     private EntityFactory() {}
 
@@ -65,7 +76,7 @@ public class EntityFactory {
         float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
 
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height),true);
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
         InputComponent input = new InputComponent();
 
         PlayerEntity player = new PlayerEntity(body, sprite, input);
@@ -98,7 +109,7 @@ public class EntityFactory {
         //body
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2),true);
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2,CATEGORY_BALL,MASK_BALL),true);
         body.getBody().setLinearVelocity(velocity);
         body.getBody().setLinearDamping(0);
         body.getBody().setAngularDamping(0);
@@ -129,7 +140,7 @@ public class EntityFactory {
         if (name.endsWith("Left") || name.endsWith("Right")){
             width = 32/Constants.PPM;
             height = 1000/Constants.PPM;
-            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
+            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
@@ -138,7 +149,7 @@ public class EntityFactory {
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
             width = 733/Constants.PPM*2;
             height = 64/Constants.PPM;
-            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height),true);
+            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
         }
         ObstacleEntity obstacle;
@@ -161,7 +172,7 @@ public class EntityFactory {
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
 
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height),true);
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height,CATEGORY_PROJECTILE,MASK_PROJECTILE),true);
        
         LifeTimeComponent lifeTime = new LifeTimeComponent(50); // 1.5 seconds
         TransformationComponent transComp = new TransformationComponent(5, 1, 1, 20
@@ -198,30 +209,45 @@ public class EntityFactory {
         return bodyComponent;
     }
 
-    private static FixtureDef createNoxBounceBoxFixture(float width,float height){
+    private static FixtureDef createNoxBounceBoxFixture(float width,float height, short category, short mask){
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width / 2, height / 2);
-        return createFixture(shape, 1f, 0.4f, 0.5f); // Default values for density, friction, and restitution
-    }
-
-    private static FixtureDef createBoxFixture(float width, float height) {
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width / 2, height / 2);
-        return createFixture(shape, 1f, 0.4f, 0f); // Default values for density, friction, and restitution
-    }
-
-    private static FixtureDef createCircleFixture(float radius) {
-        CircleShape shape = new CircleShape();
-        shape.setRadius(radius);
-        return createFixture(shape, 1f, 0.0f, 0.99f); // Default values for density, friction, and restitution
-    }
-
-    private static FixtureDef createFixture(Shape shape, float density, float friction, float restitution) {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = density;
-        fixtureDef.friction = friction;
-        fixtureDef.restitution = restitution;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0f;
+        // Set collision filtering:
+        fixtureDef.filter.categoryBits = category;
+        fixtureDef.filter.maskBits = mask;
+        return fixtureDef;
+    }
+
+    private static FixtureDef createBoxFixture(float width, float height, short category, short mask) {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(width / 2, height / 2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0f;
+        // Set collision filtering:
+        fixtureDef.filter.categoryBits = category;
+        fixtureDef.filter.maskBits = mask;
+        return fixtureDef;
+    }
+
+    private static FixtureDef createCircleFixture(float radius, short category, short mask) {
+        CircleShape shape = new CircleShape();
+        shape.setRadius(radius);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0.0f;
+        fixtureDef.restitution = 0.99f;
+        // Set collision filtering:
+        fixtureDef.filter.categoryBits = category;
+        fixtureDef.filter.maskBits = mask;
         return fixtureDef;
     }
 }

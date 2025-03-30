@@ -29,7 +29,7 @@ public class LevelController {
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
     private RemovalQueue removalQueue;
-    
+
 
     private LevelController () {
     }
@@ -39,6 +39,12 @@ public class LevelController {
             levelController = new LevelController();
         }
         return levelController;
+    }
+
+    public static void resetInstance() {
+        if (levelController != null) {
+            levelController = null;
+        }
     }
 
     /** clear systems (TODO) */
@@ -83,7 +89,7 @@ public class LevelController {
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
 
-        
+
     }
 
     /**updates all entities with the appropiate systems */
@@ -114,6 +120,9 @@ public class LevelController {
     }
 
     public int getScore(){
+        if (level == null) {
+            return 0;
+        }
         return level.scoreManager.getScore();
     }
 

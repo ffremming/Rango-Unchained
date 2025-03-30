@@ -25,7 +25,7 @@ public class GameController extends Game {
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-        skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json")); // Load skin ONCE
+        skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json"));
         setView(new MainMenuView());
     }
 
@@ -66,6 +66,7 @@ public class GameController extends Game {
         return skin;
     }
 
+    @Override
     public void dispose(){
         batch.dispose();
         skin.dispose();
@@ -74,6 +75,5 @@ public class GameController extends Game {
             currentView.dispose();
         }
     }
-
 }
 

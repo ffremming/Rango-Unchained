@@ -22,20 +22,21 @@ public abstract class BaseScreen extends ScreenAdapter {
     protected Viewport viewport;
     protected OrthographicCamera camera;
 
-    protected static final float WORLD_WIDTH = 800;
-    protected static final float WORLD_HEIGHT = 480;
     public BaseScreen(GameController game) {
         this.game = game;
         this.batch = GameController.getBatch();
         this.font = GameController.getFont();
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
         stage = new Stage(viewport);
     }
 
     public Skin getSkin() {
         return GameController.getSkin();
+    }
+    public Stage getStage() {
+        return stage;
     }
 
     @Override
@@ -47,6 +48,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     public void render(float delta) {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
+        camera.update();
         viewport.apply();
         stage.act(delta);
         stage.draw();

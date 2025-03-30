@@ -23,6 +23,7 @@ public class GameLevel {
     private ArrayList<Entity> entities = new ArrayList<>();
     private LevelData.MetaData metaData;
     private ArrayList<LevelData.EntityData> entitiesData;
+    private float checkpointCounter = 0;
     public ScoreManager scoreManager = new ScoreManager();
 
     public GameLevel(int number) {
@@ -49,6 +50,16 @@ public class GameLevel {
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
         spawn(levelData.entitiesData);
+    }
+
+    public void checkpoint(float delta) {
+        if (checkpointCounter < 5) {
+            checkpointCounter += delta;
+            System.out.println("Before checkpoint: " + checkpointCounter);
+            return;
+        }
+        // TODO: Logic for writing to JSON
+        System.out.println("After checkpoint: " + checkpointCounter);
     }
 
 

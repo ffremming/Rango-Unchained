@@ -26,7 +26,7 @@
       "name": "BallBig",
       "position": {
         "x": 200,
-        "y": 350
+        "y": 400
       },
       "velocity":{
         "x":3
@@ -47,7 +47,7 @@
       "name": "BallBig",
       "position": {
         "x": 600,
-        "y": 450
+        "y": 400
       },
       "velocity":{
         "x":2
@@ -57,7 +57,7 @@
       "name": "BallMedium",
       "position": {
         "x": 900,
-        "y": 500
+        "y": 400
       },
       "velocity":{
         "x":-2

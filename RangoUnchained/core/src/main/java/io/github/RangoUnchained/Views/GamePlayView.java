@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
@@ -24,12 +25,14 @@ public class GamePlayView extends BaseScreen {
     private Touchpad touchpad;
     private LevelController controller;
     private Box2DDebugRenderer box2DDebugRenderer;
+    private PauseMenu pauseMenu;
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
         box2DDebugRenderer = new Box2DDebugRenderer();
         controller = LevelController.getInstance();
         controller.initializeSystems(levelNumber);
+        pauseMenu = new PauseMenu(game, levelNumber);
     }
 
     @Override
@@ -42,43 +45,47 @@ public class GamePlayView extends BaseScreen {
 
     @Override
     public void render(float delta) {
-        super.render(delta);
+        // Clear the screen and update camera
+        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+        camera.update();
+        viewport.apply();
+        drawGame();
 
-        // Update physics world first
-        controller.step(1/60f, 6, 2);
-        controller.excecuteRemovelQueue();
-        controller.excecuteSpawnQueue();
-        
+        if (!pauseMenu.isPaused()) {
+            // Update game logic
+            controller.step(1 / 60f, 6, 2);
+            controller.excecuteRemovelQueue();
+            controller.excecuteSpawnQueue();
+
+            // Update and draw the UI stage on top of the game
+            stage.act(delta);
+            stage.draw();
+        } else {
+            // Update and draw the pause menu on top of everything else
+            pauseMenu.act(delta);
+            pauseMenu.draw();
+        }
+    }
 
 
-        // Render everything
+    private void drawGame() {
         batch.begin();
-
         controller.update();
-
-        //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
             Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
-
-        //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
-
-
         batch.end();
-        stage.draw();
-
-
     }
 
     private void createUI() {
-        TextButton gameOverButton = ButtonFactory.createButton("End Game", 300, 60, getSkin(), game,
-            () -> game.setView(new GameOverView()));
         TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
             () -> controller.handleShoot());
+        TextButton pauseButton = ButtonFactory.createButton("Pause", 150, 60, getSkin(), game,
+            () -> pauseMenu.togglePause());
 
         createTable(shootButton).bottom().right().pad(20);
-        createTable(gameOverButton).top().padTop(50);
+        createTable(pauseButton).top().padTop(50);
         createJoystick();
     }
 
@@ -109,9 +116,9 @@ public class GamePlayView extends BaseScreen {
 
     @Override
     public void hide() {
-        super.hide();
-        controller.clearSystems();
-        game.setView(new MainMenuView());
+        LevelController.resetInstance();
+        controller = null;
+        pauseMenu = null;
     }
 
 }

@@ -32,6 +32,12 @@ public class LevelController {
         return levelController;
     }
 
+    public static void resetInstance() {
+        if (levelController != null) {
+            levelController = null;
+        }
+    }
+
     /** clear systems (TODO) */
     public void clearSystems() {
         level.clear();

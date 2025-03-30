@@ -5,7 +5,7 @@ import java.util.Map;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
-import io.github.RangoUnchained.Model.Components.PhysicsComponent;
+import io.github.RangoUnchained.Model.Components.ContactComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 
 public class ObstacleEntity implements Entity {
@@ -14,7 +14,7 @@ public class ObstacleEntity implements Entity {
     public ObstacleEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent) {
         addComponent(bodyComponent);
         addComponent(spriteComponent);
-        addComponent(new PhysicsComponent());
+        addComponent(new ContactComponent());
     }
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {

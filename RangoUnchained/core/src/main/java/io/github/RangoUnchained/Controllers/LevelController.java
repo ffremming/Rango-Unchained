@@ -6,12 +6,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Systems.ContactSystem;
+import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
+import io.github.RangoUnchained.Model.contactListener.ContactStrategies;
 import io.github.RangoUnchained.Model.level.GameLevel;
 
 public class LevelController {
@@ -22,6 +25,8 @@ public class LevelController {
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
     private RemovalQueue removalQueue;
+    
+
     private LevelController () {
     }
 
@@ -69,6 +74,12 @@ public class LevelController {
         level = new GameLevel(levelNumber);
         spawnQueue = new SpawnQueue();
         removalQueue = new RemovalQueue();
+        ContactStrategies ContactStrategies = new ContactStrategies();
+
+        getSystem(PhysicsSystem.class).setContactStrategies();
+        getSystem(HealthSystem.class).setContactStrategies();
+
+        
     }
 
     /**updates all entities with the appropiate systems */
@@ -95,5 +106,9 @@ public class LevelController {
     /**methdo for shooting, called from view */
     public void handleShoot(){
         getSystem(InputSystem.class).handleShoot(level.getEntities());
+    }
+
+    public int getScore(){
+        return level.scoreManager.getScore();
     }
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
-import io.github.RangoUnchained.Model.Components.PhysicsComponent;
+import io.github.RangoUnchained.Model.Components.ContactComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
@@ -19,7 +19,7 @@ public class BallEntity implements Entity{
         addComponent(bodyComponent);
         addComponent(statComponent);
         addComponent(spriteComponent);
-        PhysicsComponent phyComp = new PhysicsComponent();
+        ContactComponent phyComp = new ContactComponent();
         phyComp.setContactLock(60);
         addComponent(phyComp);
        

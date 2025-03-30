@@ -143,4 +143,21 @@ public class GameLevel {
             }
         }
     }
+
+    /**
+     * Returns a entity of the specified class type.
+     *
+     * @param <T> the type of the system
+     * @param systemClass the class of the system to return
+     * @return the system of the specified class type, or null if not found
+     */
+    public <T extends Entity> ArrayList<T> getEntity(Class<T> entityClass) {
+        ArrayList<T> wantedEntities = new ArrayList<T>();
+        for (Entity entity : entities) {
+            if (entityClass.isInstance(entity)) {
+                wantedEntities.add(entityClass.cast(entity));
+            }
+        }
+        return wantedEntities;
+    }
 }

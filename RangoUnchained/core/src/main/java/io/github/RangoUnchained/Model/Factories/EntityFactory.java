@@ -57,7 +57,7 @@ public class EntityFactory {
             return createBallEntity(x, y, name, world,velocity);
 
         } else if (name.startsWith("Obsticle")) {
-            return createObstacleEntity(x, y, name, world);
+            return createObstacleEntity(name, world);
 
         } else if (name.startsWith("Projectile")) {
             return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
@@ -108,7 +108,7 @@ public class EntityFactory {
         //Stats
         StatComponent stats = new StatComponent();
         stats.setTimesPopped(timesPopped);
-
+        
         //sprite
         SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png",64,64);
 
@@ -126,7 +126,7 @@ public class EntityFactory {
     }
 
     public static BasicEntity createBackground(){
-        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(800*1.9),(int)(480*1.9));
+        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(Gdx.graphics.getWidth()),(int)(Gdx.graphics.getHeight()));
         BasicEntity bg = new BasicEntity();
         bg.addComponent(sprite);
         return bg;
@@ -134,18 +134,25 @@ public class EntityFactory {
 
 
     // 🔹 Obstacle Entity
-    public static ObstacleEntity createObstacleEntity(float x, float y, String name, World world) {
+    public static ObstacleEntity createObstacleEntity(String name, World world) {
 
         BodyComponent body = null;
         SpriteComponent sprite = null;
         float width;
         float height;
+        int x;
+        int y;
 
         float pxl = 1.9f;
+        
 
         if (name.endsWith("Left") || name.endsWith("Right")){
+            if (name.endsWith("Right")){
+                x = Gdx.graphics.getWidth();
+            } else {x = 0;}
+            y = 0;
+            height = Gdx.graphics.getHeight();
             width = 32/Constants.PPM;
-            height = 1000/Constants.PPM;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
@@ -153,8 +160,16 @@ public class EntityFactory {
 
 
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
-            width = 733/Constants.PPM*2;
-            height = 64/Constants.PPM;
+            if (name.endsWith("Roof")){
+                y = Gdx.graphics.getHeight();
+                height = 50/Constants.PPM;
+            } else {
+                y = 50;
+                height = 200/Constants.PPM;
+            }
+            x = 0;
+            width = Gdx.graphics.getWidth();
+           
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
         }

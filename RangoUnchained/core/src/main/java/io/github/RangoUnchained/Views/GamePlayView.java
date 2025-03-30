@@ -138,7 +138,6 @@ public class GamePlayView extends BaseScreen {
         scoreLabel.setName("scoreLabel"); // Set a name to easily update it later
 
         scoreLabel.setBounds(50, -30, 100, 100);
-
         stage.addActor(scoreLabel);
     }
 

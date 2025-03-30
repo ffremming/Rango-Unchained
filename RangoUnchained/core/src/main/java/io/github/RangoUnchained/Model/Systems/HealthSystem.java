@@ -55,9 +55,4 @@ public class HealthSystem implements System, ContactStrategy{
         }
         ((HealthComponent)player.getComponent(HealthComponent.class)).decreaseHealth();
     }
-
-
-
-
-    
 }

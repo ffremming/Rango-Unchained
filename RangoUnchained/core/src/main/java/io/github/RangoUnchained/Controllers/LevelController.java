@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
+import io.github.RangoUnchained.Model.level.Timer;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.contactListener.ContactStrategies;
@@ -22,6 +25,7 @@ public class LevelController {
     private static LevelController levelController;
 
     private GameLevel level;
+    private Timer timer = new Timer();
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
     private RemovalQueue removalQueue;
@@ -89,8 +93,9 @@ public class LevelController {
     }
 
     /**updates all entities with the appropiate systems */
-    public void update() {
+    public void update(float delta) {
         systemManager.update(level.getEntities());
+        timer.update(delta);
     }
 
     public void step(float f, int i, int j) {
@@ -119,5 +124,19 @@ public class LevelController {
             return 0;
         }
         return level.scoreManager.getScore();
+    }
+
+    public int getPlayerHealth(){
+        
+        ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
+        if (entities.size()<=0){return 0;}
+
+        int health = ((HealthComponent)(entities.get(0).getComponent(HealthComponent.class))).getHealth();
+
+        return health;
+    }
+
+    public double getTime(){
+        return timer.getTime();
     }
 }

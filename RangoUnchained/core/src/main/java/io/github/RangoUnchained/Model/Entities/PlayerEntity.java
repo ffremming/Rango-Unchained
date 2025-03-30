@@ -9,7 +9,6 @@ import io.github.RangoUnchained.Model.Components.ContactComponent;
 import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
-import io.github.RangoUnchained.Model.Components.TransformationComponent;
 
 public class PlayerEntity implements Entity{
 
@@ -20,7 +19,7 @@ public class PlayerEntity implements Entity{
         addComponent(spriteComponent);
         addComponent(inputComponent);
         addComponent(new ContactComponent());
-        addComponent(new HealthComponent());
+        addComponent(new HealthComponent(8));
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));
     }
     @Override

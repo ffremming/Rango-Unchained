@@ -179,11 +179,11 @@ public class EntityFactory {
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height,CATEGORY_PROJECTILE,MASK_PROJECTILE),true);
        
         LifeTimeComponent lifeTime = new LifeTimeComponent(50); // 1.5 seconds
-        TransformationComponent transComp = new TransformationComponent(5, 1, 1, 20
+        TransformationComponent transComp = new TransformationComponent(3, 1, 1, 10
         ,TransformationComponent.RECTANGLE,
         TransformationComponent.UP
         ,true,
-        15
+        5
         );
         transComp.setAutoReverse(true);
         transComp.setAlwaysReverse(false);

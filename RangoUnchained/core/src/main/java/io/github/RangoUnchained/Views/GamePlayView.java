@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -72,21 +73,21 @@ public class GamePlayView extends BaseScreen {
 
     private void drawGame() {
         batch.begin();
-        controller.update();
+
+        controller.update(delta);
+
+        //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
             Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
             batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
+
+        //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
+        updateHearts(batch);
+        updateUI();
+
         batch.end();
         stage.draw();
-
-
-        Label scoreLabel = stage.getRoot().findActor("scoreLabel");
-        if (scoreLabel != null) {
-            int newScore = LevelController.getInstance().getScore();
-            scoreLabel.setText("Score: " + newScore);
-        }
-
     }
 
     private void createUI() {
@@ -99,6 +100,33 @@ public class GamePlayView extends BaseScreen {
         createTable(pauseButton).top().padTop(50);
         createJoystick();
        createScoreLabel();
+       createTimeLabel();
+    }
+
+    private void updateUI(){
+
+        Label scoreLabel = stage.getRoot().findActor("scoreLabel");
+        if (scoreLabel != null) {
+            int newScore = LevelController.getInstance().getScore();
+            scoreLabel.setText("Score: " + newScore);
+        }
+        
+        // Retrieve the time label from the stage
+        Label timeLabel = stage.getRoot().findActor("timeLabel");
+        if (timeLabel != null) {
+            double time = LevelController.getInstance().getTime();
+            timeLabel.setText(String.format("%.1f s", time));
+        }
+        System.out.println(timeLabel.getX() +","+timeLabel.getY());
+    }
+
+    private void updateHearts(SpriteBatch batch){ 
+
+        Texture texture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
+        Sprite sprite = new Sprite(texture);
+        for (int i = 0;i<LevelController.getInstance().getPlayerHealth();i++){
+            batch.draw(sprite,75*i,(int)(Gdx.graphics.getHeight()-75),64,64);
+        }
     }
 
     private void createScoreLabel() {
@@ -111,6 +139,18 @@ public class GamePlayView extends BaseScreen {
         scoreLabel.setBounds(50, -30, 100, 100);
 
         stage.addActor(scoreLabel);
+    }
+
+    private void createTimeLabel() {
+        Skin skin = getSkin();
+
+        // Create a label to display the score
+        Label timeLabel = new Label("0 s", skin);
+        timeLabel.setName("timeLabel"); // Set a name to easily update it later
+       
+        timeLabel.setBounds(WORLD_WIDTH-100,WORLD_HEIGHT-50, 100, 50);
+        
+        stage.addActor(timeLabel);
     }
 
     private Table createTable(Button button) {

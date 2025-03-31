@@ -8,17 +8,23 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonWriter;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 /**
  * Represents a game level, containing metadata and entities.
@@ -43,9 +49,13 @@ public class GameLevel {
      */
     public void loadLevel(int number) {
         Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
         FileHandle file = Gdx.files.internal("levels/level" + number+".json");
+        //FileHandle file = Gdx.files.internal("levels/test.json");
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
+        metaData = levelData.metaData;
+        metaData.progress = 1; // Set to on-going
 
         if (levelData.entitiesData == null) {
             Gdx.app.log("JSON_Error", "No entitiesData found in JSON file.");
@@ -55,6 +65,12 @@ public class GameLevel {
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
         spawn(levelData.entitiesData);
+
+        try (FileWriter fileWriter = new FileWriter("assets/levels/test.json")) {
+            fileWriter.write(json.prettyPrint(levelData));
+        } catch (IOException e) {
+            System.out.println("Could not write checkpoint to json file");
+        }
     }
 
     public void checkpoint(float delta) {
@@ -63,48 +79,76 @@ public class GameLevel {
             System.out.println("Before checkpoint: " + checkpointCounter);
             return;
         }
-        // TODO: Logic for writing to JSON
-        StringWriter writer = new StringWriter();
+
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-        json.setWriter(new JsonWriter(writer));
-        json.writeObjectStart();
 
         LevelData levelData = new LevelData();
+
         ArrayList<LevelData.EntityData> entitiesData = new ArrayList<>();
 
         for (Entity entity : entities) {
-
             //TODO: Need a way to add the walls/obstacles.
-
-            EntityData entityData = new EntityData(); // Normal java object - not JSON object
-
             if (entity instanceof BallEntity) {
-                // Fetch needed components
-                BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
-                int timesPopped = ((StatComponent) entity.getComponent(StatComponent.class)).getTimesPopped();
-
-                // Set the name property
-                entityData.name = timesPopped == 0 ? "BallBig" : timesPopped == 1 ? "BallMedium" : "BallSmall";
-
-                // Set the position property
-                EntityData.Position entityPosition = new EntityData.Position();
-                entityPosition.x = body.getBodyDef().position.x;
-                entityPosition.y = body.getBodyDef().position.y;
-                entityData.position = entityPosition;
-
-                // Set the velocity property
-                entityData.velocity = body.getBody().getLinearVelocity();
+                entitiesData.add(writeBallEntity(entity));
             }
-            entitiesData.add(entityData);
+            if (entity instanceof PlayerEntity) {
+                entitiesData.add(writePlayerEntity(entity));
+            }
         }
 
-        json.writeValue("entitiesData", entitiesData); // Write JSON object out of the entitiesData list
-        //TODO: write metadata to json
-        json.writeObjectEnd();
+        levelData.entitiesData = entitiesData;
+        levelData.metaData = metaData;
 
-        System.out.println("After checkpoint: " + writer.toString());
+        try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
+            fileWriter.write(json.prettyPrint(levelData));
+        } catch (IOException e) {
+            System.out.println("Could not write checkpoint to json file");
+        }
+
         checkpointCounter = 0;
+    }
+
+    public LevelData.MetaData writeMetaData() {
+        return metaData;
+    }
+
+    public EntityData writeBallEntity(Entity entity) {
+        EntityData entityData = new EntityData();
+        // Fetch needed components
+        BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+        StatComponent stat = (StatComponent) entity.getComponent(StatComponent.class);
+        SpriteComponent sprite = (SpriteComponent) entity.getComponent(SpriteComponent.class);
+
+        // Set the name property
+        entityData.name = stat.getTimesPopped() == 0 ? "BallBig" : stat.getTimesPopped() == 1 ? "BallMedium" : "BallSmall";
+
+        // Set the position property
+        EntityData.Position entityPosition = new EntityData.Position();
+        entityPosition.x = sprite.getSprite().getX();
+        entityPosition.y = sprite.getSprite().getY();
+        entityData.position = entityPosition;
+
+        // Set the velocity property
+        entityData.velocity = body.getBody().getLinearVelocity();
+        return entityData;
+    }
+
+    public EntityData writePlayerEntity(Entity entity) {
+        EntityData entityData = new EntityData();
+        // Fetch needed components
+        BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+
+        // Set the name property
+        entityData.name = "Player";
+
+        // Set the position property
+        EntityData.Position entityPosition = new EntityData.Position();
+        entityPosition.x = Constants.metersToPixels(body.getBodyDef().position.x);
+        entityPosition.y = Constants.metersToPixels(body.getBodyDef().position.y);
+        entityData.position = entityPosition;
+
+        return entityData;
     }
 
 
@@ -167,6 +211,7 @@ public class GameLevel {
             public String theme;
             public boolean completed;
             public boolean multiplayer;
+            public int progress;
         }
     }
 

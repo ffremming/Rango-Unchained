@@ -54,10 +54,13 @@ public class GameLevel {
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
         metaData = levelData.metaData;
+        entitiesData = levelData.entitiesData;
+
         if (metaData.progress == 1) {
             file = Gdx.files.internal("levels/checkpoint.json");
             levelData = json.fromJson(LevelData.class, file.readString());
             metaData = levelData.metaData;
+            entitiesData = levelData.entitiesData;
         } else {
             metaData.progress = 1; // Set to on-going
             try (FileWriter fileWriter = new FileWriter("assets/levels/level" + number + ".json")) {
@@ -90,6 +93,13 @@ public class GameLevel {
         LevelData levelData = new LevelData();
 
         ArrayList<LevelData.EntityData> entitiesData = new ArrayList<>();
+
+        for (EntityData entityData : this.entitiesData) {
+            if (entityData.name.startsWith("Player") || entityData.name.startsWith("Ball")) {
+                continue;
+            }
+            entitiesData.add(entityData);
+        }
 
         for (Entity entity : entities) {
             //TODO: Need a way to add the walls/obstacles.
@@ -142,14 +152,16 @@ public class GameLevel {
         EntityData entityData = new EntityData();
         // Fetch needed components
         BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+        SpriteComponent sprite = (SpriteComponent) entity.getComponent(SpriteComponent.class);
+
 
         // Set the name property
         entityData.name = "Player";
 
         // Set the position property
         EntityData.Position entityPosition = new EntityData.Position();
-        entityPosition.x = Constants.metersToPixels(body.getBodyDef().position.x);
-        entityPosition.y = Constants.metersToPixels(body.getBodyDef().position.y);
+        entityPosition.x = sprite.getSprite().getX();
+        entityPosition.y = sprite.getSprite().getY();
         entityData.position = entityPosition;
 
         return entityData;

@@ -70,6 +70,9 @@ public class GameLevel {
             }
         }
 
+        //TODO: Set metadata to indicate a completed level and remove progress = 1 so
+        // correct version of level is displayed (Maybe in levelcontroller?)
+
         if (levelData.entitiesData == null) {
             Gdx.app.log("JSON_Error", "No entitiesData found in JSON file.");
             levelData.entitiesData = new ArrayList<>();
@@ -80,7 +83,13 @@ public class GameLevel {
         spawn(levelData.entitiesData);
     }
 
+    /**
+     * Writes state of entities to checkpoint.json every 3 seconds
+     *
+     * @param delta the amount of time passed since last call
+     */
     public void checkpoint(float delta) {
+        // If counter >= 3, write to JSON, else count and continue
         if (checkpointCounter < 3) {
             checkpointCounter += delta;
             System.out.println("Before checkpoint: " + checkpointCounter);
@@ -94,6 +103,7 @@ public class GameLevel {
 
         ArrayList<LevelData.EntityData> entitiesData = new ArrayList<>();
 
+        // Add every entity that is not a player of ball
         for (EntityData entityData : this.entitiesData) {
             if (entityData.name.startsWith("Player") || entityData.name.startsWith("Ball")) {
                 continue;
@@ -101,8 +111,8 @@ public class GameLevel {
             entitiesData.add(entityData);
         }
 
+        // Add every ball and player entity
         for (Entity entity : entities) {
-            //TODO: Need a way to add the walls/obstacles.
             if (entity instanceof BallEntity) {
                 entitiesData.add(writeBallEntity(entity));
             }
@@ -111,15 +121,18 @@ public class GameLevel {
             }
         }
 
+        // Set different properties of local method levelData
         levelData.entitiesData = entitiesData;
         levelData.metaData = metaData;
 
+        // Write state to checkpoint.json
         try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
             fileWriter.write(json.prettyPrint(levelData));
         } catch (IOException e) {
             System.out.println("Could not write checkpoint to json file");
         }
 
+        // After writing, reset counter.
         checkpointCounter = 0;
     }
 
@@ -127,6 +140,12 @@ public class GameLevel {
         return metaData;
     }
 
+    /**
+     * Creates an EntityData object from  Entity object
+     *
+     * @param entity Current entity being mapped
+     * @return EntityData object of the corresponding entity argument
+     */
     public EntityData writeBallEntity(Entity entity) {
         EntityData entityData = new EntityData();
         // Fetch needed components
@@ -148,6 +167,12 @@ public class GameLevel {
         return entityData;
     }
 
+    /**
+     * Creates an EntityData object from Entity object
+     *
+     * @param entity Current entity being mapped
+     * @return EntityData object of the corresponding entity argument
+     */
     public EntityData writePlayerEntity(Entity entity) {
         EntityData entityData = new EntityData();
         // Fetch needed components

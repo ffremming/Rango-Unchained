@@ -51,10 +51,14 @@ public class GameLevel {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
         FileHandle file = Gdx.files.internal("levels/level" + number+".json");
-        //FileHandle file = Gdx.files.internal("levels/test.json");
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
         metaData = levelData.metaData;
+        if (metaData.progress == 1) {
+            file = Gdx.files.internal("levels/checkpoint.json");
+            levelData = json.fromJson(LevelData.class, file.readString());
+            metaData = levelData.metaData;
+        }
         metaData.progress = 1; // Set to on-going
 
         if (levelData.entitiesData == null) {
@@ -66,7 +70,7 @@ public class GameLevel {
 
         spawn(levelData.entitiesData);
 
-        try (FileWriter fileWriter = new FileWriter("assets/levels/test.json")) {
+        try (FileWriter fileWriter = new FileWriter("assets/levels/level" + number + ".json")) {
             fileWriter.write(json.prettyPrint(levelData));
         } catch (IOException e) {
             System.out.println("Could not write checkpoint to json file");

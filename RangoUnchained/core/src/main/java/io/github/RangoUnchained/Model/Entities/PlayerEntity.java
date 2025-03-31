@@ -21,7 +21,7 @@ public class PlayerEntity implements Entity{
         addComponent(spriteComponent);
         addComponent(inputComponent);
         addComponent(new ContactComponent());
-        addComponent(new HealthComponent());
+        addComponent(new HealthComponent(3));
         addComponent(new SpeedComponent(5f));
         addComponent(healthComponent);
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));

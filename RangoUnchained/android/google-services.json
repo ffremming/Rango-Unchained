@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "183900979098",
+    "firebase_url": "https://rangounchained-f183e-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "rangounchained-f183e",
+    "storage_bucket": "rangounchained-f183e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183900979098:android:f4e85d6b67b8ce23fd8423",
+        "android_client_info": {
+          "package_name": "io.github.RangoUnchained"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB56NQxaOVCMLotQsj-rECTJgmYFBHEuKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

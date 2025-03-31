@@ -61,6 +61,7 @@ public class GamePlayView extends BaseScreen {
             controller.step(1 / 60f, 6, 2);
             controller.excecuteRemovelQueue();
             controller.excecuteSpawnQueue();
+            controller.checkpoint(delta);
 
             // Update and draw the UI stage on top of the game
             stage.act(delta);

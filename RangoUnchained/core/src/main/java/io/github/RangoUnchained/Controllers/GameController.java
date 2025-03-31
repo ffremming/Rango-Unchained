@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Views.GamePlayView;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
 
     private static GameController GameController;
+    private FirebaseManager firebaseManager;
     private static SpriteBatch batch;
     private static BitmapFont font;
     private static Skin skin;
@@ -34,6 +36,14 @@ public class GameController extends Game {
             GameController = new GameController();
         }
         return GameController;
+    }
+
+    // Only done once on initialization
+    public void setFirebaseManager(FirebaseManager firebaseManager) {
+        this.firebaseManager = firebaseManager;
+    }
+    public FirebaseManager getFirebaseManager() {
+        return firebaseManager;
     }
 
     public void setView(Screen view){

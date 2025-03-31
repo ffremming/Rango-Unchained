@@ -58,8 +58,14 @@ public class GameLevel {
             file = Gdx.files.internal("levels/checkpoint.json");
             levelData = json.fromJson(LevelData.class, file.readString());
             metaData = levelData.metaData;
+        } else {
+            metaData.progress = 1; // Set to on-going
+            try (FileWriter fileWriter = new FileWriter("assets/levels/level" + number + ".json")) {
+                fileWriter.write(json.prettyPrint(levelData));
+            } catch (IOException e) {
+                System.out.println("Could not write checkpoint to json file");
+            }
         }
-        metaData.progress = 1; // Set to on-going
 
         if (levelData.entitiesData == null) {
             Gdx.app.log("JSON_Error", "No entitiesData found in JSON file.");
@@ -69,12 +75,6 @@ public class GameLevel {
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
         spawn(levelData.entitiesData);
-
-        try (FileWriter fileWriter = new FileWriter("assets/levels/level" + number + ".json")) {
-            fileWriter.write(json.prettyPrint(levelData));
-        } catch (IOException e) {
-            System.out.println("Could not write checkpoint to json file");
-        }
     }
 
     public void checkpoint(float delta) {

@@ -37,6 +37,9 @@ public abstract class BaseScreen extends ScreenAdapter {
     public Skin getSkin() {
         return GameController.getSkin();
     }
+    public Stage getStage() {
+        return stage;
+    }
 
     @Override
     public void show() {
@@ -47,6 +50,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     public void render(float delta) {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
+        camera.update();
         viewport.apply();
         stage.act(delta);
         stage.draw();

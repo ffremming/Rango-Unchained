@@ -3,7 +3,8 @@
     "number": 2,
     "theme": "Forest",
     "completed": false,
-    "multiplayer": false
+    "multiplayer": false,
+    "progress": 0
   },
   "entitiesData": [
 
@@ -72,6 +73,6 @@
       }
     }
 
-    
+
   ]
 }

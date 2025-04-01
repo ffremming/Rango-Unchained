@@ -6,14 +6,25 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonWriter;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 /**
  * Represents a game level, containing metadata and entities.
@@ -23,6 +34,7 @@ public class GameLevel {
     private ArrayList<Entity> entities = new ArrayList<>();
     private LevelData.MetaData metaData;
     private ArrayList<LevelData.EntityData> entitiesData;
+    private float checkpointCounter = 0;
     public ScoreManager scoreManager = new ScoreManager();
 
     public GameLevel(int number) {
@@ -37,9 +49,29 @@ public class GameLevel {
      */
     public void loadLevel(int number) {
         Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
         FileHandle file = Gdx.files.internal("levels/level" + number+".json");
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
+        metaData = levelData.metaData;
+        entitiesData = levelData.entitiesData;
+
+        if (metaData.progress == 1) {
+            file = Gdx.files.internal("levels/checkpoint.json");
+            levelData = json.fromJson(LevelData.class, file.readString());
+            metaData = levelData.metaData;
+            entitiesData = levelData.entitiesData;
+        } else {
+            metaData.progress = 1; // Set to on-going
+            try (FileWriter fileWriter = new FileWriter("assets/levels/level" + number + ".json")) {
+                fileWriter.write(json.prettyPrint(levelData));
+            } catch (IOException e) {
+                System.out.println("Could not write checkpoint to json file");
+            }
+        }
+
+        //TODO: Set metadata to indicate a completed level and remove progress = 1 so
+        // correct version of level is displayed (Maybe in levelcontroller?)
 
         if (levelData.entitiesData == null) {
             Gdx.app.log("JSON_Error", "No entitiesData found in JSON file.");
@@ -49,6 +81,115 @@ public class GameLevel {
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
         spawn(levelData.entitiesData);
+    }
+
+    /**
+     * Writes state of entities to checkpoint.json every 3 seconds
+     *
+     * @param delta the amount of time passed since last call
+     */
+    public void checkpoint(float delta) {
+        // If counter >= 3, write to JSON, else count and continue
+        if (checkpointCounter < 3) {
+            checkpointCounter += delta;
+            System.out.println("Before checkpoint: " + checkpointCounter);
+            return;
+        }
+
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+
+        LevelData levelData = new LevelData();
+
+        ArrayList<LevelData.EntityData> entitiesData = new ArrayList<>();
+
+        // Add every entity that is not a player of ball
+        for (EntityData entityData : this.entitiesData) {
+            if (entityData.name.startsWith("Player") || entityData.name.startsWith("Ball")) {
+                continue;
+            }
+            entitiesData.add(entityData);
+        }
+
+        // Add every ball and player entity
+        for (Entity entity : entities) {
+            if (entity instanceof BallEntity) {
+                entitiesData.add(writeBallEntity(entity));
+            }
+            if (entity instanceof PlayerEntity) {
+                entitiesData.add(writePlayerEntity(entity));
+            }
+        }
+
+        // Set different properties of local method levelData
+        levelData.entitiesData = entitiesData;
+        levelData.metaData = metaData;
+
+        // Write state to checkpoint.json
+        try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
+            fileWriter.write(json.prettyPrint(levelData));
+        } catch (IOException e) {
+            System.out.println("Could not write checkpoint to json file");
+        }
+
+        // After writing, reset counter.
+        checkpointCounter = 0;
+    }
+
+    public LevelData.MetaData writeMetaData() {
+        return metaData;
+    }
+
+    /**
+     * Creates an EntityData object from  Entity object
+     *
+     * @param entity Current entity being mapped
+     * @return EntityData object of the corresponding entity argument
+     */
+    public EntityData writeBallEntity(Entity entity) {
+        EntityData entityData = new EntityData();
+        // Fetch needed components
+        BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+        StatComponent stat = (StatComponent) entity.getComponent(StatComponent.class);
+        SpriteComponent sprite = (SpriteComponent) entity.getComponent(SpriteComponent.class);
+
+        // Set the name property
+        entityData.name = stat.getTimesPopped() == 0 ? "BallBig" : stat.getTimesPopped() == 1 ? "BallMedium" : "BallSmall";
+
+        // Set the position property
+        EntityData.Position entityPosition = new EntityData.Position();
+        entityPosition.x = sprite.getSprite().getX();
+        entityPosition.y = sprite.getSprite().getY();
+        entityData.position = entityPosition;
+
+        // Set the velocity property
+        entityData.velocity = body.getBody().getLinearVelocity();
+        return entityData;
+    }
+
+    /**
+     * Creates an EntityData object from Entity object
+     *
+     * @param entity Current entity being mapped
+     * @return EntityData object of the corresponding entity argument
+     */
+    public EntityData writePlayerEntity(Entity entity) {
+        EntityData entityData = new EntityData();
+        // Fetch needed components
+        BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+        SpriteComponent sprite = (SpriteComponent) entity.getComponent(SpriteComponent.class);
+
+
+        // Set the name property
+        entityData.name = "Player";
+
+        // Set the position property
+        EntityData.Position entityPosition = new EntityData.Position();
+        entityPosition.x = sprite.getSprite().getX();
+        entityPosition.y = sprite.getSprite().getY();
+        entityData.position = entityPosition;
+
+        return entityData;
     }
 
 
@@ -111,6 +252,7 @@ public class GameLevel {
             public String theme;
             public boolean completed;
             public boolean multiplayer;
+            public int progress;
         }
     }
 

@@ -3,7 +3,8 @@
     "number": 1,
     "theme": "Desert",
     "completed": false,
-    "multiplayer": false
+    "multiplayer": false,
+    "progress": 0
   },
   "entitiesData": [
 
@@ -42,7 +43,7 @@
         "x":-3
       }
     },
-      
+
     {
       "name": "BallBig",
       "position": {
@@ -99,6 +100,6 @@
       }
     }
 
-    
+
   ]
 }

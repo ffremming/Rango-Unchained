@@ -127,7 +127,7 @@ public class LevelController {
     }
 
     public int getPlayerHealth(){
-        
+
         ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
         if (entities.size()<=0){return 0;}
 
@@ -138,5 +138,9 @@ public class LevelController {
 
     public double getTime(){
         return timer.getTime();
+    }
+
+    public void checkpoint(float delta) {
+        level.checkpoint(delta);
     }
 }

@@ -120,7 +120,6 @@ public class GameLevel {
                 entitiesData.add(writePlayerEntity(entity));
             }
         }
-
         // Set different properties of local method levelData
         levelData.entitiesData = entitiesData;
         levelData.metaData = metaData;

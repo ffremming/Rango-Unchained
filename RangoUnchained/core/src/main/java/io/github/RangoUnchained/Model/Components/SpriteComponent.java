@@ -12,25 +12,19 @@ public class SpriteComponent implements Component {
 
     public SpriteComponent(String path) {
         texture = new Texture(Gdx.files.internal(path));
-        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
         
 
 
         sprite = new Sprite(texture);
         sprite.setColor(Color.WHITE);
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight());
-        
     }
 
     public SpriteComponent(String path, float width, float height) {
         texture = new Texture(Gdx.files.internal(path));
-        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
         
-
-
-
         sprite = new Sprite(texture);
         sprite.setColor(Color.WHITE);
         sprite.setSize(width, height);

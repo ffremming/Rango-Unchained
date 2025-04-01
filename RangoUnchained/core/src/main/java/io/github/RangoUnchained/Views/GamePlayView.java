@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -84,7 +86,7 @@ public class GamePlayView extends BaseScreen {
         }
 
         //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
-        updateHearts(batch);
+        updateHeartsUI();
         updateUI();
 
         batch.end();
@@ -121,14 +123,37 @@ public class GamePlayView extends BaseScreen {
         System.out.println(timeLabel.getX() +","+timeLabel.getY());
     }
 
-    private void updateHearts(SpriteBatch batch){
-
-        Texture texture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
-        Sprite sprite = new Sprite(texture);
-        for (int i = 0;i<LevelController.getInstance().getPlayerHealth();i++){
-            batch.draw(sprite,75*i,(int)(Gdx.graphics.getHeight()-75),64,64);
+    private void updateHeartsUI() {
+        // Remove old hearts
+        Actor oldHeartContainer = stage.getRoot().findActor("heartContainer");
+        if (oldHeartContainer != null) {
+            oldHeartContainer.remove();
         }
+
+        // New top-left-aligned heart container
+        Table heartTable = new Table();
+        heartTable.setName("heartContainer");
+        heartTable.top().left().padTop(10).padLeft(10);
+        heartTable.setFillParent(true);
+
+        // Load texture (with crisp pixel look)
+        Texture heartTexture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
+        heartTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        float heartSize = 24f;
+        int playerHealth = LevelController.getInstance().getPlayerHealth();
+
+        for (int i = 0; i < playerHealth; i++) {
+            Image heart = new Image(heartTexture);
+            heart.setSize(heartSize, heartSize);
+
+            // Add heart with fixed size, no expand/fill
+            heartTable.add(heart).size(heartSize, heartSize).padRight(5);
+        }
+
+        stage.addActor(heartTable);
     }
+
 
     private void createScoreLabel() {
         Skin skin = getSkin();
@@ -137,20 +162,34 @@ public class GamePlayView extends BaseScreen {
         Label scoreLabel = new Label("Score: 0", skin);
         scoreLabel.setName("scoreLabel"); // Set a name to easily update it later
 
-        scoreLabel.setBounds(50, -30, 100, 100);
+        scoreLabel.setBounds(5, stage.getHeight()-(44 + 10 + 50/2), 100, 50);
+
+        Table scoreTable = new Table();
+        scoreTable.setFillParent(true); // Let the table span the whole stage
+        scoreTable.top().right().padTop(10).padLeft(30); // Align top-right with some padding
+    
+        scoreTable.add(scoreLabel);
         stage.addActor(scoreLabel);
     }
 
     private void createTimeLabel() {
+       
         Skin skin = getSkin();
-
-        // Create a label to display the score
+    
+        // Create the label and name it for future updates
         Label timeLabel = new Label("0 s", skin);
-        timeLabel.setName("timeLabel"); // Set a name to easily update it later
-
-        timeLabel.setBounds(Constants.WORLD_WIDTH-100, Constants.WORLD_HEIGHT-50, 100, 50);
-
-        stage.addActor(timeLabel);
+        timeLabel.setName("timeLabel");
+    
+        // Create a table to position the label at the top-right
+        Table timeTable = new Table();
+        timeTable.setFillParent(true); // Let the table span the whole stage
+        timeTable.top().right().padTop(10).padRight(30); // Align top-right with some padding
+    
+        timeTable.add(timeLabel);
+    
+        // Add the table to the stage
+        stage.addActor(timeTable);
+    
     }
 
     private Table createTable(Button button) {

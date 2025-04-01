@@ -127,16 +127,16 @@ public class LevelController {
     }
 
     public int getPlayerHealth(){
-
+        if (level == null){return 0;}
         ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
         if (entities.size()<=0){return 0;}
 
         int health = ((HealthComponent)(entities.get(0).getComponent(HealthComponent.class))).getHealth();
-
         return health;
     }
 
     public double getTime(){
+        if (timer == null){return 0;}
         return timer.getTime();
     }
 

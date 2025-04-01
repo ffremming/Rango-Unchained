@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -22,15 +22,15 @@ public abstract class BaseScreen extends ScreenAdapter {
     protected Viewport viewport;
     protected OrthographicCamera camera;
 
-    protected static final float WORLD_WIDTH = 800;
-    protected static final float WORLD_HEIGHT = 480;
+    protected static final float WORLD_WIDTH = 1200;
+    protected static final float WORLD_HEIGHT = 540;
     public BaseScreen(GameController game) {
         this.game = game;
         this.batch = GameController.getBatch();
         this.font = GameController.getFont();
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FillViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         stage = new Stage(viewport);
     }
 

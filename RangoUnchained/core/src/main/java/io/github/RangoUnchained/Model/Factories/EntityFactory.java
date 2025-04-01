@@ -106,7 +106,7 @@ public class EntityFactory {
         //Stats
         StatComponent stats = new StatComponent();
         stats.setTimesPopped(timesPopped);
-        
+
         //sprite
         SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png",64,64);
 
@@ -136,10 +136,10 @@ public class EntityFactory {
 
         BodyComponent body = null;
         SpriteComponent sprite = null;
-        float width;
-        float height;
-        int x;
-        int y;
+        float width = 0;
+        float height = 0;
+        int x = 0;
+        int y = 0;
 
         float pxl = 1.9f;
         
@@ -155,7 +155,7 @@ public class EntityFactory {
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
-       
+    
 
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
             if (name.endsWith("Roof")){
@@ -165,12 +165,19 @@ public class EntityFactory {
                 y = 50;
                 height = 200/Constants.PPM;
             }
-            x = 0;
-            width = Gdx.graphics.getWidth();
+            x =  Gdx.graphics.getWidth()/2;
+            width = Gdx.graphics.getWidth()/Constants.PPM;;
            
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
+        }
+
+        if (name.endsWith("Floor")){
+            sprite = new SpriteComponent("Background/Floor.png",width*Constants.PPM,height*Constants.PPM);
+
+        } else {
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
         }
+
         ObstacleEntity obstacle;
         if (name.endsWith("Floor")){
             //uses floorentity for identification later (in physicssystem)
@@ -180,6 +187,7 @@ public class EntityFactory {
         }
         
         body.getBody().setUserData(obstacle);
+        
         
         return new ObstacleEntity(body, sprite);
     }

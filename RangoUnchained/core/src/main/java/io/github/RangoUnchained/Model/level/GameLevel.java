@@ -138,6 +138,21 @@ public class GameLevel {
         checkpointCounter = 0;
     }
 
+    public static void resetCheckpoint() {
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+        FileHandle file = Gdx.files.internal("levels/checkpoint.json");
+
+        LevelData levelData = json.fromJson(LevelData.class, file.readString());
+        levelData.metaData.progress = 0;
+
+        try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
+            fileWriter.write(json.prettyPrint(levelData));
+        } catch (IOException e) {
+            System.out.println("Could not write checkpoint to json file");
+        }
+    }
+
     /**
      * Creates an EntityData object from  Entity object
      *

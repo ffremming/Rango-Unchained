@@ -233,7 +233,7 @@ public class GameLevel {
         public static class EntityData {
             public String name;
             public Position position;
-            public int health = 0;
+            public int health;
             public Vector2 velocity;
 
             /**
@@ -282,8 +282,8 @@ public class GameLevel {
             Gdx.app.log("JSON_testing", "Name: " + data.name);
             Gdx.app.log("JSON_testing", "Position: (" + data.position.x + ", " + data.position.y + ")");
             Vector2 velocity = data.velocity == null ? new Vector2() : data.velocity;
-            Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity);
-            if (entity!= null){
+            Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity, data.health);
+            if (entity != null){
                 entities.add(entity);
             }
         }

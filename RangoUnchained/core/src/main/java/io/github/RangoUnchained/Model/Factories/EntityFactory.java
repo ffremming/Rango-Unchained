@@ -1,6 +1,7 @@
 package io.github.RangoUnchained.Model.Factories;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
+import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
@@ -45,12 +46,12 @@ public class EntityFactory {
 
     private EntityFactory() {}
 
-    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity) {
+    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp) {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
         if (name.equals("Player")) {
-            return createPlayerEntity(x, y, world);
+            return createPlayerEntity(x, y, world, hp);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
@@ -70,7 +71,7 @@ public class EntityFactory {
     }
 
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world) {
+    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp) {
         SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
 
         float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
@@ -79,7 +80,9 @@ public class EntityFactory {
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
         InputComponent input = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity(body, sprite, input);
+        HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
+
+        PlayerEntity player = new PlayerEntity(body, sprite, input, health);
         body.getBody().setUserData(player);
         return player;
     }

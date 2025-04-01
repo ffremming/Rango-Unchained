@@ -59,7 +59,7 @@ public class EntityFactory {
             return createObstacleEntity(name, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "tongue/3Cropped.png", world);
+            return createProjectileEntity(x, y, "assets/tounge/Tongue-4.png", world);
         }
         else if (name.startsWith("Background")) {
             return createBackground();

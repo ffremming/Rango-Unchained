@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -30,8 +31,21 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.font = GameController.getFont();
 
         camera = new OrthographicCamera();
-        viewport = new FillViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+
+
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         stage = new Stage(viewport);
+
+        camera.setToOrtho(false); // THIS IS CRUCIAL
+        camera.position.set(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, 0);
+        camera.update();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        camera.position.set(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, 0);
+        camera.update();
     }
 
     public Skin getSkin() {

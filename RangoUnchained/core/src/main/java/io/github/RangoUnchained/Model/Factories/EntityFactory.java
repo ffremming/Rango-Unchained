@@ -59,12 +59,11 @@ public class EntityFactory {
             return createObstacleEntity(x, y, name, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "tongue/3Cropped.png", world);
+            return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
         }
         else if (name.startsWith("Background")) {
             return createBackground();
         }
-
 
         // More entity types can be added here
         return null;
@@ -148,7 +147,7 @@ public class EntityFactory {
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
-       
+
 
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
             width = 733/Constants.PPM*2;
@@ -160,12 +159,12 @@ public class EntityFactory {
         if (name.endsWith("Floor")){
             //uses floorentity for identification later (in physicssystem)
              obstacle = new FloorEntity(body, sprite);
-        } else { 
+        } else {
             obstacle = new ObstacleEntity(body, sprite);
         }
-        
+
         body.getBody().setUserData(obstacle);
-        
+
         return new ObstacleEntity(body, sprite);
     }
 
@@ -177,7 +176,7 @@ public class EntityFactory {
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height,CATEGORY_PROJECTILE,MASK_PROJECTILE),true);
-       
+
         LifeTimeComponent lifeTime = new LifeTimeComponent(50); // 1.5 seconds
         TransformationComponent transComp = new TransformationComponent(3, 1, 1, 10
         ,TransformationComponent.RECTANGLE,

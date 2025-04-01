@@ -1,22 +1,19 @@
 package io.github.RangoUnchained.Model.level;
 
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonWriter;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
@@ -24,7 +21,6 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
-import io.github.RangoUnchained.Views.Utils.Constants;
 
 /**
  * Represents a game level, containing metadata and entities.
@@ -36,6 +32,7 @@ public class GameLevel {
     private ArrayList<LevelData.EntityData> entitiesData;
     private float checkpointCounter = 0;
     public ScoreManager scoreManager = new ScoreManager();
+    public int levelNumber;
 
     public GameLevel(int number) {
         loadLevel(number);
@@ -48,27 +45,29 @@ public class GameLevel {
      * @return A new GameLevel instance populated with metadata and entities.
      */
     public void loadLevel(int number) {
+        levelNumber = number;
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-        FileHandle file = Gdx.files.internal("levels/level" + number+".json");
+        FileHandle file = Gdx.files.internal("levels/checkpoint.json");
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
         metaData = levelData.metaData;
         entitiesData = levelData.entitiesData;
 
-        if (metaData.progress == 1) {
-            file = Gdx.files.internal("levels/checkpoint.json");
+        if (metaData.progress == 0 || metaData.levelnr != number) {
+            file = Gdx.files.internal("levels/level" + number + ".json");
             levelData = json.fromJson(LevelData.class, file.readString());
             metaData = levelData.metaData;
             entitiesData = levelData.entitiesData;
         } else {
-            metaData.progress = 1; // Set to on-going
-            try (FileWriter fileWriter = new FileWriter("assets/levels/level" + number + ".json")) {
+            try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint" + number + ".json")) {
                 fileWriter.write(json.prettyPrint(levelData));
             } catch (IOException e) {
                 System.out.println("Could not write checkpoint to json file");
             }
         }
+
+        scoreManager.setScore(levelData.metaData.score);
 
         //TODO: Set metadata to indicate a completed level and remove progress = 1 so
         // correct version of level is displayed (Maybe in levelcontroller?)
@@ -124,6 +123,9 @@ public class GameLevel {
         // Set different properties of local method levelData
         levelData.entitiesData = entitiesData;
         levelData.metaData = metaData;
+        levelData.metaData.progress = 1; // Set to on-going
+        levelData.metaData.levelnr = levelNumber;
+        levelData.metaData.score = scoreManager.getScore();
 
         // Write state to checkpoint.json
         try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
@@ -134,10 +136,6 @@ public class GameLevel {
 
         // After writing, reset counter.
         checkpointCounter = 0;
-    }
-
-    public LevelData.MetaData writeMetaData() {
-        return metaData;
     }
 
     /**
@@ -178,6 +176,7 @@ public class GameLevel {
         // Fetch needed components
         BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
         SpriteComponent sprite = (SpriteComponent) entity.getComponent(SpriteComponent.class);
+        HealthComponent health = (HealthComponent) entity.getComponent(HealthComponent.class);
 
 
         // Set the name property
@@ -186,8 +185,9 @@ public class GameLevel {
         // Set the position property
         EntityData.Position entityPosition = new EntityData.Position();
         entityPosition.x = sprite.getSprite().getX();
-        entityPosition.y = sprite.getSprite().getY();
+        entityPosition.y = 150;
         entityData.position = entityPosition;
+        entityData.health = health.getHealth();
 
         return entityData;
     }
@@ -233,6 +233,7 @@ public class GameLevel {
         public static class EntityData {
             public String name;
             public Position position;
+            public int health = 0;
             public Vector2 velocity;
 
             /**
@@ -253,6 +254,8 @@ public class GameLevel {
             public boolean completed;
             public boolean multiplayer;
             public int progress;
+            public int levelnr;
+            public int score;
         }
     }
 

@@ -57,13 +57,14 @@ public class SystemManager {
 
         world = physicsSystem.getWorld();
 
-        systems.add(movementSystem);
         systems.add(physicsSystem);
+        systems.add(healthSystem);
         systems.add(inputSystem);
+        systems.add(movementSystem);
+
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);
         systems.add(contactSystem);
-        systems.add(healthSystem);
     }
 
     /** method for getting world

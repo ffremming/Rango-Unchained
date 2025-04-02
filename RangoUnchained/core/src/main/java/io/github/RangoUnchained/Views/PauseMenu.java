@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Model.level.GameLevel;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
@@ -56,12 +57,12 @@ public class PauseMenu extends Stage {
         LevelController.resetInstance();
         Gdx.input.setInputProcessor(null);
         game.setView(new GamePlayView(levelNumber));
-        GameLevel.resetCheckpoint();
+        GameFileHandler.getInstance().resetCheckpointFile();
     }
 
     private void endGame() {
         game.setView(new GameOverView());
-        GameLevel.resetCheckpoint();
+        GameFileHandler.getInstance().resetCheckpointFile();
     }
 
     public boolean isPaused() {

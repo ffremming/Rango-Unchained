@@ -48,25 +48,17 @@ public class GameLevel {
         levelNumber = number;
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-        FileHandle file = Gdx.files.internal("levels/checkpoint.json");
+        FileHandle file = Gdx.files.local("levels/checkpoint.json");
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
-        metaData = levelData.metaData;
         entitiesData = levelData.entitiesData;
 
-        if (metaData.progress == 0 || metaData.levelnr != number) {
-            file = Gdx.files.internal("levels/level" + number + ".json");
+        if (levelData.metaData.progress == 0 || levelData.metaData.levelnr != number) {
+            file = Gdx.files.local("levels/level" + number + ".json");
             levelData = json.fromJson(LevelData.class, file.readString());
-            metaData = levelData.metaData;
             entitiesData = levelData.entitiesData;
-        } else {
-            try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint" + number + ".json")) {
-                fileWriter.write(json.prettyPrint(levelData));
-            } catch (IOException e) {
-                System.out.println("Could not write checkpoint to json file");
-            }
+            file.writeString(json.prettyPrint(levelData), false);
         }
-
         scoreManager.setScore(levelData.metaData.score);
 
         //TODO: Set metadata to indicate a completed level and remove progress = 1 so
@@ -91,16 +83,18 @@ public class GameLevel {
         // If counter >= 3, write to JSON, else count and continue
         if (checkpointCounter < 3) {
             checkpointCounter += delta;
-            System.out.println("Before checkpoint: " + checkpointCounter);
             return;
         }
 
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
 
+        FileHandle file = Gdx.files.local("levels/checkpoint.json");
+
         LevelData levelData = new LevelData();
 
         ArrayList<LevelData.EntityData> entitiesData = new ArrayList<>();
+        LevelData.MetaData metaData = new LevelData.MetaData();
 
         // Add every entity that is not a player of ball
         for (EntityData entityData : this.entitiesData) {
@@ -121,18 +115,17 @@ public class GameLevel {
         }
 
         // Set different properties of local method levelData
-        levelData.entitiesData = entitiesData;
+        metaData.progress = 1; // Set to on-going
+        metaData.levelnr = levelNumber;
+        metaData.score = scoreManager.getScore();
+
         levelData.metaData = metaData;
-        levelData.metaData.progress = 1; // Set to on-going
-        levelData.metaData.levelnr = levelNumber;
-        levelData.metaData.score = scoreManager.getScore();
+        levelData.entitiesData = entitiesData;
+
 
         // Write state to checkpoint.json
-        try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
-            fileWriter.write(json.prettyPrint(levelData));
-        } catch (IOException e) {
-            System.out.println("Could not write checkpoint to json file");
-        }
+        file.delete();
+        file.writeString(json.prettyPrint(levelData), false);
 
         // After writing, reset counter.
         checkpointCounter = 0;
@@ -141,16 +134,16 @@ public class GameLevel {
     public static void resetCheckpoint() {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-        FileHandle file = Gdx.files.internal("levels/checkpoint.json");
+        FileHandle file = Gdx.files.local("levels/checkpoint.json");
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
-        levelData.metaData.progress = 0;
 
-        try (FileWriter fileWriter = new FileWriter("assets/levels/checkpoint.json")) {
-            fileWriter.write(json.prettyPrint(levelData));
-        } catch (IOException e) {
-            System.out.println("Could not write checkpoint to json file");
-        }
+        levelData.metaData = new LevelData.MetaData();
+        levelData.metaData.progress = 0;
+        levelData.metaData.levelnr = 2; //UPDATE TO SET = THIS.NUMER
+
+        file.delete();
+        file.writeString(json.prettyPrint(levelData), false);
     }
 
     /**

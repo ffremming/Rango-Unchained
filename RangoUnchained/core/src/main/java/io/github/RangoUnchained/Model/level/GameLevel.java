@@ -48,7 +48,12 @@ public class GameLevel {
         levelNumber = number;
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-        FileHandle file = Gdx.files.local("levels/checkpoint.json");
+        FileHandle file;
+        if (Gdx.files.local("levels/checkpoint.json").exists()) {
+            file = Gdx.files.local("levels/checkpoint.json");
+        } else {
+            file = Gdx.files.local("levels/checkpointBackup.json");
+        }
 
         LevelData levelData = json.fromJson(LevelData.class, file.readString());
         entitiesData = levelData.entitiesData;
@@ -57,7 +62,6 @@ public class GameLevel {
             file = Gdx.files.local("levels/level" + number + ".json");
             levelData = json.fromJson(LevelData.class, file.readString());
             entitiesData = levelData.entitiesData;
-            file.writeString(json.prettyPrint(levelData), false);
         }
         scoreManager.setScore(levelData.metaData.score);
 
@@ -89,7 +93,8 @@ public class GameLevel {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
 
-        FileHandle file = Gdx.files.local("levels/checkpoint.json");
+        FileHandle mainFile = Gdx.files.local("levels/checkpoint.json");
+        FileHandle backupFile = Gdx.files.local("levels/checkpointBackup.json");
 
         LevelData levelData = new LevelData();
 
@@ -122,10 +127,13 @@ public class GameLevel {
         levelData.metaData = metaData;
         levelData.entitiesData = entitiesData;
 
+        // Write to mainFile
+        mainFile.delete();
+        mainFile.writeString(json.prettyPrint(levelData), false);
 
-        // Write state to checkpoint.json
-        file.delete();
-        file.writeString(json.prettyPrint(levelData), false);
+        // Write to backupFile
+        backupFile.delete();
+        backupFile.writeString(json.prettyPrint(levelData), false);
 
         // After writing, reset counter.
         checkpointCounter = 0;
@@ -134,16 +142,22 @@ public class GameLevel {
     public static void resetCheckpoint() {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-        FileHandle file = Gdx.files.local("levels/checkpoint.json");
+        FileHandle mainFile = Gdx.files.local("levels/checkpoint.json");
+        FileHandle backupFile = Gdx.files.local("levels/checkpointBackup.json");
 
-        LevelData levelData = json.fromJson(LevelData.class, file.readString());
+        LevelData levelData = json.fromJson(LevelData.class, mainFile.readString());
 
         levelData.metaData = new LevelData.MetaData();
         levelData.metaData.progress = 0;
         levelData.metaData.levelnr = 2; //UPDATE TO SET = THIS.NUMER
 
-        file.delete();
-        file.writeString(json.prettyPrint(levelData), false);
+        // Write to mainFile
+        mainFile.delete();
+        mainFile.writeString(json.prettyPrint(levelData), false);
+
+        // Write to backupFile
+        backupFile.delete();
+        backupFile.writeString(json.prettyPrint(levelData), false);
     }
 
     /**

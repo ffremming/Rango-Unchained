@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.Model.contactStrategies;
+package io.github.RangoUnchained.Model.ContactStrategies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;

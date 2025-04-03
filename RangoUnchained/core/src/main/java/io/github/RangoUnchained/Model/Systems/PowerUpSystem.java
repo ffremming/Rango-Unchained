@@ -15,7 +15,7 @@ import io.github.RangoUnchained.Model.PowerUps.PowerUpStrategy;
 import io.github.RangoUnchained.Model.PowerUps.ResizeballsStrategy;
 import io.github.RangoUnchained.Model.PowerUps.ShieldPowerUp;
 import io.github.RangoUnchained.Model.PowerUps.SpeedUpPowerUp;
-import io.github.RangoUnchained.Model.contactListener.ContactStrategy;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 
 public class PowerUpSystem implements System, ContactStrategy {
     private ComponentFilter filter = new ComponentFilter();

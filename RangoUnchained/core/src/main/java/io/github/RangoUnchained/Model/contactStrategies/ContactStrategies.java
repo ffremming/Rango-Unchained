@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.Model.contactStrategies;
+package io.github.RangoUnchained.Model.ContactStrategies;
 
 public class ContactStrategies {
 

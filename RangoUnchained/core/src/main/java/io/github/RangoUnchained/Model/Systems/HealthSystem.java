@@ -2,11 +2,11 @@ package io.github.RangoUnchained.Model.Systems;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.HealthComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactStrategies.ContactStrategy;
 
 public class HealthSystem implements System, ContactStrategy{
 

@@ -3,11 +3,11 @@ package io.github.RangoUnchained.Model.level;
 import com.badlogic.gdx.Gdx;
 
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactStrategies.ContactStrategy;
 
 public class ScoreManager implements ContactStrategy{
 

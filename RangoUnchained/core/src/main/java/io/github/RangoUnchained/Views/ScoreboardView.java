@@ -1,8 +1,9 @@
 package io.github.RangoUnchained.Views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
+import java.util.List;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
@@ -40,9 +41,9 @@ public class ScoreboardView extends BaseScreen {
         FirebaseManager firebaseManager = GameController.getInstance().getFirebaseManager();
 
         // Fetch scores from Firebase asynchronously
-        firebaseManager.loadScores(new FirebaseManager.Callback() {
+        firebaseManager.loadScores(new FirebaseManager.Callback<List<Integer>>() {
             @Override
-            public void onSuccess(final java.util.List<Integer> scores) {
+            public void onSuccess(final List<Integer> scores) {
                 table.clear();
                 table.add(titleLabel).center().padBottom(50);
                 table.row();

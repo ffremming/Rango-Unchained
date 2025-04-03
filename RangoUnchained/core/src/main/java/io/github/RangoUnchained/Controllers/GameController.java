@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
+import io.github.RangoUnchained.Model.Firebase.UserInfo;
 import io.github.RangoUnchained.Views.GamePlayView;
 import io.github.RangoUnchained.Views.MainMenuView;
 
@@ -19,6 +20,8 @@ public class GameController extends Game {
     private static BitmapFont font;
     private static Skin skin;
     private Screen currentView;
+    private Boolean isLoggedIn = false;
+    private UserInfo currentUserInfo;
 
     private GameController() {
     }
@@ -74,6 +77,22 @@ public class GameController extends Game {
 
     public static Skin getSkin() {
         return skin;
+    }
+
+    public Boolean getIsLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setIsLoggedIn(Boolean isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
+    }
+
+    public void setUserInfo(UserInfo info) {
+        this.currentUserInfo = info;
+    }
+
+    public UserInfo getCurrentUserInfo() {
+        return currentUserInfo;
     }
 
     @Override

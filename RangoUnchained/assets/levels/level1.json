@@ -21,7 +21,8 @@
       "position": {
         "x": 100,
         "y": 150
-      }
+      },
+      "health": 8
     },
     {
       "name": "BallBig",

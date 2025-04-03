@@ -1,6 +1,7 @@
 package io.github.RangoUnchained.Model.Factories;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
+import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
@@ -45,12 +46,12 @@ public class EntityFactory {
 
     private EntityFactory() {}
 
-    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity) {
+    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp) {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
         if (name.equals("Player")) {
-            return createPlayerEntity(x, y, world);
+            return createPlayerEntity(x, y, world, hp);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
@@ -59,7 +60,7 @@ public class EntityFactory {
             return createObstacleEntity(name, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "assets/tounge/Tongue-4.png", world);
+            return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
         }
         else if (name.startsWith("Background")) {
             return createBackground();
@@ -71,7 +72,7 @@ public class EntityFactory {
     }
 
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world) {
+    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp) {
         SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
 
         float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
@@ -80,7 +81,9 @@ public class EntityFactory {
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
         InputComponent input = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity(body, sprite, input);
+        HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
+
+        PlayerEntity player = new PlayerEntity(body, sprite, input, health);
         body.getBody().setUserData(player);
         return player;
     }
@@ -142,7 +145,7 @@ public class EntityFactory {
         int y = 0;
 
         float pxl = 1.9f;
-        
+
 
         if (name.endsWith("Left") || name.endsWith("Right")){
             if (name.endsWith("Right")){
@@ -151,11 +154,12 @@ public class EntityFactory {
             y = 0;
             height = Gdx.graphics.getHeight();
             width = 32/Constants.PPM;
+            height = 1000/Constants.PPM;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
-    
+
 
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
             if (name.endsWith("Roof")){
@@ -167,7 +171,7 @@ public class EntityFactory {
             }
             x =  Gdx.graphics.getWidth()/2;
             width = Gdx.graphics.getWidth()/Constants.PPM;;
-           
+
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
         }
 
@@ -182,13 +186,13 @@ public class EntityFactory {
         if (name.endsWith("Floor")){
             //uses floorentity for identification later (in physicssystem)
              obstacle = new FloorEntity(body, sprite);
-        } else { 
+        } else {
             obstacle = new ObstacleEntity(body, sprite);
         }
-        
+
         body.getBody().setUserData(obstacle);
-        
-        
+
+
         return new ObstacleEntity(body, sprite);
     }
 
@@ -200,7 +204,7 @@ public class EntityFactory {
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height,CATEGORY_PROJECTILE,MASK_PROJECTILE),true);
-       
+
         LifeTimeComponent lifeTime = new LifeTimeComponent(50); // 1.5 seconds
         TransformationComponent transComp = new TransformationComponent(3, 1, 1, 10
         ,TransformationComponent.RECTANGLE,

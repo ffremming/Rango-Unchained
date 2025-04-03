@@ -171,7 +171,7 @@ public class EntityFactory {
             y = 0;
             height = Gdx.graphics.getHeight();
             width = 32/Constants.PPM;
-            height = 1000/Constants.PPM;
+            height = 1000/Constants.PPM*2;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }

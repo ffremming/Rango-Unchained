@@ -5,6 +5,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.MetaData;
+
 public class GameFileHandler {
 
     private static GameFileHandler fileHandler;
@@ -56,12 +59,19 @@ public class GameFileHandler {
     }
 
     public void resetCheckpointFile() {
-        GameLevel.LevelData levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
-
-        // Reset progress to 0 for user ended game.
-        GameLevel.LevelData.MetaData metaData = new GameLevel.LevelData.MetaData();
+        GameLevel.LevelData levelData;
+        try{
+            levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
+           
+        } catch (Exception e){
+            levelData = new LevelData();
+           
+        }
+        levelData.metaData = new MetaData();
         levelData.metaData.progress = 0;
         levelData.metaData.levelnr = levelNumber;
+        // Reset progress to 0 for user ended game.
+        
 
         // Write reset data to checkpoint
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpoint.json");

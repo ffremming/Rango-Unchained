@@ -1,6 +1,7 @@
 package io.github.RangoUnchained.Model.Components;
 
 public class HealthComponent implements Component{
+    private boolean shieldActive = false;
     private int health = 1;
 
     public HealthComponent(int health){
@@ -12,7 +13,7 @@ public class HealthComponent implements Component{
     }
 
     public void addHealth(int additionalHealth){
-        health += additionalHealth; 
+        health += additionalHealth;
     }
 
     public void decreaseHealth(){
@@ -25,5 +26,13 @@ public class HealthComponent implements Component{
 
     public boolean isAlive(){
         return health>0;
+    }
+
+    public void setShieldActive(boolean shieldActive) {
+        this.shieldActive = shieldActive;
+    }
+
+    public boolean isShieldActive() {
+        return shieldActive;
     }
 }

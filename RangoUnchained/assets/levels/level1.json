@@ -95,6 +95,30 @@
 			"x": 750,
 			"y": 32
 		}
+	},
+	{
+		"name": "ShieldPowerUp",
+		"position": {
+			"x": 750,
+			"y": 400
+		}
+	},
+	{
+		"name": "SpeedPowerUp",
+		"position": {
+			"x": 900,
+			"y": 400
+		}
+	},
+	{
+		"name": "sizePowerUp",
+		"position": {
+			"x": 300,
+			"y": 400
+		}
 	}
+	
+
+	
 ]
 }

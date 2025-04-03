@@ -55,17 +55,18 @@ public class SystemManager {
         ContactSystem contactSystem = new ContactSystem(physicsSystem.getWorld());
         HealthSystem healthSystem = new HealthSystem();
         TutorialSystem tutorialSystem = new TutorialSystem();
+        PowerUpSystem powerUpSystem = new PowerUpSystem();
 
         world = physicsSystem.getWorld();
 
-        systems.add(physicsSystem);
-        systems.add(healthSystem);
-        systems.add(inputSystem);
         systems.add(movementSystem);
-
+        systems.add(physicsSystem);
+        systems.add(inputSystem);
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);
         systems.add(contactSystem);
+        systems.add(healthSystem);
+        systems.add(powerUpSystem);
         systems.add(tutorialSystem);
     }
 

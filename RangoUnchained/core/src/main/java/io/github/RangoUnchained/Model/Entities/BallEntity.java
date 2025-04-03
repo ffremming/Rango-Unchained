@@ -30,7 +30,7 @@ public class BallEntity implements Entity{
     public Component getComponent(Class<? extends Component> componentClass) {
         return components.get(componentClass);
     }
-    private <T extends Component> void addComponent(T component) {
+    public <T extends Component> void addComponent(T component) {
         components.put(component.getClass(), component);
     }
 }

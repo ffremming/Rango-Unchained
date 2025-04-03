@@ -1,11 +1,13 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
@@ -19,7 +21,8 @@ public class MovementSystem implements System {
         filter
         .require(BodyComponent.class)
         .require(InputComponent.class)
-        .require(SpriteComponent.class);
+        .require(SpriteComponent.class)
+        .require(SpeedComponent.class);
     }
 
 
@@ -30,14 +33,14 @@ public class MovementSystem implements System {
         BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
         InputComponent inputComponent = (InputComponent) entity.getComponent(InputComponent.class);
         Body body = bodyComponent.getBody();
-        
-        // Define your desired speed (in meters per second)
-        float moveSpeed = 5;
-        
+        SpeedComponent speedComponent = (SpeedComponent) entity.getComponent(SpeedComponent.class);
+
+        float moveSpeed = speedComponent.getCurrentSpeed();
+
         // Get the current velocity (we'll preserve the y-component, for example)
         Vector2 currentVelocity = body.getLinearVelocity();
         float newVelocityX = 0f;
-        
+
         // Determine the new x-velocity based on input
         if (inputComponent.isLeft()) {
             newVelocityX = -moveSpeed;
@@ -48,7 +51,6 @@ public class MovementSystem implements System {
         // Update the body's velocity
         body.setLinearVelocity(newVelocityX, currentVelocity.y);
     }
-    
 
     @Override
     public boolean filter(Entity entity) {

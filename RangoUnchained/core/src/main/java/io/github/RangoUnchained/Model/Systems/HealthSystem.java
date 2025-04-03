@@ -12,7 +12,7 @@ public class HealthSystem implements System, ContactStrategy{
 
     private ComponentFilter filter = new ComponentFilter();
 
-    public HealthSystem() {        
+    public HealthSystem() {
         filter
         .require(HealthComponent.class);
     }
@@ -53,9 +53,18 @@ public class HealthSystem implements System, ContactStrategy{
         } else {
             player = (PlayerEntity) collisionEvent.entityB;
         }
-        ((HealthComponent)player.getComponent(HealthComponent.class)).decreaseHealth();
+        HealthComponent healthComponent =  ((HealthComponent)player.getComponent(HealthComponent.class));
 
-        //for tutorial
-        LevelController.getInstance().getSystem(TutorialSystem.class).flagPlayerHit();
+        if (healthComponent.isShieldActive()) {
+            //healthComponent.setShieldActive(false);
+        } else {
+            healthComponent.decreaseHealth();
+            LevelController.getInstance().getSystem(TutorialSystem.class).flagPlayerHit();
+        }
     }
+
+
+
+
+
 }

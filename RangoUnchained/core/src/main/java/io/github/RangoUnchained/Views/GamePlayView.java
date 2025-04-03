@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
@@ -81,8 +83,14 @@ public class GamePlayView extends BaseScreen {
 
         //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
-            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
-            batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+
+            BodyComponent comp = (BodyComponent)e.getComponent(BodyComponent.class);
+
+            float angle = comp==null?0:comp.getBody().getAngle();
+
+            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite(angle);
+            sprite.setRotation(angle * MathUtils.radiansToDegrees);
+            sprite.draw(batch);
         }
 
         //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
@@ -120,7 +128,6 @@ public class GamePlayView extends BaseScreen {
             double time = LevelController.getInstance().getLevel().getTimer().getTime();
             timeLabel.setText(String.format("%.1f s", time));
         }
-        System.out.println(timeLabel.getX() +","+timeLabel.getY());
     }
 
     private void updateHeartsUI() {

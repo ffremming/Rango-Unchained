@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Model.Entities;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
 import io.github.RangoUnchained.Model.Components.Component;
@@ -14,7 +15,7 @@ public class BallEntity implements Entity{
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    public BallEntity(BodyComponent bodyComponent, StatComponent statComponent, SpriteComponent spriteComponent, BounceComponent bounceComp) {
+    public BallEntity(BodyComponent bodyComponent, StatComponent statComponent, SpriteComponent spriteComponent, BounceComponent bounceComp, BallComponent ballComp) {
         addComponent(bodyComponent);
         addComponent(statComponent);
         addComponent(spriteComponent);
@@ -22,6 +23,7 @@ public class BallEntity implements Entity{
         phyComp.setContactLock(60);
         addComponent(phyComp);
         addComponent(bounceComp);
+        addComponent(ballComp);
     }
 
     @Override

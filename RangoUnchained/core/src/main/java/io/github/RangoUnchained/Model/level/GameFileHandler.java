@@ -52,7 +52,6 @@ public class GameFileHandler {
 
         levelData.metaData.levelnr = levelNumber;
 
-        file.delete();
         file.writeString(json.prettyPrint(levelData), false);
     }
 

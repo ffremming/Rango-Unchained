@@ -61,6 +61,11 @@ public class GameLevel {
             levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpointBackup.json");
         }
 
+        if (levelData == null) {
+            levelData = new GameLevel.LevelData();
+            levelData.metaData = new LevelData.MetaData();
+        }
+
         entitiesData = levelData.entitiesData;
 
         // If the game was not in progress or the chosen level is not the level that crashed

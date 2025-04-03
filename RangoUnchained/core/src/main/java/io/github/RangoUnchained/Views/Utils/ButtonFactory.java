@@ -1,7 +1,5 @@
 package io.github.RangoUnchained.Views.Utils;
 
-import static io.github.RangoUnchained.Views.Utils.ViewFactory.createView;
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;

@@ -8,8 +8,9 @@ public interface FirebaseManager {
         void onError(Exception e);
     }
 
-    void loadScores(Callback<List<Integer>> scores);
-    void updateScore(Callback<List<Integer>> score);
+    void loadScores(int level, Callback<List<ScoreInfo>> callback);
+    void updateScoreForLevel(UserInfo userInfo, int level, int score, Callback<Boolean> callback);
+    void uploadScoreToLeaderboard(UserInfo userInfo, int level, int score, Callback<Void> callback);
     void logIn(String email, String password, Callback<UserInfo> callback);
     void createUser(String email, String password, Callback<UserInfo> callback);
     void signOut();

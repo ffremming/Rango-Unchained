@@ -32,7 +32,7 @@ public class PauseMenu extends Stage {
         table.row();
         table.add(ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart)).center().padBottom(20);
         table.row();
-        table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game,() -> game.setView(new GameOverView()))).center().padBottom(20);
+        table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game,() -> game.setView(new GameOverView(levelNumber)))).center().padBottom(20);
 
         table.row();
 

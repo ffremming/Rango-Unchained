@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
+import io.github.RangoUnchained.Model.Firebase.ScoreInfo;
 import io.github.RangoUnchained.Model.Firebase.UserInfo;
 
 public class FirebaseManagerAndroid implements FirebaseManager {
@@ -19,31 +20,118 @@ public class FirebaseManagerAndroid implements FirebaseManager {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
-    public void loadScores(FirebaseManager.Callback<List<Integer>> callback) {
-        // Fetch scores from Firestore
-        db.collection("scores")
+    public void loadScores(int level, Callback<List<ScoreInfo>> callback) {
+        String levelDocId = "level_" + level;
+
+        db.collection("scores").document(levelDocId)
             .get()
-            .addOnSuccessListener(querySnapshot -> {
-                // Convert Firestore documents to a list of scores
-                List<Integer> scores = new ArrayList<>();
-                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                    Long score = doc.getLong("score");
-                    if (score != null) {
-                        scores.add(score.intValue());
+            .addOnSuccessListener(doc -> {
+                List<ScoreInfo> scores = new ArrayList<>();
+
+                if (doc.exists()) {
+                    Map<String, Object> userScores = doc.getData();
+                    if (userScores != null) {
+                        for (Map.Entry<String, Object> entry : userScores.entrySet()) {
+                            if (entry.getValue() instanceof Map) {
+                                Map<String, Object> scoreData = (Map<String, Object>) entry.getValue();
+                                String username = (String) scoreData.get("username");
+                                if (username == null || username.isEmpty()) {
+                                    username = (String) scoreData.get("email");
+                                }
+                                Number score = (Number) scoreData.get("score");
+                                if (score != null) {
+                                    scores.add(new ScoreInfo(username, score.intValue()));
+                                }
+                            }
+                        }
                     }
                 }
-                // Use the rendering thread to update the score-UI
+
+                scores.sort((a, b) -> Integer.compare(b.score, a.score));
                 Gdx.app.postRunnable(() -> callback.onSuccess(scores));
             })
-            .addOnFailureListener(e -> {
-                Gdx.app.postRunnable(() -> callback.onError(e));
-            });
+            .addOnFailureListener(e -> Gdx.app.postRunnable(() -> callback.onError(e)));
     }
 
     @Override
-    public void updateScore(Callback<List<Integer>> score) {
-        // TODO: Implement updateScore
+    public void updateScoreForLevel(UserInfo userInfo, int levelNumber, int newScore, Callback<Boolean> callback) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Gdx.app.postRunnable(() -> callback.onError(new Exception("No user is signed in")));
+            return;
+        }
+
+        String uid = user.getUid();
+        String levelKey = String.valueOf(levelNumber);
+
+        db.collection("users").document(uid)
+            .get()
+            .addOnSuccessListener(doc -> {
+                Map<String, Object> levelScores = (Map<String, Object>) doc.get("levelScores");
+                int oldScore = 0;
+
+                if (levelScores != null && levelScores.containsKey(levelKey)) {
+                    Object storedScore = levelScores.get(levelKey);
+                    if (storedScore instanceof Number) {
+                        oldScore = ((Number) storedScore).intValue();
+                    }
+                }
+
+                // Checks if new score is a high score
+                if (newScore > oldScore) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("levelScores." + levelKey, newScore);
+
+                    db.collection("users").document(uid)
+                        .update(updates)
+                        .addOnSuccessListener(unused -> {
+                            uploadScoreToLeaderboard(userInfo, levelNumber, newScore, new Callback<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Gdx.app.postRunnable(() -> callback.onSuccess(true));
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Gdx.app.postRunnable(() -> callback.onError(e));
+                                }
+                            });
+                        })
+                        .addOnFailureListener(e -> Gdx.app.postRunnable(() -> callback.onError(e)));
+                } else {
+                    // Do not update if new score is not a high score
+                    Gdx.app.postRunnable(() -> callback.onSuccess(false));
+                }
+            })
+            .addOnFailureListener(e -> Gdx.app.postRunnable(() -> callback.onError(e)));
     }
+
+    @Override
+    public void uploadScoreToLeaderboard(UserInfo userInfo, int level, int score, Callback<Void> callback) {
+        if (userInfo == null || userInfo.uid == null || userInfo.email == null) {
+            Gdx.app.postRunnable(() -> callback.onError(new Exception("User info is incomplete")));
+            return;
+        }
+
+        String levelDocId = "level_" + level;
+        String uid = userInfo.uid;
+
+        Map<String, Object> userScore = new HashMap<>();
+        userScore.put("score", score);
+        userScore.put("username", userInfo.getDisplayName());
+        userScore.put("email", userInfo.email);
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put(uid, userScore);
+
+        db.collection("scores").document(levelDocId)
+            .set(updateMap, com.google.firebase.firestore.SetOptions.merge())
+            .addOnSuccessListener(unused -> Gdx.app.postRunnable(() -> callback.onSuccess(null)))
+            .addOnFailureListener(e -> Gdx.app.postRunnable(() -> callback.onError(e)));
+    }
+
+
+
 
     @Override
     public void logIn(String email, String password, Callback<UserInfo> callback) {
@@ -188,6 +276,24 @@ public class FirebaseManagerAndroid implements FirebaseManager {
                         checkIfUserExists(new Callback<UserInfo>() {
                             @Override
                             public void onSuccess(UserInfo userInfo) {
+                                db.collection("scores")
+                                    .get()
+                                    .addOnSuccessListener(snapshot -> {
+
+                                        // Update the username in all level scores
+                                        for (DocumentSnapshot levelDoc : snapshot) {
+                                            String levelId = levelDoc.getId();
+                                            Map<String, Object> data = levelDoc.getData();
+                                            if (data != null && data.containsKey(uid)) {
+                                                Map<String, Object> entry = (Map<String, Object>) data.get(uid);
+                                                entry.put("username", username);
+                                                data.put(uid, entry);
+                                                db.collection("scores").document(levelId)
+                                                    .update(uid, entry);
+                                            }
+                                        }
+                                    });
+
                                 Gdx.app.postRunnable(() -> callback.onSuccess(userInfo));
                             }
 

@@ -59,7 +59,7 @@ public class EntityFactory {
             return createObstacleEntity(name, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "assets/tounge/Tongue-4.png", world);
+            return createProjectileEntity(x, y, "tounge/Tongue-4.png", world);
         }
         else if (name.startsWith("Background")) {
             return createBackground();
@@ -142,7 +142,7 @@ public class EntityFactory {
         int y = 0;
 
         float pxl = 1.9f;
-        
+
 
         if (name.endsWith("Left") || name.endsWith("Right")){
             if (name.endsWith("Right")){
@@ -155,7 +155,7 @@ public class EntityFactory {
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
-    
+
 
         else if (name.endsWith("Roof")||name.endsWith("Floor")){
             if (name.endsWith("Roof")){
@@ -167,7 +167,7 @@ public class EntityFactory {
             }
             x =  Gdx.graphics.getWidth()/2;
             width = Gdx.graphics.getWidth()/Constants.PPM;;
-           
+
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
         }
 
@@ -182,13 +182,13 @@ public class EntityFactory {
         if (name.endsWith("Floor")){
             //uses floorentity for identification later (in physicssystem)
              obstacle = new FloorEntity(body, sprite);
-        } else { 
+        } else {
             obstacle = new ObstacleEntity(body, sprite);
         }
-        
+
         body.getBody().setUserData(obstacle);
-        
-        
+
+
         return new ObstacleEntity(body, sprite);
     }
 
@@ -200,7 +200,7 @@ public class EntityFactory {
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.KinematicBody, createBoxFixture(width, height,CATEGORY_PROJECTILE,MASK_PROJECTILE),true);
-       
+
         LifeTimeComponent lifeTime = new LifeTimeComponent(50); // 1.5 seconds
         TransformationComponent transComp = new TransformationComponent(3, 1, 1, 10
         ,TransformationComponent.RECTANGLE,

@@ -11,12 +11,18 @@ public class DummyFirebaseManager implements FirebaseManager {
     private String currentUid = null;
     private String currentUsername = null;
 
-    // email -> password
+    // Mocked firestore data structures
+    // Map<email, password>
     private static final Map<String, String> mockUserDatabase = new HashMap<>();
-    // email -> uid
+    // Map<email, uid>
     private static final Map<String, String> mockUidLookup = new HashMap<>();
-    // username -> email
+    // Map<username, email>
     private static final Map<String, String> mockUsernameRegistry = new HashMap<>();
+    // Map<uid, { level, score }>
+    private static final Map<String, Map<String, Integer>> levelScores = new HashMap<>();
+    // Map<level, Map<uid, {score, username, email}>>
+    private static final Map<String, Map<String, Map<String, Object>>> leaderboard = new HashMap<>();
+
 
     static {
         // Initial test user
@@ -29,21 +35,82 @@ public class DummyFirebaseManager implements FirebaseManager {
     }
 
     @Override
-    public void loadScores(Callback<List<Integer>> callback) {
-        List<Integer> mockScores = new ArrayList<>();
-        mockScores.add(99999);
-        mockScores.add(6969);
-        mockScores.add(666);
-        mockScores.add(420);
-        mockScores.add(69);
-        mockScores.add(0);
+    public void loadScores(int level, Callback<List<ScoreInfo>> callback) {
+        String levelKey = "level_" + level;
+        List<ScoreInfo> mockScores = new ArrayList<>();
+
+        Map<String, Map<String, Object>> levelEntries = leaderboard.get(levelKey);
+        if (levelEntries != null) {
+            for (Map<String, Object> userEntry : levelEntries.values()) {
+                String username = (String) userEntry.get("username");
+                String email = (String) userEntry.get("email");
+                Number score = (Number) userEntry.get("score");
+
+                if (score != null) {
+                    String name = (username != null && !username.isEmpty()) ? username : email;
+                    mockScores.add(new ScoreInfo(name, score.intValue()));
+                }
+            }
+        }
+
+        // Sort descending
+        mockScores.sort((a, b) -> Integer.compare(b.score, a.score));
         callback.onSuccess(mockScores);
     }
 
+
+
     @Override
-    public void updateScore(Callback<List<Integer>> score) {
-        // Not implemented in dummy
+    public void updateScoreForLevel(UserInfo userInfo, int levelNumber, int newScore, Callback<Boolean> callback) {
+        if (userInfo == null || userInfo.uid == null) {
+            callback.onError(new Exception("Invalid user info"));
+            return;
+        }
+
+        String uid = userInfo.uid;
+        String levelKey = String.valueOf(levelNumber);
+        levelScores.putIfAbsent(uid, new HashMap<>());
+        int oldScore = levelScores.get(uid).getOrDefault(levelKey, 0);
+
+        if (newScore > oldScore) {
+            levelScores.get(uid).put(levelKey, newScore);
+            uploadScoreToLeaderboard(userInfo, levelNumber, newScore, new Callback<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    callback.onSuccess(true);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    callback.onError(e);
+                }
+            });
+        } else {
+            callback.onSuccess(false);
+        }
     }
+
+    @Override
+    public void uploadScoreToLeaderboard(UserInfo userInfo, int level, int score, Callback<Void> callback) {
+        if (userInfo == null || userInfo.uid == null || userInfo.email == null) {
+            callback.onError(new Exception("User info is incomplete"));
+            return;
+        }
+
+        String levelKey = "level_" + level;
+        String uid = userInfo.uid;
+
+        Map<String, Object> userEntry = new HashMap<>();
+        userEntry.put("score", score);
+        userEntry.put("username", userInfo.getDisplayName());
+        userEntry.put("email", userInfo.email);
+
+        leaderboard.putIfAbsent(levelKey, new HashMap<>());
+        leaderboard.get(levelKey).put(uid, userEntry);
+
+        callback.onSuccess(null);
+    }
+
 
     @Override
     public void logIn(String email, String password, Callback<UserInfo> callback) {
@@ -115,13 +182,20 @@ public class DummyFirebaseManager implements FirebaseManager {
             return;
         }
 
-        // Register username
         mockUsernameRegistry.put(username, currentEmail);
         currentUsername = username;
+
+        for (Map<String, Map<String, Object>> level : leaderboard.values()) {
+            if (level.containsKey(currentUid)) {
+                Map<String, Object> entry = level.get(currentUid);
+                entry.put("username", username);
+            }
+        }
 
         // Return updated UserInfo
         callback.onSuccess(new UserInfo(currentUid, currentEmail, currentUsername));
     }
+
 
     private String getUsernameForEmail(String email) {
         for (Map.Entry<String, String> entry : mockUsernameRegistry.entrySet()) {

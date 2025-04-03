@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
+import io.github.RangoUnchained.Model.Firebase.ScoreInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -41,9 +42,10 @@ public class ScoreboardView extends BaseScreen {
         FirebaseManager firebaseManager = GameController.getInstance().getFirebaseManager();
 
         // Fetch scores from Firebase asynchronously
-        firebaseManager.loadScores(new FirebaseManager.Callback<List<Integer>>() {
+        // TODO: Add functionality to fetch scores for different levels (currently hardcoded to 1)
+        firebaseManager.loadScores(1, new FirebaseManager.Callback<List<ScoreInfo>>() {
             @Override
-            public void onSuccess(final List<Integer> scores) {
+            public void onSuccess(final List<ScoreInfo> scores) {
                 table.clear();
                 table.add(titleLabel).center().padBottom(50);
                 table.row();
@@ -54,7 +56,8 @@ public class ScoreboardView extends BaseScreen {
                     table.row();
                 } else {
                     for (int i = 0; i < scores.size(); i++) {
-                        String scoreText = "Player " + (i + 1) + ": " + scores.get(i) + " points";
+                        ScoreInfo entry = scores.get(i);
+                        String scoreText = (i + 1) + ". " + entry.displayName + ": " + entry.score + " points";
                         table.add(new Label(scoreText, getSkin()))
                             .center().padBottom(10);
                         table.row();
@@ -79,5 +82,6 @@ public class ScoreboardView extends BaseScreen {
                     .center().padTop(20);
             }
         });
+
     }
 }

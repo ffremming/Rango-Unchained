@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Components.HealthComponent;
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
@@ -89,10 +90,6 @@ public class LevelController {
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
         getSystem(PowerUpSystem.class).setContactStrategies();
-
-
-
-
     }
 
     /**updates all entities with the appropiate systems */
@@ -142,7 +139,18 @@ public class LevelController {
         return health;
     }
 
+    public ArrayList<Integer> getPlayerActivePowerup(){
+        ArrayList<Integer> list = new ArrayList<>();
+        if (level == null){return list;}
+        ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
+        if (entities.size()<=0){return list;}
+
+        list.addAll(((PowerUpComponent)(entities.get(0).getComponent(PowerUpComponent.class))).getActivePowerUps().keySet());
+        return list;
+    }
+
     public void checkpoint(float delta) {
         level.checkpoint(delta);
     }
+
 }

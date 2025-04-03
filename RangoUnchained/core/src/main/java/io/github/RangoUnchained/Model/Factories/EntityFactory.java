@@ -40,12 +40,15 @@ public class EntityFactory {
     public static final short CATEGORY_BALL       = 0x0002;
     public static final short CATEGORY_OBSTACLE   = 0x0004;
     public static final short CATEGORY_PROJECTILE = 0x0008;
+    public static final short CATEGORY_POWERUP = 0x0016;
+
 
     //masks for what should collide with what
-    public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE;         // Player ignores projectiles, for instance.
+    public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE |CATEGORY_POWERUP;         // Player ignores projectiles, for instance.
     public static final short MASK_BALL       = CATEGORY_PLAYER | CATEGORY_OBSTACLE | CATEGORY_PROJECTILE;       // Balls might ignore projectiles too.
     public static final short MASK_OBSTACLE   = CATEGORY_PLAYER | CATEGORY_BALL;
     public static final short MASK_PROJECTILE = CATEGORY_BALL;
+    public static final short MASK_POWERUP = CATEGORY_PLAYER |CATEGORY_OBSTACLE;
 
     private EntityFactory() {}
 
@@ -69,10 +72,13 @@ public class EntityFactory {
             return createBackground();
         } else if (name.startsWith("SpeedPowerUp")) {
             //TODO: change sprite to actual sprite
-            return createPowerUp(x, y, "Rango/Rango.png", world, 0);
+            return createPowerUp(x, y, "Powerup/Speed.png", world, 0);
         } else if (name.startsWith("ShieldPowerUp")) {
             //TODO: change sprite to actual sprite
-            return createPowerUp(x, y, "Rango/Rango.png", world, 1);
+            return createPowerUp(x, y, "Powerup/Shield.png", world, 1);
+        }else if (name.startsWith("sizePowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Shield.png", world, 2);
         }
 
 
@@ -82,13 +88,17 @@ public class EntityFactory {
 
     private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpType) {
 
-        SpriteComponent sprite = new SpriteComponent(spritePath,500,128);
+        SpriteComponent sprite = new SpriteComponent(spritePath,64,64);
 
         float width = (sprite.getSprite().getWidth()/ Constants.PPM);
         float height = (sprite.getSprite().getHeight()/ Constants.PPM);
 
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width,CATEGORY_POWERUP,MASK_POWERUP),false);
+        body.getBody().setLinearVelocity(new Vector2(-2,4));
+        body.getBody().setAngularDamping(0f);
 
+        float pulse = MEDIUMPULSE;
+        body.getBody().applyAngularImpulse(pulse, true);
         PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpType);
         PowerUpEntity powerUp = new PowerUpEntity(body, sprite, powerUpComponent);
         body.getBody().setUserData(powerUp);
@@ -104,6 +114,8 @@ public class EntityFactory {
         float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
+       
+        
         InputComponent input = new InputComponent();
 
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);

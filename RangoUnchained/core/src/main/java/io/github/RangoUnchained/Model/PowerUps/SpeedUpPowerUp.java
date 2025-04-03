@@ -17,11 +17,18 @@ public class SpeedUpPowerUp implements PowerUpStrategy {
             return;
         }
 
+        
+
         SpeedComponent speed = (SpeedComponent) player.getComponent(SpeedComponent.class);
 
         if (speed != null) {
-            speed.setCurrentSpeed(speed.getCurrentSpeed() * 2);
+            speed.setCurrentSpeed(speed.getCurrentSpeed() * 1.75f);
             speed.setSpeedBoostTimer(5);
         }
+    }
+
+    public void remove(Entity entity){
+        SpeedComponent speed = (SpeedComponent) entity.getComponent(SpeedComponent.class);
+        speed.setCurrentSpeed(speed.getCurrentSpeed() /1.75f);
     }
 }

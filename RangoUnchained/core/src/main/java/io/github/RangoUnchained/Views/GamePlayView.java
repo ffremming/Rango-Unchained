@@ -1,5 +1,7 @@
 package io.github.RangoUnchained.Views;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
@@ -95,6 +98,7 @@ public class GamePlayView extends BaseScreen {
 
         //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
         updateHeartsUI();
+        updatePowerupUI();
         updateUI();
 
         batch.end();
@@ -130,6 +134,50 @@ public class GamePlayView extends BaseScreen {
         }
     }
 
+    
+
+    private void updatePowerupUI() {
+        ArrayList<Integer> powerupList = LevelController.getInstance().getPlayerActivePowerup();
+        // Remove old hearts
+        Actor oldPowerups = stage.getRoot().findActor("powerupContainer");
+        if (oldPowerups != null) {
+            oldPowerups.remove();
+        }
+
+        // New top-left-aligned heart container
+        Table powerups = new Table();
+        powerups.setName("powerupContainer");
+        powerups.top().right().padTop(10).padLeft(42);
+        powerups.setFillParent(true);
+
+        // Load texture (with crisp pixel look)
+        Texture heartTexture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
+        heartTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        float size = 32f;
+
+        for (int powerup : powerupList) {
+            Image powerupImage = null;
+            if (powerup == PowerUpComponent.SPEED) {
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/speed.png")));
+                powerups.add(powerupImage).size(size, size).padRight(5);
+
+                } else if (powerup == PowerUpComponent.SHIELD) {
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/shield.png")));
+                powerups.add(powerupImage).size(size, size).padRight(5);
+                } else if (powerup == PowerUpComponent.BALLSIZE) {
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/speed.png")));
+                powerups.add(powerupImage).size(size, size).padRight(5);
+                } else if (powerup == PowerUpComponent.BALLBOUNCE) {
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/speed.png")));
+                powerups.add(powerupImage).size(size, size).padRight(5);
+                }
+        }
+
+        stage.addActor(powerups);
+        
+    }
+
     private void updateHeartsUI() {
         // Remove old hearts
         Actor oldHeartContainer = stage.getRoot().findActor("heartContainer");
@@ -162,6 +210,7 @@ public class GamePlayView extends BaseScreen {
     }
 
 
+
     private void createScoreLabel() {
         Skin skin = getSkin();
 
@@ -190,7 +239,7 @@ public class GamePlayView extends BaseScreen {
         // Create a table to position the label at the top-right
         Table timeTable = new Table();
         timeTable.setFillParent(true); // Let the table span the whole stage
-        timeTable.top().right().padTop(10).padRight(30); // Align top-right with some padding
+        timeTable.right().top().padTop(40); // Align at the top and center with padding
 
         timeTable.add(timeLabel);
 

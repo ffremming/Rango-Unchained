@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
@@ -45,21 +46,27 @@ public class BallSplitting implements ContactStrategy{
         Vector2 newVelocity = new Vector2((0), (5));
 
         LevelController.getInstance().handleRemovalRequests(ball);
+        BallComponent ballcomp = (BallComponent) ball.getComponent(BallComponent.class);
+        
+
+        String spawnName = "Ball " + ballcomp.getTypeName();
 
         if (timesPopped == 0) {
             newVelocity.x = -3;
-
+            
+            spawnName += " Medium";
             LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 10, 10,
-                "BallMedium", newVelocity);
+            spawnName, newVelocity);
             LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 10, 10,
-            "BallMedium", newVelocity);
+            spawnName, newVelocity);
 
         } else if (timesPopped == 1) {
             newVelocity.x = 3;
+            spawnName += " Small";
             LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 5, 5,
-                "BallSmall", newVelocity);
+            spawnName, newVelocity);
                 LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 5, 5,
-                "BallSmall", newVelocity);
+                spawnName, newVelocity);
         }
     }
     

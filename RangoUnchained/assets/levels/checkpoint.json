@@ -1,0 +1,84 @@
+{
+"metaData": {
+	"theme": "Desert",
+	"progress": 1
+},
+"entitiesData": [
+	{
+		"name": "Background",
+		"position": {}
+	},
+	{
+		"name": "ObsticleLeft",
+		"position": {
+			"x": 17,
+			"y": 400
+		}
+	},
+	{
+		"name": "ObsticleRight",
+		"position": {
+			"x": 1500,
+			"y": 480
+		}
+	},
+	{
+		"name": "ObsticleRoof",
+		"position": {
+			"x": 750,
+			"y": 900
+		}
+	},
+	{
+		"name": "ObsticleFloor",
+		"position": {
+			"x": 750,
+			"y": 32
+		}
+	},
+	{
+		"name": "BallBig",
+		"position": {
+			"x": 966.32477,
+			"y": 414.2794
+		},
+		"velocity": {
+			"x": -1.0455523,
+			"y": -5.3333316
+		}
+	},
+	{
+		"name": "BallMedium",
+		"position": {
+			"x": 1181.9342,
+			"y": 405.82382
+		},
+		"velocity": {
+			"x": 1.9383209,
+			"y": -3.6666644
+		}
+	},
+	{
+		"name": "BallSmall",
+		"position": {
+			"x": 113.59987,
+			"y": 325.65738
+		},
+		"velocity": {
+			"x": 2.0453959,
+			"y": 1.3333344
+		}
+	},
+	{
+		"name": "BallSmall",
+		"position": {
+			"x": 87.36356,
+			"y": 244.57516
+		},
+		"velocity": {
+			"x": 2.0453959,
+			"y": 4.000002
+		}
+	}
+]
+}

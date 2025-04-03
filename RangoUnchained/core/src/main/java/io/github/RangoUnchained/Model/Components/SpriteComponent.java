@@ -32,9 +32,14 @@ public class SpriteComponent implements Component {
 
     }
 
-    public Sprite getSprite() {
+    public Sprite getSprite(float degree) {
         return sprite;
     }
+
+    public Sprite getSprite(){
+        return sprite;
+    }
+
     public Texture getTexture() {
         return texture;
     }

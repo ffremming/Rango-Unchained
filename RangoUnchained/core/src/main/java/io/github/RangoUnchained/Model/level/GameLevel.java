@@ -92,7 +92,7 @@ public class GameLevel {
         // If counter >= 3, write to JSON, else count and continue
         if (checkpointCounter < 3) {
             checkpointCounter += delta;
-            System.out.println("Before checkpoint: " + checkpointCounter);
+            
             return;
         }
 

@@ -1,105 +1,97 @@
 {
-  "metaData": {
-    "number": 1,
-    "theme": "Desert",
-    "completed": false,
-    "multiplayer": false,
-    "progress": 0
-  },
-  "entitiesData": [
-
-    {
-      "name": "Background",
-      "position": {
-        "x": 0,
-        "y": 0
-      }
-    },
-
-    {
-      "name": "Player",
-      "position": {
-        "x": 100,
-        "y": 150
-      }
-    },
-    {
-      "name": "BallBig",
-      "position": {
-        "x": 200,
-        "y": 400
-      },
-      "velocity":{
-        "x":3
-      }
-    },
-    {
-      "name": "BallSmall",
-      "position": {
-        "x": 300,
-        "y": 400
-      },
-      "velocity":{
-        "x":-3
-      }
-    },
-
-    {
-      "name": "BallBig",
-      "position": {
-        "x": 600,
-        "y": 400
-      },
-      "velocity":{
-        "x":2
-      }
-    },
-    {
-      "name": "BallMedium",
-      "position": {
-        "x": 900,
-        "y": 400
-      },
-      "velocity":{
-        "x":-2
-      }
-    },
-
-    {
-      "name": "ObsticleLeft",
-      "position": {
-        "x": 17,
-        "y": 400
-      }
-    }
-    ,
-
-    {
-      "name": "ObsticleRight",
-      "position": {
-        "x": 1500,
-        "y": 480
-      }
-    }
-    ,
-
-    {
-      "name": "ObsticleRoof",
-      "position": {
-        "x": 750,
-        "y": 900
-      }
-    }
-    ,
-
-    {
-      "name": "ObsticleFloor",
-      "position": {
-        "x": 750,
-        "y": 32
-      }
-    }
-
-
-  ]
+"metaData": {
+	"theme": "Desert",
+	"progress": 1
+},
+"entitiesData": [
+	{
+		"name": "Background",
+		"position": {}
+	},
+	{
+		"name": "Player",
+		"position": {
+			"x": 100,
+			"y": 150
+		}
+	},
+	{
+		"name": "Ball: Armedillo Big",
+		"position": {
+			"x": 300,
+			"y": 400
+		},
+		"velocity": {
+			"x": 3
+		}
+	},
+	{
+		"name": "Ball: Tumbleweed Big",
+		"position": {
+			"x": 200,
+			"y": 400
+		},
+		"velocity": {
+			"x": 3
+		}
+	},
+	{
+		"name": "Ball: Armedillo Small",
+		"position": {
+			"x": 300,
+			"y": 400
+		},
+		"velocity": {
+			"x": -3
+		}
+	},
+	{
+		"name": "Ball: Cactus Big",
+		"position": {
+			"x": 600,
+			"y": 400
+		},
+		"velocity": {
+			"x": 2
+		}
+	},
+	{
+		"name": "Ball: Plant Small",
+		"position": {
+			"x": 900,
+			"y": 400
+		},
+		"velocity": {
+			"x": -2
+		}
+	},
+	{
+		"name": "ObsticleLeft",
+		"position": {
+			"x": 17,
+			"y": 400
+		}
+	},
+	{
+		"name": "ObsticleRight",
+		"position": {
+			"x": 1500,
+			"y": 480
+		}
+	},
+	{
+		"name": "ObsticleRoof",
+		"position": {
+			"x": 750,
+			"y": 900
+		}
+	},
+	{
+		"name": "ObsticleFloor",
+		"position": {
+			"x": 750,
+			"y": 32
+		}
+	}
+]
 }

@@ -68,7 +68,7 @@ public class GameLevel {
 
         scoreManager.setScore(levelData.metaData.score);
         timer.setTime(levelData.metaData.time);
-        spawn(levelData.entitiesData);
+        spawn(levelData.entitiesData,levelData.metaData.number);
     }
 
     public void checkpoint(float delta){
@@ -164,12 +164,12 @@ public class GameLevel {
         entities.removeAll(removalEntities);
     }
 
-    public void spawn(ArrayList<EntityData> spawningEntities) {
+    public void spawn(ArrayList<EntityData> spawningEntities, int levelNumber) {
         for (EntityData data: spawningEntities){
             Gdx.app.log("JSON_testing", "Name: " + data.name);
             Gdx.app.log("JSON_testing", "Position: (" + data.position.x + ", " + data.position.y + ")");
             Vector2 velocity = data.velocity == null ? new Vector2() : data.velocity;
-            Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity, data.health);
+            Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity, data.health, levelNumber);
             if (entity != null){
                 entities.add(entity);
             }

@@ -54,6 +54,7 @@ public class SystemManager {
         LifeTimeSystem lifeTimeSystem = new LifeTimeSystem();
         ContactSystem contactSystem = new ContactSystem(physicsSystem.getWorld());
         HealthSystem healthSystem = new HealthSystem();
+        TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
 
         world = physicsSystem.getWorld();
@@ -66,6 +67,7 @@ public class SystemManager {
         systems.add(contactSystem);
         systems.add(healthSystem);
         systems.add(powerUpSystem);
+        systems.add(tutorialSystem);
     }
 
     /** method for getting world

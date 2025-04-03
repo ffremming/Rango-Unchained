@@ -67,6 +67,7 @@ public class GameFileHandler {
             levelData = new LevelData();
            
         }
+        if (levelData == null){levelData = new LevelData();}
         levelData.metaData = new MetaData();
         levelData.metaData.progress = 0;
         levelData.metaData.levelnr = levelNumber;

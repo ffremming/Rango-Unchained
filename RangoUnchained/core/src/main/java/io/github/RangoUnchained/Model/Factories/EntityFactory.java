@@ -20,6 +20,7 @@ import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
+import io.github.RangoUnchained.Model.Components.TutorialComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.BasicEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
@@ -52,12 +53,12 @@ public class EntityFactory {
 
     private EntityFactory() {}
 
-    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp) {
+    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp, int level) {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
         if (name.equals("Player")) {
-            return createPlayerEntity(x, y, world, hp);
+            return createPlayerEntity(x, y, world, hp, level);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
@@ -107,7 +108,7 @@ public class EntityFactory {
     }
 
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp) {
+    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp, int level) {
         SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
 
         float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
@@ -121,6 +122,9 @@ public class EntityFactory {
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
 
         PlayerEntity player = new PlayerEntity(body, sprite, input, health);
+        if (level == 0){
+            player.addComponent(new TutorialComponent());
+        }
         body.getBody().setUserData(player);
         return player;
     }

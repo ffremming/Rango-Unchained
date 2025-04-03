@@ -2,11 +2,11 @@ package io.github.RangoUnchained.Model.Systems;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.HealthComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactListener.ContactStrategy;
 
 public class HealthSystem implements System, ContactStrategy{
 
@@ -53,13 +53,13 @@ public class HealthSystem implements System, ContactStrategy{
         } else {
             player = (PlayerEntity) collisionEvent.entityB;
         }
-
-        HealthComponent healthComponent = ((HealthComponent)player.getComponent(HealthComponent.class));
+        HealthComponent healthComponent =  ((HealthComponent)player.getComponent(HealthComponent.class));
 
         if (healthComponent.isShieldActive()) {
             //healthComponent.setShieldActive(false);
         } else {
             healthComponent.decreaseHealth();
+            LevelController.getInstance().getSystem(TutorialSystem.class).flagPlayerHit();
         }
     }
 

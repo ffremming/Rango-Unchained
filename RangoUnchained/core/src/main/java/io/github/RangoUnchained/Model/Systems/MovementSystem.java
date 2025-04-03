@@ -47,13 +47,7 @@ public class MovementSystem implements System {
         } else if (inputComponent.isRight()) {
             newVelocityX = moveSpeed;
         }
-
-        // If you want to handle a shoot action or other input, you can process that separately
-        if (inputComponent.isShoot()) {
-            // Perform shoot logic here if needed.
-            inputComponent.setShoot(false);
-        }
-
+        
         // Update the body's velocity
         body.setLinearVelocity(newVelocityX, currentVelocity.y);
     }

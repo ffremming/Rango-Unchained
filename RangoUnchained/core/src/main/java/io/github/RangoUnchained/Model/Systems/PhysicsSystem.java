@@ -10,11 +10,11 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.*;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactListener.*;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class PhysicsSystem implements System, ContactStrategy {

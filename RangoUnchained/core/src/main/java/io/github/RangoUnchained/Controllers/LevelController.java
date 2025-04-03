@@ -7,19 +7,17 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategies;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
-import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
-import io.github.RangoUnchained.Model.level.Timer;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
-import io.github.RangoUnchained.Model.contactListener.ContactStrategies;
 import io.github.RangoUnchained.Model.level.GameLevel;
 
 public class LevelController {
@@ -61,6 +59,7 @@ public class LevelController {
     }
 
     public void handleRemovalRequests(Entity entity) {
+        // 
        removalQueue.addRemovalRequest(entity);
     }
 
@@ -71,7 +70,7 @@ public class LevelController {
 
 
     public void excecuteSpawnQueue() {
-        level.spawn(spawnQueue.retrieveSpawningEntities());
+        level.spawn(spawnQueue.retrieveSpawningEntities(),1);
     }
 
     public void excecuteRemovelQueue() {

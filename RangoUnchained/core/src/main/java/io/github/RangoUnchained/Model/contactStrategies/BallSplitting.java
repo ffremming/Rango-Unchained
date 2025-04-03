@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.Model.contactListener;
+package io.github.RangoUnchained.Model.ContactStrategies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -7,10 +7,12 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
+import io.github.RangoUnchained.Model.Components.TutorialComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
+import io.github.RangoUnchained.Model.Systems.TutorialSystem;
 
 public class BallSplitting implements ContactStrategy{
 
@@ -46,6 +48,7 @@ public class BallSplitting implements ContactStrategy{
         Vector2 newVelocity = new Vector2((0), (5));
 
         LevelController.getInstance().handleRemovalRequests(ball);
+        LevelController.getInstance().getSystem(TutorialSystem.class).flagBallKilled();
         BallComponent ballcomp = (BallComponent) ball.getComponent(BallComponent.class);
         
 

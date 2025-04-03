@@ -25,7 +25,6 @@ public class LevelController {
     private static LevelController levelController;
 
     private GameLevel level;
-    private Timer timer = new Timer();
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
     private RemovalQueue removalQueue;
@@ -95,7 +94,7 @@ public class LevelController {
     /**updates all entities with the appropiate systems */
     public void update(float delta) {
         systemManager.update(level.getEntities());
-        timer.update(delta);
+        level.getTimer().update(delta);
     }
 
     public void step(float f, int i, int j) {
@@ -126,6 +125,10 @@ public class LevelController {
         return level.scoreManager.getScore();
     }
 
+    public GameLevel getLevel() {
+        return this.level;
+    }
+
     public int getPlayerHealth(){
         if (level == null){return 0;}
         ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
@@ -133,11 +136,6 @@ public class LevelController {
 
         int health = ((HealthComponent)(entities.get(0).getComponent(HealthComponent.class))).getHealth();
         return health;
-    }
-
-    public double getTime(){
-        if (timer == null){return 0;}
-        return timer.getTime();
     }
 
     public void checkpoint(float delta) {

@@ -37,6 +37,7 @@ public class GameLevel {
     private ArrayList<LevelData.EntityData> entitiesData;
     private float checkpointCounter = 0;
     public ScoreManager scoreManager = new ScoreManager();
+    public Timer timer = new Timer();
     public int levelNumber;
 
     public GameLevel(int number) {
@@ -78,6 +79,7 @@ public class GameLevel {
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
 
         scoreManager.setScore(levelData.metaData.score);
+        timer.setTime(levelData.metaData.time);
         spawn(levelData.entitiesData);
     }
 
@@ -120,6 +122,7 @@ public class GameLevel {
         metaData.progress = 1; // Set to on-going
         metaData.levelnr = levelNumber;
         metaData.score = scoreManager.getScore();
+        metaData.time = timer.getTime();
 
         LevelData levelData = new LevelData();
         levelData.metaData = metaData;
@@ -187,6 +190,10 @@ public class GameLevel {
         return entityData;
     }
 
+    public Timer getTimer() {
+        return this.timer;
+    }
+
 
 
 
@@ -251,6 +258,7 @@ public class GameLevel {
             public int progress;
             public int levelnr;
             public int score;
+            public double time;
         }
     }
 

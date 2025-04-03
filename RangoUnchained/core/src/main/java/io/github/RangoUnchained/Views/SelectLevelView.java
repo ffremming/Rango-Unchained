@@ -27,7 +27,6 @@ public class SelectLevelView extends BaseScreen {
         Table table = new Table();
         table.setFillParent(true);
         table.top().padTop(50);
-
         table.add(titleLabel).center().padBottom(50);
         table.row();
 

@@ -38,4 +38,8 @@ public class Timer {
     public double getTime() {
         return this.time;
     }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
 }

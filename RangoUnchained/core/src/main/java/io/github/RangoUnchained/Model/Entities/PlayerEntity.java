@@ -14,12 +14,12 @@ public class PlayerEntity implements Entity{
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    public PlayerEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, InputComponent inputComponent) {
+    public PlayerEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, InputComponent inputComponent, HealthComponent healthComponent) {
         addComponent(bodyComponent);
         addComponent(spriteComponent);
         addComponent(inputComponent);
         addComponent(new ContactComponent());
-        addComponent(new HealthComponent(8));
+        addComponent(healthComponent);
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));
     }
     @Override

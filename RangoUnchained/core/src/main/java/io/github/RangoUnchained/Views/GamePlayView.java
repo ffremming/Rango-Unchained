@@ -125,7 +125,7 @@ public class GamePlayView extends BaseScreen {
         // Retrieve the time label from the stage
         Label timeLabel = stage.getRoot().findActor("timeLabel");
         if (timeLabel != null) {
-            double time = LevelController.getInstance().getTime();
+            double time = LevelController.getInstance().getLevel().getTimer().getTime();
             timeLabel.setText(String.format("%.1f s", time));
         }
     }
@@ -174,29 +174,29 @@ public class GamePlayView extends BaseScreen {
         Table scoreTable = new Table();
         scoreTable.setFillParent(true); // Let the table span the whole stage
         scoreTable.top().right().padTop(10).padLeft(30); // Align top-right with some padding
-    
+
         scoreTable.add(scoreLabel);
         stage.addActor(scoreLabel);
     }
 
     private void createTimeLabel() {
-       
+
         Skin skin = getSkin();
-    
+
         // Create the label and name it for future updates
         Label timeLabel = new Label("0 s", skin);
         timeLabel.setName("timeLabel");
-    
+
         // Create a table to position the label at the top-right
         Table timeTable = new Table();
         timeTable.setFillParent(true); // Let the table span the whole stage
         timeTable.top().right().padTop(10).padRight(30); // Align top-right with some padding
-    
+
         timeTable.add(timeLabel);
-    
+
         // Add the table to the stage
         stage.addActor(timeTable);
-    
+
     }
 
     private Table createTable(Button button) {

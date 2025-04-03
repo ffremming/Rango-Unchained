@@ -1,9 +1,12 @@
 {
-"metaData": {
-	"theme": "Desert",
-	"progress": 0
-},
-"entitiesData": [
+  "metaData": {
+    "number": 1,
+    "theme": "Desert",
+    "completed": false,
+    "multiplayer": false,
+    "progress": 0
+  },
+  "entitiesData": [
 	{
 		"name": "Background",
 		"position": {}

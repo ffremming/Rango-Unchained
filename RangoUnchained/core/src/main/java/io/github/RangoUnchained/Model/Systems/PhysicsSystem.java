@@ -14,7 +14,7 @@ import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactListener.*;
+import io.github.RangoUnchained.Model.contactStrategies.*;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class PhysicsSystem implements System, ContactStrategy {

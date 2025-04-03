@@ -6,7 +6,7 @@ import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactListener.ContactStrategy;
+import io.github.RangoUnchained.Model.contactStrategies.ContactStrategy;
 
 public class HealthSystem implements System, ContactStrategy{
 
@@ -54,5 +54,8 @@ public class HealthSystem implements System, ContactStrategy{
             player = (PlayerEntity) collisionEvent.entityB;
         }
         ((HealthComponent)player.getComponent(HealthComponent.class)).decreaseHealth();
+
+        //for tutorial
+        LevelController.getInstance().getSystem(TutorialSystem.class).flagPlayerHit();
     }
 }

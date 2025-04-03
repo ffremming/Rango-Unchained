@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -23,10 +21,9 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
-import io.github.RangoUnchained.Model.level.GameLevel;
+import io.github.RangoUnchained.Model.Systems.TutorialSystem;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
-import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class GamePlayView extends BaseScreen {
 
@@ -57,15 +54,17 @@ public class GamePlayView extends BaseScreen {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         camera.update();
         viewport.apply();
-        controller.update(delta);
+        
         drawGame();
 
         if (!pauseMenu.isPaused()) {
             // Update game logic
             controller.step(1 / 60f, 6, 2);
+            controller.update(delta);
             controller.excecuteRemovelQueue();
             controller.excecuteSpawnQueue();
             controller.checkpoint(delta);
+            getButtonByName("Pause").setVisible(true);
 
             // Update and draw the UI stage on top of the game
             stage.act(delta);
@@ -74,6 +73,7 @@ public class GamePlayView extends BaseScreen {
             // Update and draw the pause menu on top of everything else
             pauseMenu.act(delta);
             pauseMenu.draw();
+             getButtonByName("Pause").setVisible(false);
         }
     }
 
@@ -112,6 +112,7 @@ public class GamePlayView extends BaseScreen {
         createJoystick();
        createScoreLabel();
        createTimeLabel();
+       createTutorialLabel();
     }
 
     private void updateUI(){
@@ -127,6 +128,16 @@ public class GamePlayView extends BaseScreen {
         if (timeLabel != null) {
             double time = LevelController.getInstance().getLevel().getTimer().getTime();
             timeLabel.setText(String.format("%.1f s", time));
+        }
+
+        
+
+        Label tutorialLabel = stage.getRoot().findActor("tutorialLabel");
+        if (tutorialLabel != null) {
+            TutorialSystem tutorialSystem = LevelController.getInstance().getSystem(TutorialSystem.class);
+            if (tutorialSystem!= null){
+                tutorialLabel.setText(tutorialSystem.getTutorialMessage());
+            }
         }
     }
 
@@ -159,6 +170,23 @@ public class GamePlayView extends BaseScreen {
         }
 
         stage.addActor(heartTable);
+    }
+
+    private void createTutorialLabel() {
+        Skin skin = getSkin();
+
+        // Create a label to display the score
+        Label tutorialLabel = new Label("", skin);
+        tutorialLabel.setName("tutorialLabel"); // Set a name to easily update it later
+
+        tutorialLabel.setBounds(stage.getWidth()/2, stage.getHeight()/2, 100, 50);
+
+        Table scoreTable = new Table();
+        scoreTable.setFillParent(true); // Let the table span the whole stage
+        scoreTable.top().right().padTop(10).padLeft(30); // Align top-right with some padding
+
+        scoreTable.add(tutorialLabel);
+        stage.addActor(tutorialLabel);
     }
 
 
@@ -201,11 +229,31 @@ public class GamePlayView extends BaseScreen {
 
     private Table createTable(Button button) {
         Table table = new Table();
+        if (button instanceof TextButton) {
+            table.setName(((TextButton) button).getText().toString());
+        } else {
+            table.setName("UnnamedButton");
+        }
         table.setFillParent(true);
         table.add(button);
 
         stage.addActor(table);
         return table;
+    }
+
+    private Table getTableByName(String name) {
+        return stage.getRoot().findActor(name);
+    }
+
+    private Button getButtonByName(String name) {
+        Table table = getTableByName(name);
+        if (table != null && table.getChildren().size > 0) {
+            Actor actor = table.getChildren().first();
+            if (actor instanceof Button) {
+                return (Button) actor;
+            }
+        }
+        return null;
     }
 
     private void createJoystick() {

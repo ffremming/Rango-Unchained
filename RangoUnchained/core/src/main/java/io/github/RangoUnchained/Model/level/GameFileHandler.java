@@ -31,7 +31,14 @@ public class GameFileHandler {
             json.setOutputType(JsonWriter.OutputType.json);
             FileHandle mainFile = Gdx.files.local(path);
 
-            return json.fromJson(GameLevel.LevelData.class, mainFile.readString());
+            GameLevel.LevelData levelData = json.fromJson(GameLevel.LevelData.class, mainFile.readString());
+
+            if (levelData == null) {
+                return new GameLevel.LevelData();
+            }
+
+            return levelData;
+
         } catch (Exception e) {
             return null;
         }

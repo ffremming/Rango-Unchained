@@ -138,6 +138,27 @@ public class GameFileHandler {
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpointBackup.json");
     }
 
+    public static int inProgresslevelnumber(){
+
+        GameLevel.LevelData levelData;
+        try{
+            levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
+           
+        } catch (Exception e){
+            levelData = new LevelData();
+           
+        }
+        if (levelData == null){levelData = new LevelData();}
+        
+        if (levelData.metaData == null){
+            return -1;
+        }
+        if (levelData.metaData.progress != 0){
+            return levelData.metaData.levelnr;
+        }
+        return -1;
+    }
+
     public static class ProgressData {
         public int progress;
     }

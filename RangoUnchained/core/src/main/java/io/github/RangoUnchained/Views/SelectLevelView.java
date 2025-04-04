@@ -2,8 +2,10 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import io.github.RangoUnchained.Controllers.GameController;
+import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -33,7 +35,23 @@ public class SelectLevelView extends BaseScreen {
         // Add level selection buttons
         for (int i = 0; i <= 5; i++) {
             final int level = i;
-            table.add(ButtonFactory.createButton("Level " + i, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padBottom(20);
+            table.add(ButtonFactory.createButton("Level " + i, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padTop(20);
+            
+            if (i == GameFileHandler.inProgresslevelnumber()){
+                table.row();
+                TextButton.TextButtonStyle customStyle = new TextButton.TextButtonStyle(getSkin().get(TextButton.TextButtonStyle.class));
+                customStyle.up = null;    // Remove the up state drawable
+                customStyle.down = null;  // Optionally remove the down state drawable
+                customStyle.over = null;  // Optionally remove the over state drawable
+
+                TextButton continueButton = new TextButton("(continue)", customStyle);
+                continueButton.getStyle().fontColor = getSkin().getColor("white");
+                table.add(continueButton).center().padBottom(0);
+            } else {
+                table.row();
+            }
+
+
             table.row();
         }
 

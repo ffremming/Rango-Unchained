@@ -13,10 +13,12 @@ public class GameOverView extends BaseScreen {
     int score;
     private Label scoreLabel;
 
-    public GameOverView(int levelNumber) {
+    boolean completed;
+    public GameOverView(int levelNumber,boolean completed) {
         super(GameController.getInstance());
         this.levelNumber = levelNumber;
         this.score = LevelController.getInstance().getScore();
+        this.completed = completed;
     }
 
     @Override
@@ -48,7 +50,9 @@ public class GameOverView extends BaseScreen {
     private void createUI() {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
-        Label titleLabel = new Label("Game Over", labelStyle);
+        String titleText = completed ? "Level Completed" : "Level Failed";
+        
+        Label titleLabel = new Label(titleText, labelStyle);
         scoreLabel = new Label("", getSkin());
 
         Table table = new Table();

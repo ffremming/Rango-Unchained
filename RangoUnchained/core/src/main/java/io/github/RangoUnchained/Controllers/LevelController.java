@@ -2,12 +2,14 @@ package io.github.RangoUnchained.Controllers;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategies;
+import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.HealthSystem;
@@ -16,14 +18,17 @@ import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
+import io.github.RangoUnchained.Views.GameOverView;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
+import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Model.level.GameLevel;
 
 public class LevelController {
 
     private static LevelController levelController;
 
+    public boolean completed = false;
     private GameLevel level;
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
@@ -93,8 +98,47 @@ public class LevelController {
 
     /**updates all entities with the appropiate systems */
     public void update(float delta) {
+
+        excecuteRemovelQueue();
+        excecuteSpawnQueue();
+        checkpoint(delta);
+
         systemManager.update(level.getEntities());
         level.getTimer().update(delta);
+    }
+
+    public boolean isGameOver() {
+        if (getLevel() == null) {
+            return false;
+        }
+        if (hasDied()){
+            return true;
+        }
+
+        if (isCompleted()){
+            int levelNumber = getLevel().levelNumber;
+            if (levelNumber >= GameFileHandler.getInstance().getProgress()) {
+                GameFileHandler.getInstance();
+                GameFileHandler.setProgress(levelNumber+1);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasDied(){
+        return (getPlayerHealth()<= 0);
+    }
+
+    public boolean isCompleted(){
+        if (level == null) {
+            return false;
+        }
+        int levelNumber = getLevel().levelNumber;
+        if (levelNumber == 0 &&! completed){
+            return false;
+        }
+        return (level.getEntity(BallEntity.class).size() == 0);
     }
 
     public void step(float f, int i, int j) {

@@ -63,7 +63,7 @@ public class EntityFactory {
             return createBallEntity(x, y, name, world,velocity);
 
         } else if (name.startsWith("Obsticle")) {
-            return createObstacleEntity(name, world);
+            return createObstacleEntity(name, world,x,y);
 
         } else if (name.startsWith("Projectile")) {
             return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
@@ -187,7 +187,7 @@ public class EntityFactory {
 
 
     // 🔹 Obstacle Entity
-    public static ObstacleEntity createObstacleEntity(String name, World world) {
+    public static ObstacleEntity createObstacleEntity(String name, World world, float givenX, float givenY) {
 
         BodyComponent body = null;
         SpriteComponent sprite = null;
@@ -225,6 +225,18 @@ public class EntityFactory {
             width = Gdx.graphics.getWidth()/Constants.PPM;
 
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
+        } 
+
+        else if (name.equals("Obsticle")){
+            x = (int)givenX;
+            y = (int)givenY;
+            width = 100/Constants.PPM;
+            height = 200/Constants.PPM;
+
+            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
+        } else {
+            Gdx.app.log("EntityFactory", "Unknown obstacle type: " + name);
+            return null;
         }
 
         if (name.endsWith("Floor")){

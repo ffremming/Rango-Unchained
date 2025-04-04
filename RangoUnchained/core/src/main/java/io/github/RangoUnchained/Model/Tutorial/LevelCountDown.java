@@ -1,6 +1,9 @@
 package io.github.RangoUnchained.Model.Tutorial;
 
+import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.level.GameFileHandler;
+import io.github.RangoUnchained.Views.GamePlayView;
 
 public class LevelCountDown implements TutorialStepStrategy{
 
@@ -9,7 +12,8 @@ public class LevelCountDown implements TutorialStepStrategy{
     
     @Override
     public void onEnter() {
-       
+        GameFileHandler.getInstance();
+        GameFileHandler.setProgress(LevelController.getInstance().getLevel().levelNumber+1);
     }
 
     @Override
@@ -20,7 +24,7 @@ public class LevelCountDown implements TutorialStepStrategy{
     @Override
     public boolean isComplete(TutorialStepStrategyContext context) {
         if ( counter >3){
-            LevelController.getInstance().initializeSystems(1);
+            LevelController.getInstance().completed = true;
         }
         return counter >3;
     }

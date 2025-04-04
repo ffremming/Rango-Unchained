@@ -78,9 +78,9 @@ public class GamePlayView extends BaseScreen {
 
             if (LevelController.getInstance().isGameOver()) {
                 if (LevelController.getInstance().isCompleted()){
-                    game.setView(new GameOverView(true));
+                    game.setView(new GameOverView(controller.getLevel().levelNumber,true));
                 } else {
-                    game.setView(new GameOverView(false));
+                    game.setView(new GameOverView(controller.getLevel().levelNumber,false));
                 }
                 
             } 

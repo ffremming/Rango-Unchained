@@ -1,0 +1,101 @@
+{
+    "metaData": {
+      "number": 3,
+      "theme": "Desert Oasis",
+      "completed": false,
+      "multiplayer": false,
+      "progress": 0
+    },
+    "entitiesData": [
+      {
+        "name": "Background",
+        "position": {}
+      },
+      {
+        "name": "Player",
+        "position": {
+          "x": 100,
+          "y": 150
+        }
+      },
+      {
+        "name": "Ball: Armedillo Big",
+        "position": {
+          "x": 300,
+          "y": 400
+        },
+        "velocity": {
+          "x": 3
+        }
+      },
+      {
+        "name": "Ball: Armedillo Big",
+        "position": {
+          "x": 200,
+          "y": 400
+        },
+        "velocity": {
+          "x": 3
+        }
+      },
+      {
+        "name": "Ball: Armedillo Small",
+        "position": {
+          "x": 300,
+          "y": 400
+        },
+        "velocity": {
+          "x": -3
+        }
+      },
+      {
+        "name": "Ball: Armedillo Big",
+        "position": {
+          "x": 600,
+          "y": 400
+        },
+        "velocity": {
+          "x": 2
+        }
+      },
+      {
+        "name": "Ball: Armedillo Big",
+        "position": {
+          "x": 900,
+          "y": 400
+        },
+        "velocity": {
+          "x": -2
+        }
+      },
+      {
+        "name": "ObsticleLeft",
+        "position": {
+          "x": 17,
+          "y": 400
+        }
+      },
+      {
+        "name": "ObsticleRight",
+        "position": {
+          "x": 1500,
+          "y": 480
+        }
+      },
+      {
+        "name": "ObsticleRoof",
+        "position": {
+          "x": 750,
+          "y": 900
+        }
+      },
+      {
+        "name": "ObsticleFloor",
+        "position": {
+          "x": 750,
+          "y": 32
+        }
+      }
+    ]
+  }
+  

@@ -25,7 +25,7 @@ public class PlayerEntity implements Entity{
         addComponent(new HealthComponent(3));
         addComponent(new SpeedComponent(5f));
         addComponent(healthComponent);
-        addComponent(new PowerUpComponent(0));
+        addComponent(new PowerUpComponent(-1));
     }
 
     @Override

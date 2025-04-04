@@ -24,6 +24,7 @@ public class PhysicsSystem implements System, ContactStrategy {
 
     public PhysicsSystem() {
         world = new World(new Vector2(0, -10), true);
+       
 
         filter
         .require(BodyComponent.class)
@@ -38,9 +39,8 @@ public class PhysicsSystem implements System, ContactStrategy {
         BallEntity.class, FloorEntity.class,
         null, // For beginContact
         this::handleBallFloorCollision);
-    }
 
-        // Define a conversion factor (pixels per meter) – adjust as needed
+    }
 
     @Override
     public void updateEntity(Entity entity) {
@@ -102,9 +102,7 @@ public class PhysicsSystem implements System, ContactStrategy {
             ballBody.setLinearVelocity(new Vector2(STANDARDXVELOCITY/2,currentVelocity.y));
 
         }
-
-
-    }      
+    }
 
     public World getWorld() {
         return world;

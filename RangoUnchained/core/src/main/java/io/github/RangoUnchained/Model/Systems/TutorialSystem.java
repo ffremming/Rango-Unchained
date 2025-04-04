@@ -7,12 +7,13 @@ import java.util.Arrays;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.TutorialComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Tutorial.KillCountStep;
 import io.github.RangoUnchained.Model.Tutorial.KillEnemyStrategy;
-import io.github.RangoUnchained.Model.Tutorial.KillSpawnStrategy;
 import io.github.RangoUnchained.Model.Tutorial.LevelCountDown;
 import io.github.RangoUnchained.Model.Tutorial.MoveLeftStrategy;
 import io.github.RangoUnchained.Model.Tutorial.MoveRightStrategy;
 import io.github.RangoUnchained.Model.Tutorial.NoteStrategy;
+import io.github.RangoUnchained.Model.Tutorial.PowerupStep;
 import io.github.RangoUnchained.Model.Tutorial.ShootStrategy;
 import io.github.RangoUnchained.Model.Tutorial.TutorialManager;
 
@@ -39,10 +40,13 @@ public class TutorialSystem implements System {
             new MoveRightStrategy(),
             new ShootStrategy(),
            
-            new KillEnemyStrategy("Ball: Armedillo Medium",1),
-            new KillSpawnStrategy(),
+            new KillEnemyStrategy("Ball: Armedillo Medium",1, "shoot the armedillo to split it",15),
+            new KillCountStep(2, 15,"when the armedillo splits, shoot the small balls"),
             new NoteStrategy(2,"if enemies hit you, you lose a heart"),
-            new KillEnemyStrategy("Ball: Armedillo Big",7),
+            new KillEnemyStrategy("Ball: Tumbleweed Big",2, "there are different types of enemies",15),
+            new NoteStrategy(5,"smaller enemies bounce lower!"),
+            new PowerupStep("SpeedPowerUp", "pick up the speed powerup to move faster and avoid enemies", 7),
+            new NoteStrategy(2,"active powerups are shown on the top right"),
             new NoteStrategy(2,"if you lose all hearts, its game over"),
             new LevelCountDown()
         ));

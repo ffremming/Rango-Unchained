@@ -28,7 +28,7 @@ public class PhysicsSystem implements System, ContactStrategy {
         filter
         .require(BodyComponent.class)
         .require(SpriteComponent.class);
-       
+
     }
 
 
@@ -43,22 +43,22 @@ public class PhysicsSystem implements System, ContactStrategy {
         // Define a conversion factor (pixels per meter) – adjust as needed
 
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
         Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
         Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
 
         // Convert physics (meters) position to screen (pixels) position
         float screenX = ((body.getPosition().x * Constants.PPM) - sprite.getWidth() / 2f);
         float screenY = ((body.getPosition().y * Constants.PPM) - sprite.getHeight() / 2f);
-        
+
         //Gdx.app.log("spritePos",screenX+","+screenY);
         //Gdx.app.log("pos", entity.getClass().getName()+body.getPosition().y+","+body.getPosition().x);
 
         sprite.setPosition(screenX, screenY);
     }
-  
-                    
-                
+
+
+
     private void handleBallFloorCollision(CollisionEvent collisionEvent) {
         Gdx.app.log("contact","ballfloor");
         BallEntity ball;
@@ -84,7 +84,7 @@ public class PhysicsSystem implements System, ContactStrategy {
         if (currentVelocity.y > YTRESHOLD) {
             ballBody.setLinearVelocity(new Vector2(currentVelocity.x,STANDARDYVELOCITY));
         }
-        
+
         currentVelocity = ballBody.getLinearVelocity();
 
         //if ball bounces too much to the sides
@@ -104,7 +104,7 @@ public class PhysicsSystem implements System, ContactStrategy {
         }
 
 
-    }      
+    }
 
     public World getWorld() {
         return world;

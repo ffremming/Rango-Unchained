@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Model.Entities;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.RangoUnchained.Model.Components.AnimationComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
 import io.github.RangoUnchained.Model.Components.ContactComponent;
@@ -14,12 +15,13 @@ public class PlayerEntity implements Entity{
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    public PlayerEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, InputComponent inputComponent, HealthComponent healthComponent) {
+    public PlayerEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, InputComponent inputComponent, HealthComponent healthComponent, AnimationComponent animationComponent) {
         addComponent(bodyComponent);
         addComponent(spriteComponent);
         addComponent(inputComponent);
         addComponent(new ContactComponent());
         addComponent(healthComponent);
+        addComponent(animationComponent);
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));
     }
     @Override

@@ -12,13 +12,13 @@ public class HealthSystem implements System, ContactStrategy{
 
     private ComponentFilter filter = new ComponentFilter();
 
-    public HealthSystem() {        
+    public HealthSystem() {
         filter
         .require(HealthComponent.class);
     }
 
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
         //nothing yet?
         if (!((HealthComponent)entity.getComponent(HealthComponent.class)).isAlive()){
             kill(entity);

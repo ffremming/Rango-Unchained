@@ -1,20 +1,59 @@
 package io.github.RangoUnchained.Model.Components;
 
 public class InputComponent implements Component {
-
-    private boolean left;
-    private boolean right;
-    private boolean shoot;
     private int inputLock = 0;
+    private boolean left;
+    private  boolean right;
+    private boolean shoot;
 
+   /* public InputState inputState = InputState.IDLE;*/
 
     public InputComponent() {
     }
 
-    public boolean isLeft() {
-        return left;
+
+
+    public void setTimer(int duration){
+        inputLock = duration;
     }
 
+    public boolean isLocked(){
+        return inputLock>0;
+    }
+
+    public void decrementInputLock(){
+        if (inputLock>0){
+            inputLock--;
+        }
+    }
+
+   /* public InputState getInputState() {
+        return inputState;
+    }*/
+
+   /* public void setInputState(String state) {
+        switch (state) {
+            case "LEFT":
+                inputState = InputState.LEFT;
+                break;
+            case "RIGHT":
+                inputState = InputState.RIGHT;
+                break;
+            case "SHOOTING":
+                inputState = InputState.SHOOTING;
+                break;
+            case "IDLE":
+                inputState = InputState.IDLE;
+                break;
+        }
+    }*/
+
+  /*  public enum InputState {
+        LEFT,
+        RIGHT,
+        SHOOTING,
+        IDLE
+    }*/
     public void setLeft(boolean left) {
         this.left = left;
     }
@@ -33,17 +72,8 @@ public class InputComponent implements Component {
         this.shoot = shoot;
     }
 
-    public void setTimer(int duration){
-        inputLock = duration;
-    }
-
-    public boolean isLocked(){
-        return inputLock>0;
-    }
-
-    public void decrementInputLock(){
-        if (inputLock>0){
-            inputLock--;
+        public boolean isLeft() {
+            return left;
         }
-    }
+
 }

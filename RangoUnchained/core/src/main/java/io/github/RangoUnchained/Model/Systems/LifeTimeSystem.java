@@ -16,7 +16,7 @@ public class LifeTimeSystem implements System{
     }
 
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
 
         LifeTimeComponent lifeTimeComponent = (LifeTimeComponent) entity.getComponent(LifeTimeComponent.class);
         lifeTimeComponent.decrementLifeTime();

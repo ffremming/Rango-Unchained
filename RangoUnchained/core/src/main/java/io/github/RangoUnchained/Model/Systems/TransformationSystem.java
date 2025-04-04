@@ -31,17 +31,17 @@ public class TransformationSystem implements System{
     }
 
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
 
         TransformationComponent transComp = (TransformationComponent) entity.getComponent(TransformationComponent.class);
         BodyComponent bodyComp = (BodyComponent) entity.getComponent(BodyComponent.class);
         SpriteComponent spriteComp = (SpriteComponent) entity.getComponent(SpriteComponent.class);
 
-       
+
         Sprite sprite = spriteComp.getSprite();
         Body body = bodyComp.getBody();
         Fixture oldFixture = body.getFixtureList().first();
-    
+
 
         if (transComp.getDuration()>0){
 
@@ -62,7 +62,7 @@ public class TransformationSystem implements System{
 
     private void setSpritePos(Body body,Sprite sprite){
 
-        
+
 
         //sprite.setPosition(body.getPosition().x * Constants.PPM - ((sprite.getWidth())/2), body.getPosition().y * Constants.PPM  - sprite.getHeight());
 
@@ -81,7 +81,7 @@ public class TransformationSystem implements System{
                     if (!transComp.isReversed()){
                         transComp.setTransformationStepsReverse();
                         transComp.setDuration(transComp.getLifeTime());
-                    
+
                     }else if (transComp.getAlwaysReverse()){
                         transComp.setTransformationSteps();
                         transComp.setDuration(transComp.getLifeTime());
@@ -90,13 +90,13 @@ public class TransformationSystem implements System{
             }
         }
     }
-        
+
 
 
     private void scaleCircle(TransformationComponent transComp, Body body, Fixture oldFixture, Sprite sprite){
         Shape oldShape = (Shape) oldFixture.getShape();
         float newRadius = (float)(oldShape.getRadius() *transComp.getTransformationRadiusStep());
-        
+
         // Handle scaling direction
         int direction = transComp.getDirection();
         float offsetX = 0, offsetY = 0;
@@ -115,15 +115,15 @@ public class TransformationSystem implements System{
             body.setTransform(body.getPosition().x + offsetX, body.getPosition().y, body.getAngle());
         }
 
-       
+
         // Remove old fixture
         body.destroyFixture(oldFixture);
-        
+
         // Create a new circle shape
         Shape newShape = new CircleShape();
         newShape.setRadius(newRadius);
 
-        
+
 
         // Create new fixture definition
         FixtureDef fixtureDef = new FixtureDef();
@@ -132,7 +132,7 @@ public class TransformationSystem implements System{
         fixtureDef.friction = oldFixture.getFriction();
         fixtureDef.restitution = oldFixture.getRestitution();
 
-        
+
         sprite.setSize((float)(newRadius*1.7*2), (float)(newRadius*1.7*2));
 
         // Attach the new fixture to the same body
@@ -143,26 +143,26 @@ public class TransformationSystem implements System{
     private void scaleRectangle(TransformationComponent transComp, Body body, Fixture oldFixture, Sprite sprite) {
         // Cast old shape to PolygonShape
         PolygonShape oldShape = (PolygonShape) oldFixture.getShape();
-    
+
         // Extract rectangle vertices
         Vector2 vertex = new Vector2();
         oldShape.getVertex(0, vertex);
         float halfWidth = Math.abs(vertex.x);
         float halfHeight =  Math.abs(vertex.y);
-        
+
         // Compute new dimensions
         float newHalfWidth = (float)(halfWidth*transComp.getTransformationWidthStep());
         float newHalfHeight = (float)(halfHeight*transComp.getTransformationHeightStep());
-    
+
         // Prevent shape from getting too small
-        float minSize = 0.1f; 
+        float minSize = 0.1f;
         newHalfWidth = Math.max(newHalfWidth, minSize);
         newHalfHeight = Math.max(newHalfHeight, minSize);
 
 
         int direction = transComp.getDirection(); // Assuming 'UP' or 'DOWN' can be set as the direction
         float offsetX = 0, offsetY = 0;
-        
+
         if (direction == TransformationComponent.UP) {
             // For UP scaling, we adjust the body position upwards while keeping the bottom fixed
             offsetY = (newHalfHeight - halfHeight);  // Difference in height
@@ -188,29 +188,29 @@ public class TransformationSystem implements System{
 
         // Remove old fixture
         body.destroyFixture(oldFixture);
-    
+
         // Create a new polygon shape with scaled size
         PolygonShape newShape = new PolygonShape();
         newShape.setAsBox(newHalfWidth, newHalfHeight);
-        
+
         // Create new fixture definition
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = newShape;
         fixtureDef.density = oldFixture.getDensity();
         fixtureDef.friction = oldFixture.getFriction();
         fixtureDef.restitution = oldFixture.getRestitution();
-    
+
         // Attach the new fixture to the same body
         body.createFixture(fixtureDef);
         newShape.dispose(); // Prevent memory leak
     }
-    
 
 
-    
-    
 
-    
+
+
+
+
 
 
 
@@ -218,5 +218,5 @@ public class TransformationSystem implements System{
     public boolean filter(Entity entity) {
         return (filter.matches(entity));
     }
-    
+
 }

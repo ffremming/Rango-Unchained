@@ -93,7 +93,7 @@ public class LevelController {
 
     /**updates all entities with the appropiate systems */
     public void update(float delta) {
-        systemManager.update(level.getEntities());
+        systemManager.update(level.getEntities(), delta);
         level.getTimer().update(delta);
     }
 

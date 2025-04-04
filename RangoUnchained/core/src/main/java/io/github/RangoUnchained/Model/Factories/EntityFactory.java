@@ -1,4 +1,5 @@
 package io.github.RangoUnchained.Model.Factories;
+import io.github.RangoUnchained.Model.Components.AnimationComponent;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
@@ -7,6 +8,9 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -83,7 +87,10 @@ public class EntityFactory {
 
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
 
-        PlayerEntity player = new PlayerEntity(body, sprite, input, health);
+        AnimationComponent animation = new AnimationComponent();
+        createPlayerAnimation(animation, "Rango");
+
+        PlayerEntity player = new PlayerEntity(body, sprite, input, health, animation);
         body.getBody().setUserData(player);
         return player;
     }
@@ -101,13 +108,13 @@ public class EntityFactory {
     private static final float BIGPULSE = 0.03f;
 
 
-    
+
 
 
 
      // general method for creating all balls - called from factory method
      public static BallEntity createBallEntity(float x, float y, String name, World world, Vector2 velocity) {
-        
+
         //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "armedillo" : "tumbleweed";
         int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("TumbleWeed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
@@ -137,7 +144,7 @@ public class EntityFactory {
 
         BallEntity ball = new BallEntity(body, stats, sprite,bounceComp,ballComp);
         body.getBody().setUserData(ball);
-        
+
         return ball;
     }
 
@@ -294,5 +301,29 @@ public class EntityFactory {
         fixtureDef.filter.categoryBits = category;
         fixtureDef.filter.maskBits = mask;
         return fixtureDef;
+    }
+
+    private static void createPlayerAnimation(AnimationComponent animationComponent, String path) {
+
+        // This should be changed to "/left" without "Rango-..."
+         Animation<TextureRegion> moveLeftAnimation = new Animation<>(0.2f,
+             new TextureRegion(new Texture(path + "/Rango-left.png")),
+             new TextureRegion(new Texture(path + "/Rango-left 2.png")));
+
+        Animation<TextureRegion> moveRightAnimation = new Animation<>(0.2f,
+            new TextureRegion(new Texture(path + "/Rango-right.png")),
+            new TextureRegion(new Texture(path + "/Rango-right 2.png")));
+
+        Animation<TextureRegion> shootAnimation = new Animation<>(0.2f,
+            new TextureRegion(new Texture(path + "/Rango-shoot.png")));
+
+        Animation<TextureRegion> idleAnimation = new Animation<>(0.2f,
+            new TextureRegion(new Texture(path + "/Rango.png")));
+
+        animationComponent.putAnimation(AnimationComponent.PlayerState.LEFT, moveLeftAnimation);
+        animationComponent.putAnimation(AnimationComponent.PlayerState.RIGHT, moveRightAnimation);
+        animationComponent.putAnimation(AnimationComponent.PlayerState.SHOOTING, shootAnimation);
+        animationComponent.putAnimation(AnimationComponent.PlayerState.IDLE, idleAnimation);
+
     }
 }

@@ -26,35 +26,35 @@ public class MovementSystem implements System {
     // Updates every playable entity's position based on input and velocity
     // Method called from controllers for updates
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
         BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
         InputComponent inputComponent = (InputComponent) entity.getComponent(InputComponent.class);
         Body body = bodyComponent.getBody();
-        
+
         // Define your desired speed (in meters per second)
         float moveSpeed = 5;
-        
+
         // Get the current velocity (we'll preserve the y-component, for example)
         Vector2 currentVelocity = body.getLinearVelocity();
         float newVelocityX = 0f;
-        
+
         // Determine the new x-velocity based on input
         if (inputComponent.isLeft()) {
             newVelocityX = -moveSpeed;
         } else if (inputComponent.isRight()) {
             newVelocityX = moveSpeed;
         }
-        
+
         // If you want to handle a shoot action or other input, you can process that separately
         if (inputComponent.isShoot()) {
             // Perform shoot logic here if needed.
             inputComponent.setShoot(false);
         }
-        
+
         // Update the body's velocity
         body.setLinearVelocity(newVelocityX, currentVelocity.y);
     }
-    
+
 
     @Override
     public boolean filter(Entity entity) {

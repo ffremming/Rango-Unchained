@@ -60,7 +60,7 @@ public class EntityFactory {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
-        if (name.equals("Player")) {
+        if (name.startsWith("Player")) {
             return createPlayerEntity(x, y, name, world, hp, level);
 
         } else if (name.startsWith("Ball")) {

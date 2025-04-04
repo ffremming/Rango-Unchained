@@ -19,15 +19,18 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
+import io.github.RangoUnchained.Model.Components.TutorialComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.BasicEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
@@ -36,38 +39,50 @@ public class EntityFactory {
     public static final float PIXELS_TO_METERS = 1 / 64f; // Define this in a constants file
     public static final float METERS_TO_PIXELS = 64f / 1; // Define this in a constants file
 
-    //categories
-    public static final short CATEGORY_PLAYER     = 0x0001;
-    public static final short CATEGORY_BALL       = 0x0002;
-    public static final short CATEGORY_OBSTACLE   = 0x0004;
-    public static final short CATEGORY_PROJECTILE = 0x0008;
+        //categories
+        public static final short CATEGORY_PLAYER     = 0x0001;
+        public static final short CATEGORY_BALL       = 0x0002;
+        public static final short CATEGORY_OBSTACLE   = 0x0004;
+        public static final short CATEGORY_PROJECTILE = 0x0008;
+        public static final short CATEGORY_POWERUP    = 0x0010; // New category for entities
 
-    //masks for what should collide with what
-    public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE;         // Player ignores projectiles, for instance.
-    public static final short MASK_BALL       = CATEGORY_PLAYER | CATEGORY_OBSTACLE | CATEGORY_PROJECTILE;       // Balls might ignore projectiles too.
-    public static final short MASK_OBSTACLE   = CATEGORY_PLAYER | CATEGORY_BALL;
-    public static final short MASK_PROJECTILE = CATEGORY_BALL;
+        //masks for what should collide with what
+        public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE |CATEGORY_POWERUP ;
+        public static final short MASK_BALL       = CATEGORY_PLAYER | CATEGORY_OBSTACLE | CATEGORY_PROJECTILE;
+        public static final short MASK_OBSTACLE   = CATEGORY_PLAYER | CATEGORY_BALL |CATEGORY_POWERUP;
+        public static final short MASK_PROJECTILE = CATEGORY_BALL;
+        public static final short MASK_POWERUP    = CATEGORY_PLAYER | CATEGORY_OBSTACLE; // New mask for the new category
+
 
     private EntityFactory() {}
 
-    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp) {
+    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp, int level) {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
-        if (name.startsWith("Player")) {
-            return createPlayerEntity(x, y, name, world, hp);
+        if (name.equals("Player")) {
+            return createPlayerEntity(x, y, name, world, hp, level);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
 
         } else if (name.startsWith("Obsticle")) {
-            return createObstacleEntity(name, world);
+            return createObstacleEntity(name, world, x, y);
 
         } else if (name.startsWith("Projectile")) {
             return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
         }
         else if (name.startsWith("Background")) {
             return createBackground();
+        } else if (name.startsWith("SpeedPowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Speed.png", world, 0,velocity);
+        } else if (name.startsWith("ShieldPowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Shield.png", world, 1,velocity);
+        }else if (name.startsWith("sizePowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Shield.png", world, 2,velocity);
         }
 
 
@@ -75,8 +90,23 @@ public class EntityFactory {
         return null;
     }
 
+    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpTyp, Vector2 velocity) {
+
+        SpriteComponent sprite = new SpriteComponent(spritePath,64,64);
+
+        float width = (sprite.getSprite().getWidth()/ Constants.PPM);
+        float height = (sprite.getSprite().getHeight()/ Constants.PPM);
+
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height, CATEGORY_POWERUP, MASK_POWERUP), true);
+        body.getBody().setLinearVelocity(velocity);
+        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpTyp);
+        PowerUpEntity powerUp = new PowerUpEntity(body, sprite, powerUpComponent);
+        body.getBody().setUserData(powerUp);
+        return powerUp;
+    }
+
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp) {
+    public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp, int level) {
 
         String[] paths = name.split("-");
 
@@ -96,9 +126,10 @@ public class EntityFactory {
 
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
 
-
-
         PlayerEntity player = new PlayerEntity(body, sprite, input, health, animation);
+        if (level == 0){
+            player.addComponent(new TutorialComponent());
+        }
         body.getBody().setUserData(player);
         return player;
     }
@@ -124,7 +155,7 @@ public class EntityFactory {
      public static BallEntity createBallEntity(float x, float y, String name, World world, Vector2 velocity) {
 
         //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "armedillo" : "tumbleweed";
-        int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("TumbleWeed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
+        int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("Tumbleweed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
         int bounceType = name.endsWith("Big") ? BounceComponent.HIGH : name.endsWith("Medium") ? BounceComponent.MEDIUM : BounceComponent.LOW;
         return createSpecificBall(x, y, type,timesPopped,bounceType,name,world,velocity);
@@ -167,7 +198,7 @@ public class EntityFactory {
 
 
     // 🔹 Obstacle Entity
-    public static ObstacleEntity createObstacleEntity(String name, World world) {
+    public static ObstacleEntity createObstacleEntity(String name, World world, float givenX, float givenY) {
 
         BodyComponent body = null;
         SpriteComponent sprite = null;
@@ -202,16 +233,30 @@ public class EntityFactory {
                 height = 200/Constants.PPM;
             }
             x =  Gdx.graphics.getWidth()/2;
-            width = Gdx.graphics.getWidth()/Constants.PPM;;
+            width = Gdx.graphics.getWidth()/Constants.PPM;
 
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
         }
 
+        else if (name.equals("Obsticle")){
+            x = (int)givenX;
+            y = (int)givenY;
+            width = 100/Constants.PPM;
+            height = 200/Constants.PPM;
+
+            body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
+        } else {
+            Gdx.app.log("EntityFactory", "Unknown obstacle type: " + name);
+            return null;
+        }
+
         if (name.endsWith("Floor")){
             sprite = new SpriteComponent("Background/Floor.png",width*Constants.PPM,height*Constants.PPM);
+        } else if (name.endsWith("Roof")){
+            sprite = new SpriteComponent("Background/Roof.png",width*Constants.PPM,height*Constants.PPM);
 
         } else {
-            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
+            sprite = new SpriteComponent("Background/Wall.png",width*Constants.PPM,height*Constants.PPM);
         }
 
         ObstacleEntity obstacle;
@@ -223,6 +268,7 @@ public class EntityFactory {
         }
 
         body.getBody().setUserData(obstacle);
+
         return new ObstacleEntity(body, sprite);
     }
 

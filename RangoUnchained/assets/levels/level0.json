@@ -1,0 +1,50 @@
+{
+    "metaData": {
+      "number": 0,
+      "theme": "Desert",
+      "completed": false,
+      "multiplayer": false,
+      "progress": 0
+    },
+    "entitiesData": [
+      {
+          "name": "Background",
+          "position": {}
+      },
+      {
+          "name": "Player",
+          "position": {
+              "x": 750,
+              "y": 500
+          }
+      },
+      {
+          "name": "ObsticleLeft",
+          "position": {
+              "x": 17,
+              "y": 400
+          }
+      },
+      {
+          "name": "ObsticleRight",
+          "position": {
+              "x": 1500,
+              "y": 480
+          }
+      },
+      {
+          "name": "ObsticleRoof",
+          "position": {
+              "x": 750,
+              "y": 900
+          }
+      },{
+		"name": "ObsticleFloor",
+		"position": {
+			"x": 750,
+			"y": 32
+		}
+	}
+      
+  ]
+  }

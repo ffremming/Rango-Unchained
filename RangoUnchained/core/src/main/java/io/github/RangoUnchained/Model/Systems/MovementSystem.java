@@ -1,11 +1,13 @@
 package io.github.RangoUnchained.Model.Systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
@@ -19,7 +21,8 @@ public class MovementSystem implements System {
         filter
         .require(BodyComponent.class)
         .require(InputComponent.class)
-        .require(SpriteComponent.class);
+        .require(SpriteComponent.class)
+        .require(SpeedComponent.class);
     }
 
 
@@ -30,9 +33,9 @@ public class MovementSystem implements System {
         BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
         InputComponent inputComponent = (InputComponent) entity.getComponent(InputComponent.class);
         Body body = bodyComponent.getBody();
+        SpeedComponent speedComponent = (SpeedComponent) entity.getComponent(SpeedComponent.class);
 
-        // Define your desired speed (in meters per second)
-        float moveSpeed = 5;
+        float moveSpeed = speedComponent.getCurrentSpeed();
 
         // Get the current velocity (we'll preserve the y-component, for example)
         Vector2 currentVelocity = body.getLinearVelocity();
@@ -43,12 +46,6 @@ public class MovementSystem implements System {
             newVelocityX = -moveSpeed;
         } else if (inputComponent.isRight()) {
             newVelocityX = moveSpeed;
-        }
-
-        // If you want to handle a shoot action or other input, you can process that separately
-        if (inputComponent.isShoot()) {
-            // Perform shoot logic here if needed.
-            inputComponent.setShoot(false);
         }
 
         // Update the body's velocity

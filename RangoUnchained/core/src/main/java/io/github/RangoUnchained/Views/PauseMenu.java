@@ -60,7 +60,7 @@ public class PauseMenu extends Stage {
     }
 
     private void endGame() {
-        game.setView(new GameOverView());
+        game.setView(new GameOverView(levelNumber,false));
         GameFileHandler.getInstance().resetCheckpointFile();
     }
 

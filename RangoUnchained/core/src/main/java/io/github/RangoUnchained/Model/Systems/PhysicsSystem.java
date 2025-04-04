@@ -10,11 +10,11 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.*;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
-import io.github.RangoUnchained.Model.contactListener.*;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class PhysicsSystem implements System, ContactStrategy {
@@ -24,6 +24,7 @@ public class PhysicsSystem implements System, ContactStrategy {
 
     public PhysicsSystem() {
         world = new World(new Vector2(0, -10), true);
+
 
         filter
         .require(BodyComponent.class)
@@ -38,9 +39,8 @@ public class PhysicsSystem implements System, ContactStrategy {
         BallEntity.class, FloorEntity.class,
         null, // For beginContact
         this::handleBallFloorCollision);
-    }
 
-        // Define a conversion factor (pixels per meter) – adjust as needed
+    }
 
     @Override
     public void updateEntity(Entity entity, float delta) {
@@ -102,8 +102,6 @@ public class PhysicsSystem implements System, ContactStrategy {
             ballBody.setLinearVelocity(new Vector2(STANDARDXVELOCITY/2,currentVelocity.y));
 
         }
-
-
     }
 
     public World getWorld() {

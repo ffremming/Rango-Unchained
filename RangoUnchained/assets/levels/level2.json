@@ -17,7 +17,7 @@
 			}
 		},
 		{
-			"name": "Ball: Armedillo Big",
+			"name": "Ball: Tumbleweed Big",
 			"position": {
 				"x": 200,
 				"y": 400
@@ -27,7 +27,7 @@
 			}
 		},
 		{
-			"name": "Ball: Armedillo Small",
+			"name": "Ball: Tumbleweed Big",
 			"position": {
 				"x": 300,
 				"y": 400
@@ -37,7 +37,7 @@
 			}
 		},
 		{
-			"name": "Ball: Cactus Big",
+			"name": "Ball: Cactus Medium",
 			"position": {
 				"x": 600,
 				"y": 400
@@ -47,7 +47,7 @@
 			}
 		},
 		{
-			"name": "Ball: Plant Small",
+			"name": "Ball: Cactus Small",
 			"position": {
 				"x": 900,
 				"y": 400
@@ -56,6 +56,25 @@
 				"x": -2
 			}
 		},
+
+		{
+			"name": "Obsticle",
+			"position": {
+				"x": 725,
+				"y": 400
+			}
+		},
+
+		{
+			"name": "Obsticle",
+			"position": {
+				"x": 1000,
+				"y": 600
+			}
+		},
+
+
+
 		{
 			"name": "ObsticleLeft",
 			"position": {

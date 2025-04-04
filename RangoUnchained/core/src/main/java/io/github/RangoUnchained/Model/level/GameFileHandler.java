@@ -28,6 +28,65 @@ public class GameFileHandler {
         this.levelNumber = levelNumber;
     }
 
+
+    public int getProgress() {
+        try {
+            // Create a new Json instance.
+            Json json = new Json();
+            
+            // Open the JSON file from the local file system.
+            FileHandle progressFile = Gdx.files.internal("levels/progress.json");
+            
+            // Check if the file exists; if not, return default progress.
+            if (!progressFile.exists()) {
+                return 0; // Default progress if file not found
+            }
+            
+            // Read the file's contents into a String.
+            String jsonString = progressFile.readString();
+            
+            // Parse the JSON into a ProgressData object.
+            ProgressData progressData = json.fromJson(ProgressData.class, jsonString);
+            
+            // Return the progress value.
+            return progressData.progress;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; // Default progress in case of an error
+        }
+    }
+
+    
+    /**
+     * Updates the progress value and saves it to a JSON file.
+     * <p>
+     * This method creates a {@code ProgressData} object with the specified progress value
+     * and writes it to a JSON file located at {@code levels/progress.json}.
+     * If an error occurs during the process, the exception is caught and its stack trace is printed.
+     * </p>
+     *
+     * @param progress the progress value to be saved
+     */
+    public static void setProgress(int progress) {
+        try {
+            // Create a new Json instance.
+            Json json = new Json();
+            json.setOutputType(JsonWriter.OutputType.json);
+
+            // Create a ProgressData object and set the progress value.
+            ProgressData progressData = new ProgressData();
+            progressData.progress = progress;
+
+            // Write the progress data to the JSON file.
+            FileHandle progressFile = Gdx.files.local("levels/progress.json");
+            progressFile.writeString(json.prettyPrint(progressData), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+
     public GameLevel.LevelData makeLevelData(String path) {
         try {
             Json json = new Json();
@@ -67,6 +126,7 @@ public class GameFileHandler {
             levelData = new LevelData();
            
         }
+        if (levelData == null){levelData = new LevelData();}
         levelData.metaData = new MetaData();
         levelData.metaData.progress = 0;
         levelData.metaData.levelnr = levelNumber;
@@ -77,4 +137,10 @@ public class GameFileHandler {
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpoint.json");
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpointBackup.json");
     }
+
+    public static class ProgressData {
+        public int progress;
+    }
 }
+
+

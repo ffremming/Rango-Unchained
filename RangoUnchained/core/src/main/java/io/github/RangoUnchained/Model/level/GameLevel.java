@@ -65,7 +65,11 @@ public class GameLevel {
         }
 
         Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
-
+        if (levelData.metaData.number == 0) {
+            levelData = GameFileHandler.getInstance().makeLevelData("levels/level" + number + ".json");
+            entitiesData = levelData.entitiesData;
+        }
+        
         scoreManager.setScore(levelData.metaData.score);
         timer.setTime(levelData.metaData.time);
         spawn(levelData.entitiesData,levelData.metaData.number);

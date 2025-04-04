@@ -14,12 +14,10 @@
       {
           "name": "Player",
           "position": {
-              "x": 100,
-              "y": 150
+              "x": 750,
+              "y": 500
           }
       },
-      
-      
       {
           "name": "ObsticleLeft",
           "position": {

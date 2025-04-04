@@ -79,8 +79,8 @@ public class PowerUpSystem implements System, ContactStrategy {
         ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
         centralContactListener.subscribe(
             PlayerEntity.class, PowerUpEntity.class,
-            null, // For beginContact
-            this::applyPowerUp);
+            this::applyPowerUp,
+            null);
     }
 
     /**contact strategy between playerEntity and Ballentity */

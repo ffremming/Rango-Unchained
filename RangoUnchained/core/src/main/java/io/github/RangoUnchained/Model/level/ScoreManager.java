@@ -21,7 +21,7 @@ public class ScoreManager implements ContactStrategy{
     public void addScore(int score){this.score += score;}
 
     public int getScore(){return score;}
-    
+
     private void handleBallProjectileCollision(CollisionEvent contact){
         //TODO do we want different scores for different balls?
         Gdx.app.log("contact",""+score);
@@ -30,7 +30,7 @@ public class ScoreManager implements ContactStrategy{
 
     @Override
     public void setContactStrategies() {
-         ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
+        ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
         centralContactListener.subscribe(
         BallEntity.class, ProjectileEntity.class,
         this::handleBallProjectileCollision, // For beginContact

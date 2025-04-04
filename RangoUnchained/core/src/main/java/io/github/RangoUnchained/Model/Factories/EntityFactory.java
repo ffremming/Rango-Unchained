@@ -115,8 +115,8 @@ public class EntityFactory {
         float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
-       
-        
+
+
         InputComponent input = new InputComponent();
 
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);

@@ -25,6 +25,7 @@ import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.TutorialSystem;
+import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -53,6 +54,9 @@ public class GamePlayView extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        try{
+
+        
         // Clear the screen and update camera
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         camera.update();
@@ -64,20 +68,36 @@ public class GamePlayView extends BaseScreen {
             // Update game logic
             controller.step(1 / 60f, 6, 2);
             controller.update(delta);
-            controller.excecuteRemovelQueue();
-            controller.excecuteSpawnQueue();
-            controller.checkpoint(delta);
+
+            
             getButtonByName("Pause").setVisible(true);
 
             // Update and draw the UI stage on top of the game
             stage.act(delta);
             stage.draw();
+
+            if (LevelController.getInstance().isGameOver()) {
+                if (LevelController.getInstance().isCompleted()){
+                    game.setView(new GameOverView(controller.getLevel().levelNumber,true));
+                } else {
+                    game.setView(new GameOverView(controller.getLevel().levelNumber,false));
+                }
+                
+            } 
+            
+
         } else {
             // Update and draw the pause menu on top of everything else
+            
             pauseMenu.act(delta);
             pauseMenu.draw();
-             getButtonByName("Pause").setVisible(false);
+            getButtonByName("Pause").setVisible(false);
+            }
+        
+        } catch (NullPointerException e) {
+            //rendering must complete before the game is over
         }
+        
     }
 
 

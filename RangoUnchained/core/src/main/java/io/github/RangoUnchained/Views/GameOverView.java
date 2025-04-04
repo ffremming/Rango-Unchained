@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
+import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 public class GameOverView extends BaseScreen {
@@ -13,10 +14,12 @@ public class GameOverView extends BaseScreen {
     int score;
     private Label scoreLabel;
 
-    public GameOverView(int levelNumber) {
+    boolean completed;
+    public GameOverView(int levelNumber,boolean completed) {
         super(GameController.getInstance());
         this.levelNumber = levelNumber;
         this.score = LevelController.getInstance().getScore();
+        this.completed = completed;
     }
 
     @Override
@@ -48,7 +51,9 @@ public class GameOverView extends BaseScreen {
     private void createUI() {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
-        Label titleLabel = new Label("Game Over", labelStyle);
+        String titleText = completed ? "Level Completed" : "Level Failed";
+        
+        Label titleLabel = new Label(titleText, labelStyle);
         scoreLabel = new Label("", getSkin());
 
         Table table = new Table();
@@ -67,6 +72,12 @@ public class GameOverView extends BaseScreen {
         // Retry button (goes back to level selection)
         table.add(ButtonFactory.createButton("Play again", 300, 60, getSkin(),  game, () -> game.setView(new SelectLevelView()))).center().padBottom(20);
         table.row();
+
+         // Retry button (goes back to level selection)
+         if (levelNumber < 5 && (completed || GameFileHandler.getInstance().getProgress() > levelNumber)) {
+             table.add(ButtonFactory.createButton("Next level", 300, 60, getSkin(),  game, () -> game.setView(new GamePlayView(levelNumber+1)))).center().padBottom(20);
+             table.row();
+         }
 
         // Back to main menu button
         table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()))).center();

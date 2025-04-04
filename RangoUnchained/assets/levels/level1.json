@@ -4,7 +4,8 @@
     "theme": "Desert",
     "completed": false,
     "multiplayer": false,
-    "progress": 0
+    "progress": 0,
+    "health": 0
   },
   "entitiesData": [
 	{

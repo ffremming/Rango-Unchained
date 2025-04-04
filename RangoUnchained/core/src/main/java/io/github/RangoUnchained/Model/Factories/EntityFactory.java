@@ -77,9 +77,16 @@ public class EntityFactory {
 
     // Player Entity
     public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp) {
+
         String[] paths = name.split("-");
 
-        SpriteComponent sprite = new SpriteComponent(paths[1], 86, 128, true);
+        AnimationComponent animation = new AnimationComponent();
+        createPlayerAnimation(animation, paths[1]);
+
+        // Fetch the first frame and set the sprite to said frame.
+        // TODO: Should make it possible to work without animations as well.
+        TextureRegion firstFrame = animation.getAnimation(animation.getPlayerState()).getKeyFrame(0);
+        SpriteComponent sprite = new SpriteComponent(firstFrame, 86, 128);
 
         float width = 86 / Constants.PPM;
         float height = 128 / Constants.PPM;
@@ -89,8 +96,7 @@ public class EntityFactory {
 
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
 
-        AnimationComponent animation = new AnimationComponent();
-        createPlayerAnimation(animation, paths[1]);
+
 
         PlayerEntity player = new PlayerEntity(body, sprite, input, health, animation);
         body.getBody().setUserData(player);
@@ -132,7 +138,7 @@ public class EntityFactory {
 
         String spriteName = name.split(" ")[1];
 
-        SpriteComponent sprite = new SpriteComponent("Balls/"+spriteName+".png",radius,radius, false);
+        SpriteComponent sprite = new SpriteComponent("Balls/"+spriteName+".png",radius,radius);
 
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
@@ -153,7 +159,7 @@ public class EntityFactory {
 
 
     public static BasicEntity createBackground(){
-        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(Gdx.graphics.getWidth()),(int)(Gdx.graphics.getHeight()), false);
+        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(Gdx.graphics.getWidth()),(int)(Gdx.graphics.getHeight()));
         BasicEntity bg = new BasicEntity();
         bg.addComponent(sprite);
         return bg;
@@ -182,7 +188,7 @@ public class EntityFactory {
             width = 32/Constants.PPM;
             height = 1000/Constants.PPM*2;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
-            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM, false);
+            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
 
 
@@ -202,10 +208,10 @@ public class EntityFactory {
         }
 
         if (name.endsWith("Floor")){
-            sprite = new SpriteComponent("Background/Floor.png",width*Constants.PPM,height*Constants.PPM, false);
+            sprite = new SpriteComponent("Background/Floor.png",width*Constants.PPM,height*Constants.PPM);
 
         } else {
-            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM, false);
+            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
         }
 
         ObstacleEntity obstacle;
@@ -222,7 +228,7 @@ public class EntityFactory {
 
     // 🔹 Projectile Entity
     public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath, World world) {
-        SpriteComponent sprite = new SpriteComponent(spritePath,4*4,32*3, false);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
+        SpriteComponent sprite = new SpriteComponent(spritePath,4*4,32*3);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
 
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
@@ -306,8 +312,7 @@ public class EntityFactory {
     }
 
     private static void createPlayerAnimation(AnimationComponent animationComponent, String path) {
-        Gdx.app.log("Animation", "Creating animations with path: " + path);
-        // This should be changed to "/left" without "Rango-..."
+        // This should be changed to "/left" without "/Rango-left"
          Animation<TextureRegion> moveLeftAnimation = new Animation<>(0.2f,
              new TextureRegion(new Texture(path + "/Rango-left.png")),
              new TextureRegion(new Texture(path + "/Rango-left 2.png")));

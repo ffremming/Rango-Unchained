@@ -24,6 +24,7 @@ public class PlayerEntity implements Entity{
         addComponent(animationComponent);
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));
     }
+
     @Override
     public Component getComponent(Class<? extends Component> componentClass) {
         return components.get(componentClass);

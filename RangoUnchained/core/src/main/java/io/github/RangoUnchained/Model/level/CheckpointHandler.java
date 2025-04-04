@@ -14,7 +14,7 @@ import io.github.RangoUnchained.Model.level.GameLevel.LevelData;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
 public class CheckpointHandler {
-    
+
     private static float checkpointCounter = 0;
 
 
@@ -70,7 +70,7 @@ public class CheckpointHandler {
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpointBackup.json");
 
         // After writing, reset counter.
-        checkpointCounter = 0;  
+        checkpointCounter = 0;
     }
 
     /**
@@ -119,7 +119,7 @@ public class CheckpointHandler {
 
 
         // Set the name property
-        entityData.name = "Player";
+        entityData.name = "Player" + "-" + sprite.getPath();
 
         // Set the position property
         EntityData.Position entityPosition = new EntityData.Position();

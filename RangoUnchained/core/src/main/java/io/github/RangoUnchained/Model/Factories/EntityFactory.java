@@ -54,8 +54,8 @@ public class EntityFactory {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
-        if (name.equals("Player")) {
-            return createPlayerEntity(x, y, world, hp);
+        if (name.startsWith("Player")) {
+            return createPlayerEntity(x, y, name, world, hp);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
@@ -76,11 +76,13 @@ public class EntityFactory {
     }
 
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp) {
-        SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
+    public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp) {
+        String[] paths = name.split("-");
 
-        float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
-        float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
+        SpriteComponent sprite = new SpriteComponent(paths[1], 86, 128, true);
+
+        float width = 86 / Constants.PPM;
+        float height = 128 / Constants.PPM;
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
         InputComponent input = new InputComponent();
@@ -88,7 +90,7 @@ public class EntityFactory {
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
 
         AnimationComponent animation = new AnimationComponent();
-        createPlayerAnimation(animation, "Rango");
+        createPlayerAnimation(animation, paths[1]);
 
         PlayerEntity player = new PlayerEntity(body, sprite, input, health, animation);
         body.getBody().setUserData(player);
@@ -130,7 +132,7 @@ public class EntityFactory {
 
         String spriteName = name.split(" ")[1];
 
-        SpriteComponent sprite = new SpriteComponent("Balls/"+spriteName+".png",radius,radius);
+        SpriteComponent sprite = new SpriteComponent("Balls/"+spriteName+".png",radius,radius, false);
 
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
@@ -151,7 +153,7 @@ public class EntityFactory {
 
 
     public static BasicEntity createBackground(){
-        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(Gdx.graphics.getWidth()),(int)(Gdx.graphics.getHeight()));
+        SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(Gdx.graphics.getWidth()),(int)(Gdx.graphics.getHeight()), false);
         BasicEntity bg = new BasicEntity();
         bg.addComponent(sprite);
         return bg;
@@ -180,7 +182,7 @@ public class EntityFactory {
             width = 32/Constants.PPM;
             height = 1000/Constants.PPM*2;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
-            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
+            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM, false);
         }
 
 
@@ -200,10 +202,10 @@ public class EntityFactory {
         }
 
         if (name.endsWith("Floor")){
-            sprite = new SpriteComponent("Background/Floor.png",width*Constants.PPM,height*Constants.PPM);
+            sprite = new SpriteComponent("Background/Floor.png",width*Constants.PPM,height*Constants.PPM, false);
 
         } else {
-            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM);
+            sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height*Constants.PPM, false);
         }
 
         ObstacleEntity obstacle;
@@ -220,7 +222,7 @@ public class EntityFactory {
 
     // 🔹 Projectile Entity
     public static ProjectileEntity createProjectileEntity(float x, float y, String spritePath, World world) {
-        SpriteComponent sprite = new SpriteComponent(spritePath,4*4,32*3);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
+        SpriteComponent sprite = new SpriteComponent(spritePath,4*4,32*3, false);//(20*METERS_TO_PIXELS),(int)(50*METERS_TO_PIXELS)
 
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
@@ -304,7 +306,7 @@ public class EntityFactory {
     }
 
     private static void createPlayerAnimation(AnimationComponent animationComponent, String path) {
-
+        Gdx.app.log("Animation", "Creating animations with path: " + path);
         // This should be changed to "/left" without "Rango-..."
          Animation<TextureRegion> moveLeftAnimation = new Animation<>(0.2f,
              new TextureRegion(new Texture(path + "/Rango-left.png")),

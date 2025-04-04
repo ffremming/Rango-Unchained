@@ -11,6 +11,7 @@ import io.github.RangoUnchained.Model.Components.AnimationComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class AnimationSystem implements System{
 
@@ -76,9 +77,15 @@ public class AnimationSystem implements System{
 
         // Get current frame
         TextureRegion currentFrame = currentAnimation.getKeyFrame(animationComponent.getFrame(), true);
+        Gdx.app.log("Animation", "Current frame region width: " + currentFrame.getRegionWidth());
 
         // Update sprite with new frame
         sprite.setRegion(currentFrame);
+
+        Gdx.app.log("Debug", "Sprite position: " + sprite.getX() + "," + sprite.getY());
+        Gdx.app.log("Debug", "Sprite size: " + sprite.getWidth() + "x" + sprite.getHeight());
+        Gdx.app.log("Debug", "Current animation frame region: " + sprite.getRegionWidth() + "x" + sprite.getRegionHeight());
+
     }
    /* @Override
     public void updateEntity(Entity entity, float delta) {

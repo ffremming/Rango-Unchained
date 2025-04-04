@@ -6,18 +6,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.Components.HealthComponent;
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategies;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
-import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
+import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
-import io.github.RangoUnchained.Model.level.Timer;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
-import io.github.RangoUnchained.Model.contactListener.ContactStrategies;
 import io.github.RangoUnchained.Model.level.GameLevel;
 
 public class LevelController {
@@ -25,7 +25,6 @@ public class LevelController {
     private static LevelController levelController;
 
     private GameLevel level;
-    private Timer timer = new Timer();
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
     private RemovalQueue removalQueue;
@@ -60,6 +59,7 @@ public class LevelController {
     }
 
     public void handleRemovalRequests(Entity entity) {
+        // 
        removalQueue.addRemovalRequest(entity);
     }
 
@@ -70,7 +70,7 @@ public class LevelController {
 
 
     public void excecuteSpawnQueue() {
-        level.spawn(spawnQueue.retrieveSpawningEntities());
+        level.spawn(spawnQueue.retrieveSpawningEntities(),1);
     }
 
     public void excecuteRemovelQueue() {
@@ -88,14 +88,13 @@ public class LevelController {
 
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
-
-
+        getSystem(PowerUpSystem.class).setContactStrategies();
     }
 
     /**updates all entities with the appropiate systems */
     public void update(float delta) {
         systemManager.update(level.getEntities());
-        timer.update(delta);
+        level.getTimer().update(delta);
     }
 
     public void step(float f, int i, int j) {
@@ -126,6 +125,10 @@ public class LevelController {
         return level.scoreManager.getScore();
     }
 
+    public GameLevel getLevel() {
+        return this.level;
+    }
+
     public int getPlayerHealth(){
         if (level == null){return 0;}
         ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
@@ -135,12 +138,18 @@ public class LevelController {
         return health;
     }
 
-    public double getTime(){
-        if (timer == null){return 0;}
-        return timer.getTime();
+    public ArrayList<Integer> getPlayerActivePowerup(){
+        ArrayList<Integer> list = new ArrayList<>();
+        if (level == null){return list;}
+        ArrayList<PlayerEntity> entities= level.getEntity(PlayerEntity.class);
+        if (entities.size()<=0){return list;}
+
+        list.addAll(((PowerUpComponent)(entities.get(0).getComponent(PowerUpComponent.class))).getActivePowerUps().keySet());
+        return list;
     }
 
     public void checkpoint(float delta) {
         level.checkpoint(delta);
     }
+
 }

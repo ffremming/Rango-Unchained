@@ -1,21 +1,14 @@
 {
   "metaData": {
-    "number": 2,
-    "theme": "Forest",
-    "completed": false,
-    "multiplayer": false,
+    "number": 1,
+    "theme": "Desert",
     "progress": 0
   },
   "entitiesData": [
-
     {
       "name": "Background",
-      "position": {
-        "x": 0,
-        "y": 0
-      }
+      "position": {}
     },
-
     {
       "name": "Player",
       "position": {
@@ -24,47 +17,66 @@
       }
     },
     {
-      "name": "BallBig",
+      "name": "Ball: Armedillo Big",
       "position": {
         "x": 200,
-        "y": 350
+        "y": 400
+      },
+      "velocity": {
+        "x": 3
       }
     },
     {
-      "name": "BallSmall",
+      "name": "Ball: Armedillo Small",
       "position": {
         "x": 300,
         "y": 400
+      },
+      "velocity": {
+        "x": -3
       }
     },
-
+    {
+      "name": "Ball: Cactus Big",
+      "position": {
+        "x": 600,
+        "y": 400
+      },
+      "velocity": {
+        "x": 2
+      }
+    },
+    {
+      "name": "Ball: Plant Small",
+      "position": {
+        "x": 900,
+        "y": 400
+      },
+      "velocity": {
+        "x": -2
+      }
+    },
     {
       "name": "ObsticleLeft",
       "position": {
         "x": 17,
         "y": 400
       }
-    }
-    ,
-
+    },
     {
       "name": "ObsticleRight",
       "position": {
         "x": 1500,
         "y": 480
       }
-    }
-    ,
-
+    },
     {
       "name": "ObsticleRoof",
       "position": {
         "x": 750,
         "y": 900
       }
-    }
-    ,
-
+    },
     {
       "name": "ObsticleFloor",
       "position": {
@@ -72,7 +84,5 @@
         "y": 32
       }
     }
-
-
   ]
 }

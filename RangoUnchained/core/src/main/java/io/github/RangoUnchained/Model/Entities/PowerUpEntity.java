@@ -7,25 +7,21 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
 import io.github.RangoUnchained.Model.Components.ContactComponent;
 import io.github.RangoUnchained.Model.Components.HealthComponent;
-import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
-import io.github.RangoUnchained.Model.Components.TransformationComponent;
 
-public class PlayerEntity implements Entity{
+public class PowerUpEntity implements Entity {
 
     private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    public PlayerEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, InputComponent inputComponent, HealthComponent healthComponent) {
+    public PowerUpEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent,
+                         PowerUpComponent powerUpComponent) {
+        addComponent(powerUpComponent);
         addComponent(bodyComponent);
         addComponent(spriteComponent);
-        addComponent(inputComponent);
         addComponent(new ContactComponent());
-        addComponent(new HealthComponent(3));
         addComponent(new SpeedComponent(5f));
-        addComponent(healthComponent);
-        addComponent(new PowerUpComponent(0));
     }
 
     @Override
@@ -33,7 +29,7 @@ public class PlayerEntity implements Entity{
         return components.get(componentClass);
     }
 
-    public <T extends Component> void addComponent(T component) {
+    private <T extends Component> void addComponent(T component) {
         components.put(component.getClass(), component);
     }
 }

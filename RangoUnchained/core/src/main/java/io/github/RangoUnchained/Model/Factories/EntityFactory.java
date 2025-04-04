@@ -1,6 +1,8 @@
 package io.github.RangoUnchained.Model.Factories;
+import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
+import io.github.RangoUnchained.Model.Components.HealthComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
@@ -14,15 +16,18 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
+import io.github.RangoUnchained.Model.Components.TutorialComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.BasicEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
@@ -36,21 +41,24 @@ public class EntityFactory {
     public static final short CATEGORY_BALL       = 0x0002;
     public static final short CATEGORY_OBSTACLE   = 0x0004;
     public static final short CATEGORY_PROJECTILE = 0x0008;
+    public static final short CATEGORY_POWERUP = 0x0016;
+
 
     //masks for what should collide with what
-    public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE;         // Player ignores projectiles, for instance.
+    public static final short MASK_PLAYER     = CATEGORY_BALL | CATEGORY_OBSTACLE |CATEGORY_POWERUP;         // Player ignores projectiles, for instance.
     public static final short MASK_BALL       = CATEGORY_PLAYER | CATEGORY_OBSTACLE | CATEGORY_PROJECTILE;       // Balls might ignore projectiles too.
     public static final short MASK_OBSTACLE   = CATEGORY_PLAYER | CATEGORY_BALL;
     public static final short MASK_PROJECTILE = CATEGORY_BALL;
+    public static final short MASK_POWERUP = CATEGORY_PLAYER |CATEGORY_OBSTACLE;
 
     private EntityFactory() {}
 
-    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity) {
+    public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp, int level) {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
         if (name.equals("Player")) {
-            return createPlayerEntity(x, y, world);
+            return createPlayerEntity(x, y, world, hp, level);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
@@ -59,10 +67,19 @@ public class EntityFactory {
             return createObstacleEntity(name, world);
 
         } else if (name.startsWith("Projectile")) {
-            return createProjectileEntity(x, y, "tounge/Tongue-4.png", world);
+            return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
         }
         else if (name.startsWith("Background")) {
             return createBackground();
+        } else if (name.startsWith("SpeedPowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Speed.png", world, 0);
+        } else if (name.startsWith("ShieldPowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Shield.png", world, 1);
+        }else if (name.startsWith("sizePowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "Powerup/Shield.png", world, 2);
         }
 
 
@@ -70,58 +87,102 @@ public class EntityFactory {
         return null;
     }
 
+    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpType) {
+
+        SpriteComponent sprite = new SpriteComponent(spritePath,64,64);
+
+        float width = (sprite.getSprite().getWidth()/ Constants.PPM);
+        float height = (sprite.getSprite().getHeight()/ Constants.PPM);
+
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width,CATEGORY_POWERUP,MASK_POWERUP),false);
+        body.getBody().setLinearVelocity(new Vector2(-2,4));
+        body.getBody().setAngularDamping(0f);
+
+        float pulse = MEDIUMPULSE;
+        body.getBody().applyAngularImpulse(pulse, true);
+        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpType);
+        PowerUpEntity powerUp = new PowerUpEntity(body, sprite, powerUpComponent);
+        body.getBody().setUserData(powerUp);
+
+        return powerUp;
+    }
+
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world) {
+    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp, int level) {
         SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
 
         float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
+
+
         InputComponent input = new InputComponent();
 
-        PlayerEntity player = new PlayerEntity(body, sprite, input);
+        HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
+
+        PlayerEntity player = new PlayerEntity(body, sprite, input, health);
+        if (level == 0){
+            player.addComponent(new TutorialComponent());
+        }
         body.getBody().setUserData(player);
         return player;
     }
 
-    private static final int BIGBALLRADIUS = 20;
-    private static final int MEDIUMBALLRADIUS = 15;
-    private static final int SMALLBALLRADIUS = 10;
+    private static final int BIGBALLRADIUS = 64;
+    private static final int MEDIUMBALLRADIUS = 48;
+    private static final int SMALLBALLRADIUS = 32;
 
     private static final int BIGBALLPOPPED = 0;
     private static final int MEDIUMBALLPOPPED = 1;
     private static final int SMALLBALLPOPPED = 2;
 
+    private static final float SMALLPULSE = 0.005f;
+    private static final float MEDIUMPULSE = 0.01f;
+    private static final float BIGPULSE = 0.03f;
+
+
+
+
+
 
      // general method for creating all balls - called from factory method
      public static BallEntity createBallEntity(float x, float y, String name, World world, Vector2 velocity) {
-        float radius = name.endsWith("Big") ? BIGBALLRADIUS : name.endsWith("Medium") ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
-        String path = name.endsWith("Big") ? "Big ball" : name.endsWith("Medium") ? "Medium ball" : "Small ball";
+
+        //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "armedillo" : "tumbleweed";
+        int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("TumbleWeed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
         int bounceType = name.endsWith("Big") ? BounceComponent.HIGH : name.endsWith("Medium") ? BounceComponent.MEDIUM : BounceComponent.LOW;
+        return createSpecificBall(x, y, type,timesPopped,bounceType,name,world,velocity);
+    }
 
+    public static BallEntity createSpecificBall(float x,float y,int type, int timesPopped,int bounceType,String name,World world, Vector2 velocity){
+        float radius = timesPopped==0 ? BIGBALLRADIUS : timesPopped==1 ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
         BounceComponent bounceComp = new BounceComponent(bounceType);
-
-        //Stats
         StatComponent stats = new StatComponent();
         stats.setTimesPopped(timesPopped);
 
-        //sprite
-        SpriteComponent sprite = new SpriteComponent("Balls/"+path+".png",64,64);
+        String spriteName = name.split(" ")[1];
 
-        //body
+        SpriteComponent sprite = new SpriteComponent("Balls/"+spriteName+".png",radius,radius);
+
         float width = (float)(sprite.getSprite().getWidth() / Constants.PPM);
         float height = (float)(sprite.getSprite().getHeight() / Constants.PPM);
-        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2,CATEGORY_BALL,MASK_BALL),true);
+        BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createCircleFixture(width/2,CATEGORY_BALL,MASK_BALL),false);
         body.getBody().setLinearVelocity(velocity);
-        body.getBody().setLinearDamping(0);
-        body.getBody().setAngularDamping(0);
+        body.getBody().setAngularDamping(0f);
 
-        BallEntity ball = new BallEntity(body, stats, sprite,bounceComp);
+        float pulse = timesPopped==0 ? BIGPULSE : timesPopped==1 ? MEDIUMPULSE :SMALLPULSE;
+        body.getBody().applyAngularImpulse(pulse, true);
+        BallComponent ballComp = new BallComponent(type);
+
+        BallEntity ball = new BallEntity(body, stats, sprite,bounceComp,ballComp);
         body.getBody().setUserData(ball);
+
         return ball;
     }
+
+
 
     public static BasicEntity createBackground(){
         SpriteComponent sprite = new SpriteComponent("Background/Background.png",(int)(Gdx.graphics.getWidth()),(int)(Gdx.graphics.getHeight()));
@@ -151,6 +212,7 @@ public class EntityFactory {
             y = 0;
             height = Gdx.graphics.getHeight();
             width = 32/Constants.PPM;
+            height = 1000/Constants.PPM*2;
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
             sprite = new SpriteComponent("Background/red.png",width*Constants.PPM,height *Constants.PPM);
         }
@@ -187,7 +249,6 @@ public class EntityFactory {
         }
 
         body.getBody().setUserData(obstacle);
-
 
         return new ObstacleEntity(body, sprite);
     }
@@ -229,7 +290,6 @@ public class EntityFactory {
         if (body == null) {
             throw new IllegalStateException("Failed to create body in the world");
         }
-        body.setLinearDamping(0f);
 
         body.createFixture(fixtureDef);
         bodyComponent.setBody(body);
@@ -278,3 +338,4 @@ public class EntityFactory {
         return fixtureDef;
     }
 }
+

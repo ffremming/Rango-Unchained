@@ -55,15 +55,8 @@ public class GameController extends Game {
         }
         currentView = view;
         setScreen(currentView);
-        if (view instanceof GamePlayView){
-            loadGame();
-        }
     }
 
-    private void loadGame(){
-        //Kaller på abstract factory.
-
-    }
 
     public static SpriteBatch getBatch() {
         if (batch == null) batch = new SpriteBatch();

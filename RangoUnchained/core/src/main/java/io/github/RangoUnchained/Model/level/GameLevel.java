@@ -159,9 +159,11 @@ public class GameLevel {
 
         for (Entity e : removalEntities){
 
-            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
-            if (body != null) {
-                LevelController.getInstance().getWorld().destroyBody(body);
+            if (e.getComponent(BodyComponent.class)!= null){
+                Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+                if (body != null) {
+                    LevelController.getInstance().getWorld().destroyBody(body);
+                }
             }
         }
 
@@ -195,5 +197,9 @@ public class GameLevel {
             }
         }
         return wantedEntities;
+    }
+
+    public void dispose() {
+        removeEntities(entities);
     }
 }

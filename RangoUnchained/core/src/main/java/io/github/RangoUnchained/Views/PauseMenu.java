@@ -52,14 +52,20 @@ public class PauseMenu extends Stage {
     }
 
     private void restart() {
-        isPaused = false;
-        LevelController.resetInstance();
+
+        //LevelController.getInstance().dispose();
         Gdx.input.setInputProcessor(null);
-        game.setView(new GamePlayView(levelNumber));
+
         GameFileHandler.getInstance().resetCheckpointFile();
+        //game.setView(new GamePlayView(levelNumber));
+        isPaused = false;
+        //set view to something else before refreshing
+        game.setView(new GameOverView(levelNumber,false));
+        game.setView(new GamePlayView(levelNumber));
     }
 
     private void endGame() {
+
         game.setView(new GameOverView(levelNumber,false));
         GameFileHandler.getInstance().resetCheckpointFile();
     }

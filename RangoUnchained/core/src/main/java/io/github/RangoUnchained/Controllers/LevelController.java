@@ -18,7 +18,6 @@ import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
-import io.github.RangoUnchained.Views.GameOverView;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
@@ -46,9 +45,7 @@ public class LevelController {
     }
 
     public static void resetInstance() {
-        if (levelController != null) {
-            levelController = null;
-        }
+        levelController = null;
     }
 
     /** clear systems (TODO) */
@@ -85,10 +82,10 @@ public class LevelController {
     // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems(int levelNumber) {
-        systemManager = new SystemManager();
-        level = new GameLevel(levelNumber);
-        spawnQueue = new SpawnQueue();
-        removalQueue = new RemovalQueue();
+        this.systemManager = new SystemManager();
+        this.level = new GameLevel(levelNumber);
+        this.spawnQueue = new SpawnQueue();
+        this.removalQueue = new RemovalQueue();
         ContactStrategies ContactStrategies = new ContactStrategies();
 
         getSystem(PhysicsSystem.class).setContactStrategies();
@@ -194,6 +191,10 @@ public class LevelController {
 
     public void checkpoint(float delta) {
         level.checkpoint(delta);
+    }
+
+    public void dispose() {
+        getLevel().dispose();
     }
 
 }

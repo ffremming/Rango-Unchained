@@ -13,9 +13,10 @@ import io.github.RangoUnchained.Model.Components.AnimationComponent;
 
 public class AnimationLoader {
 
-    //If you want to add animations, you simply add it here, add a playerstate in
-    // animationscomponent and put the corresponding frames into the folder of the
-    // corresponding animation to the player you want, for instance inside "Rango" directory
+    // If you want to add animations:
+    // Add a playerstate that plays the animation into enum in animationscomponent
+    // Put frames into the folder of the playertype and animationtype, for instance "Rango/Left"
+    // Add call to putAnimation for the playerstate and path of animationType.
     public static void createPlayerAnimation(AnimationComponent animationComponent, String path) {
         animationComponent.putAnimation(AnimationComponent.PlayerState.LEFT, loadAnimationFromFolder(path + "/Left", 0.2f));
         animationComponent.putAnimation(AnimationComponent.PlayerState.RIGHT, loadAnimationFromFolder(path + "/Right", 0.2f));
@@ -24,14 +25,17 @@ public class AnimationLoader {
     }
 
     private static Animation<TextureRegion> loadAnimationFromFolder(String path, float frameDuration) {
+
         Array<TextureRegion> frames = new Array<>();
 
-        FileHandle directory = Gdx.files.internal(path);
-        for (FileHandle image : directory.list()) {
-            System.out.println(image);
-            Texture texture = new Texture(image);
-            frames.add(new TextureRegion(texture));
+        FileHandle image = Gdx.files.internal("assets/assets.txt");
+        for (String asset : image.readString().split("\n")) {
+            if (asset.startsWith(path)) {
+                Texture texture = new Texture(Gdx.files.internal(asset.trim()));
+                frames.add(new TextureRegion(texture));
+            }
         }
+
         return new Animation<TextureRegion>(frameDuration, frames);
     }
 

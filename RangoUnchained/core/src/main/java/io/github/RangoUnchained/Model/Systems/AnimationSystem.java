@@ -79,44 +79,6 @@ public class AnimationSystem implements System{
         // Update sprite with new frame
         sprite.setRegion(currentFrame);
     }
-   /* @Override
-    public void updateEntity(Entity entity, float delta) {
-        InputComponent input = (InputComponent) entity.getComponent(InputComponent.class);
-        Sprite sprite = ((SpriteComponent) entity.getComponent(SpriteComponent.class)).getSprite();
-        AnimationComponent animationComponent = ((AnimationComponent) entity.getComponent(AnimationComponent.class));
-
-        if (input.isLeft()) {
-            animationComponent.setPlayerState("LEFT");
-        }
-        animationComponent.increaseDelta(delta);
-
-        Animation<TextureRegion> currentAnimation = animationComponent.getAnimation(animationComponent.getPlayerState());
-
-        TextureRegion currentFrame = currentAnimation.getKeyFrame(animationComponent.getFrame(), true);
-
-        sprite.setRegion(currentFrame);
-
-       *//* if(input.isShoot()){
-            animateSprite(sprite, "Rango/Rango.png", "Rango/Rango-shoot.png", 1);
-        }
-        if(input.isLeft()){
-            animateSprite(sprite, "Rango/Rango.png", "Rango/Rango-left.png", 0);
-        }
-        if(input.isRight()){
-            animateSprite(sprite, "Rango/Rango.png", "Rango/Rango-right.png", 0);
-        }*//*
-    }*/
-
-    private void animateSprite(Sprite sprite, String revertSpritePath, String spritePath, float delay){
-        sprite.setTexture(new Texture(spritePath));
-
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-               sprite.setTexture(new Texture(revertSpritePath));
-            }
-        }, delay);
-    }
 
     @Override
     public boolean filter(Entity entity) {

@@ -111,7 +111,7 @@ public class EntityFactory {
         String[] paths = name.split("-");
 
         AnimationComponent animation = new AnimationComponent();
-        createPlayerAnimation(animation, paths[1]);
+        AnimationLoader.createPlayerAnimation(animation, paths[1]);
 
         // Fetch the first frame and set the sprite to said frame.
         // TODO: Should make it possible to work without animations as well.
@@ -355,28 +355,5 @@ public class EntityFactory {
         fixtureDef.filter.categoryBits = category;
         fixtureDef.filter.maskBits = mask;
         return fixtureDef;
-    }
-
-    private static void createPlayerAnimation(AnimationComponent animationComponent, String path) {
-        // This should be changed to "/left" without "/Rango-left"
-         Animation<TextureRegion> moveLeftAnimation = new Animation<>(0.2f,
-             new TextureRegion(new Texture(path + "/Rango-left.png")),
-             new TextureRegion(new Texture(path + "/Rango-left 2.png")));
-
-        Animation<TextureRegion> moveRightAnimation = new Animation<>(0.2f,
-            new TextureRegion(new Texture(path + "/Rango-right.png")),
-            new TextureRegion(new Texture(path + "/Rango-right 2.png")));
-
-        Animation<TextureRegion> shootAnimation = new Animation<>(0.2f,
-            new TextureRegion(new Texture(path + "/Rango-shoot.png")));
-
-        Animation<TextureRegion> idleAnimation = new Animation<>(0.2f,
-            new TextureRegion(new Texture(path + "/Rango.png")));
-
-        animationComponent.putAnimation(AnimationComponent.PlayerState.LEFT, moveLeftAnimation);
-        animationComponent.putAnimation(AnimationComponent.PlayerState.RIGHT, moveRightAnimation);
-        animationComponent.putAnimation(AnimationComponent.PlayerState.SHOOTING, shootAnimation);
-        animationComponent.putAnimation(AnimationComponent.PlayerState.IDLE, idleAnimation);
-
     }
 }

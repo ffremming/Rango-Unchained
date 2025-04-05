@@ -2,7 +2,6 @@ package io.github.RangoUnchained.Controllers;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -91,6 +90,8 @@ public class LevelController {
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
         getSystem(PowerUpSystem.class).setContactStrategies();
+
+        level.initializeCheckpoint();
     }
 
     /**updates all entities with the appropiate systems */
@@ -109,6 +110,7 @@ public class LevelController {
             return false;
         }
         if (hasDied()){
+            level.resetCheckpoint();
             return true;
         }
 
@@ -118,6 +120,7 @@ public class LevelController {
                 GameFileHandler.getInstance();
                 GameFileHandler.setProgress(levelNumber+1);
             }
+            level.resetCheckpoint();
             return true;
         }
         return false;
@@ -192,9 +195,4 @@ public class LevelController {
     public void checkpoint(float delta) {
         level.checkpoint(delta);
     }
-
-    public void dispose() {
-        getLevel().dispose();
-    }
-
 }

@@ -35,7 +35,11 @@ public class SelectLevelView extends BaseScreen {
         // Add level selection buttons
         for (int i = 0; i <= 5; i++) {
             final int level = i;
-            table.add(ButtonFactory.createButton("Level " + i, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padTop(20);
+            String buttonText = "Level " + i;
+            if (i== 0){
+                buttonText = "Tutorial";
+            }
+            table.add(ButtonFactory.createButton(buttonText, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padTop(20);
             
             if (i == GameFileHandler.inProgresslevelnumber()){
                 table.row();

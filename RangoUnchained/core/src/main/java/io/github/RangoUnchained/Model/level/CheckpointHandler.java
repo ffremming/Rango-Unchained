@@ -17,7 +17,6 @@ public class CheckpointHandler {
     
     private static float checkpointCounter = 0;
 
-
     /**
      * Writes state of entities to json, including backup file to prevent errors due to corrupt files.
      *
@@ -30,7 +29,7 @@ public class CheckpointHandler {
             int levelNumber, int score, double time) {
 
         // If counter >= 3, write to JSON, else count and continue
-        if (checkpointCounter < 3) {
+        if (checkpointCounter + delta < 3) {
             checkpointCounter += delta;
             return;
         }
@@ -72,6 +71,25 @@ public class CheckpointHandler {
         // After writing, reset counter.
         checkpointCounter = 0;  
     }
+
+
+    /**
+     * called when the game is started, to potentially reset the checkpoint
+     */
+    public static void initializeCheckpoint(int levelNumber){
+        if (GameFileHandler.inProgresslevelnumber() != levelNumber){
+            resetCheckpoint();
+        }
+    }
+
+    /**
+     * Resets the checkpoint - should be called when the game is started, completed or ended.
+     */
+    public static void resetCheckpoint(){
+        checkpointCounter = 0;
+        GameFileHandler.getInstance().resetCheckpointFile();
+    }
+
 
     /**
      * Creates an EntityData object from  Entity object

@@ -33,8 +33,13 @@ public class PauseMenu extends Stage {
         table.row();
         table.add(ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart)).center().padBottom(20);
         table.row();
+        if (levelNumber > 0) {
+            table.add(ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater)).center().padBottom(20);
+            table.row();
+        }
+        
         table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
-
+        
         table.row();
 
         addActor(table);
@@ -72,5 +77,11 @@ public class PauseMenu extends Stage {
 
     public boolean isPaused() {
         return isPaused;
+    }
+
+    private void continueLater() {
+        // Save the game state and return to the main menu
+        LevelController.getInstance().getLevel().checkpoint(3f);
+        game.setView(new MainMenuView());
     }
 }

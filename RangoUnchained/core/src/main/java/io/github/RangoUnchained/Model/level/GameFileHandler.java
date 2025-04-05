@@ -29,7 +29,7 @@ public class GameFileHandler {
     }
 
 
-    public int getProgress() {
+    public synchronized int getProgress() {
         try {
             // Create a new Json instance.
             Json json = new Json();
@@ -67,7 +67,7 @@ public class GameFileHandler {
      *
      * @param progress the progress value to be saved
      */
-    public static void setProgress(int progress) {
+    public synchronized static void setProgress(int progress) {
         try {
             // Create a new Json instance.
             Json json = new Json();
@@ -107,17 +107,28 @@ public class GameFileHandler {
 
     }
 
-    public void writeLevelDataToLocalFile(GameLevel.LevelData levelData, String path) {
+    public synchronized void writeLevelDataToLocalFile(GameLevel.LevelData levelData, String path) {
+        GameLevel.LevelData dataCopy = levelData;
+        dataCopy.metaData.levelnr = levelNumber;
+        
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
         FileHandle file = Gdx.files.local(path);
+        FileHandle tempFile = Gdx.files.local(path);
+        
+        String jsonString = json.prettyPrint(dataCopy);
+        tempFile.writeString(jsonString, false);
+        
+        // Rename the temporary file to the original file after writing
+        if (tempFile.exists()) {
+            //tempFile.moveTo(file);
+        }
+        Gdx.app.log("Checkpoint", "Written data: " + file.readString());
 
-        levelData.metaData.levelnr = levelNumber;
-
-        file.writeString(json.prettyPrint(levelData), false);
     }
+    
 
-    public void resetCheckpointFile() {
+    public synchronized void resetCheckpointFile() {
         GameLevel.LevelData levelData;
         try{
             levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
@@ -138,22 +149,20 @@ public class GameFileHandler {
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpointBackup.json");
     }
 
-    public static int inProgresslevelnumber(){
+    public synchronized static int inProgresslevelnumber(){
 
         GameLevel.LevelData levelData;
         try{
             levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
-           
         } catch (Exception e){
-            levelData = new LevelData();
-           
+            return -1;
         }
-        if (levelData == null){levelData = new LevelData();}
+        if (levelData == null){return -1;}
         
         if (levelData.metaData == null){
             return -1;
         }
-        if (levelData.metaData.progress != 0){
+        if (levelData.metaData.progress == 1){
             return levelData.metaData.levelnr;
         }
         return -1;

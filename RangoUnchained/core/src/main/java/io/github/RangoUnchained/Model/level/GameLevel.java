@@ -34,46 +34,73 @@ public class GameLevel {
      * @return A new GameLevel instance populated with metadata and entities.
      */
     public void loadLevel(int number) {
+        System.out.println("DEBUG: Starting loadLevel with level number: " + number);
         levelNumber = number;
         GameFileHandler.getInstance().setLevelNumber(number);
         LevelData levelData;
-
+    
+        // Try to load the checkpoint file first.
+        System.out.println("DEBUG: Attempting to load 'levels/checkpoint.json'");
         if (GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json") != null) {
             levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
+            System.out.println("DEBUG: Successfully loaded 'levels/checkpoint.json'");
         } else {
             levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpointBackup.json");
+            System.out.println("DEBUG: 'levels/checkpoint.json' not found. Loaded 'levels/checkpointBackup.json' instead");
         }
-
+    
         if (levelData == null) {
+            System.out.println("DEBUG: LevelData is null, initializing new LevelData and MetaData.");
             levelData = new GameLevel.LevelData();
             levelData.metaData = new LevelData.MetaData();
         }
-
+    
+        // Save the entities data from the levelData.
         entitiesData = levelData.entitiesData;
-
-        // If the game was not in progress or the chosen level is not the level that crashed
-        // the game, load the correct level.json
-        System.out.println("LEVELPROGRESS: " + levelData.metaData.progress + " | LEVELNUMBER METADATA " + levelData.metaData.levelnr + " | chosen levelnumber : " + number);
+    
+        // Print metadata details for debugging.
+        System.out.println("DEBUG: Level Metadata - progress: " + levelData.metaData.progress 
+                + " | levelnr: " + levelData.metaData.levelnr 
+                + " | chosen level number: " + number);
+                
+        // If the game was not in progress or the chosen level doesn't match the metadata, load the proper level.
         if (levelData.metaData.progress == 0 || levelData.metaData.levelnr != number) {
+            System.out.println("DEBUG: Progress is 0 or level number mismatch. Loading 'levels/level" + number + ".json'");
             levelData = GameFileHandler.getInstance().makeLevelData("levels/level" + number + ".json");
             entitiesData = levelData.entitiesData;
         }
-
+    
+        // Check for null entitiesData.
         if (levelData.entitiesData == null) {
             Gdx.app.log("JSON_Error", "No entitiesData found in JSON file.");
+            System.out.println("DEBUG: entitiesData is null, initializing new ArrayList.");
             levelData.entitiesData = new ArrayList<>();
         }
-
-        Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.number);
-        if (levelData.metaData.number == 0) {
+    
+        Gdx.app.log("JSON_testing", "levelName: " + levelData.metaData.levelnr);
+        System.out.println("DEBUG: levelName from metaData: " + levelData.metaData.levelnr);
+        
+        // If the metadata level number is 0, reload the level.
+        if (levelData.metaData.levelnr == 0) {
+            System.out.println("DEBUG: metaData number is 0, reloading 'levels/level" + number + ".json'");
             levelData = GameFileHandler.getInstance().makeLevelData("levels/level" + number + ".json");
             entitiesData = levelData.entitiesData;
         }
         
+        // Set score and timer.
+        System.out.println("DEBUG: Setting score to " + levelData.metaData.score);
         scoreManager.setScore(levelData.metaData.score);
+        
+        System.out.println("DEBUG: Setting timer to " + levelData.metaData.time);
         timer.setTime(levelData.metaData.time);
-        spawn(levelData.entitiesData,levelData.metaData.number);
+        
+        // Spawn entities.
+        System.out.println("DEBUG: Spawning entities with level number: " + levelData.metaData.levelnr);
+        spawn(levelData.entitiesData, levelData.metaData.levelnr);
+        
+        System.out.println("DEBUG: Level load complete.");
     }
+    
 
     public void checkpoint(float delta){
         CheckpointHandler.checkPoint(delta, entitiesData, entities, levelNumber, scoreManager.getScore(), timer.getTime());
@@ -139,7 +166,6 @@ public class GameLevel {
          * Represents metadata associated with a game level.
          */
         public static class MetaData {
-            public int number;
             public String theme;
             public boolean completed;
             public boolean multiplayer;
@@ -159,9 +185,11 @@ public class GameLevel {
 
         for (Entity e : removalEntities){
 
-            Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
-            if (body != null) {
-                LevelController.getInstance().getWorld().destroyBody(body);
+            if (e.getComponent(BodyComponent.class)!= null){
+                Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
+                if (body != null) {
+                    LevelController.getInstance().getWorld().destroyBody(body);
+                }
             }
         }
 
@@ -195,5 +223,17 @@ public class GameLevel {
             }
         }
         return wantedEntities;
+    }
+
+    public void dispose() {
+        removeEntities(entities);
+    }
+
+    public void initializeCheckpoint() {
+        CheckpointHandler.initializeCheckpoint(levelNumber);
+    }
+
+    public void resetCheckpoint() {
+        CheckpointHandler.resetCheckpoint();
     }
 }

@@ -16,11 +16,17 @@ public class ButtonFactory {
         button.setSize(width, height);
 
         if (text.startsWith("Level")) {
+
+           
+
             int level = Integer.parseInt(text.replace("Level ", ""));
+
+
             if (level > GameFileHandler.getInstance().getProgress()) {
                 Gdx.app.log("ButtonFactory", "Level " + level + " is locked."+ GameFileHandler.getInstance().getProgress());
                 button.setDisabled(true);
                 button.setColor(0.5f, 0.5f, 0.5f, 1); // Set to a gray color to indicate it's disabled
+               
                 return button;
             }
         }

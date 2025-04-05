@@ -33,8 +33,13 @@ public class PauseMenu extends Stage {
         table.row();
         table.add(ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart)).center().padBottom(20);
         table.row();
+        if (levelNumber > 0) {
+            table.add(ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater)).center().padBottom(20);
+            table.row();
+        }
+        
         table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
-
+        
         table.row();
 
         addActor(table);
@@ -52,19 +57,31 @@ public class PauseMenu extends Stage {
     }
 
     private void restart() {
-        isPaused = false;
-        LevelController.resetInstance();
+
+        //LevelController.getInstance().dispose();
         Gdx.input.setInputProcessor(null);
-        game.setView(new GamePlayView(levelNumber));
+
         GameFileHandler.getInstance().resetCheckpointFile();
+        //game.setView(new GamePlayView(levelNumber));
+        isPaused = false;
+        //set view to something else before refreshing
+        game.setView(new GameOverView(levelNumber,false));
+        game.setView(new GamePlayView(levelNumber));
     }
 
     private void endGame() {
+
         game.setView(new GameOverView(levelNumber,false));
         GameFileHandler.getInstance().resetCheckpointFile();
     }
 
     public boolean isPaused() {
         return isPaused;
+    }
+
+    private void continueLater() {
+        // Save the game state and return to the main menu
+        LevelController.getInstance().getLevel().checkpoint(3f);
+        game.setView(new MainMenuView());
     }
 }

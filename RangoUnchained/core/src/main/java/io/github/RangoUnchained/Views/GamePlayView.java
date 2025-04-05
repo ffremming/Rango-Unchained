@@ -38,10 +38,14 @@ public class GamePlayView extends BaseScreen {
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
-        box2DDebugRenderer = new Box2DDebugRenderer();
+        
+        LevelController.resetInstance();
         controller = LevelController.getInstance();
         controller.initializeSystems(levelNumber);
         pauseMenu = new PauseMenu(game, levelNumber);
+        Gdx.app.log("GamePlayView: " + levelNumber, "load");
+        box2DDebugRenderer = new Box2DDebugRenderer();
+
     }
 
     @Override
@@ -117,8 +121,7 @@ public class GamePlayView extends BaseScreen {
         }
 
         //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
-        updateHeartsUI();
-        updatePowerupUI();
+        
         updateUI();
 
         batch.end();
@@ -140,28 +143,39 @@ public class GamePlayView extends BaseScreen {
     }
 
     private void updateUI(){
-
-        Label scoreLabel = stage.getRoot().findActor("scoreLabel");
-        if (scoreLabel != null) {
-            int newScore = LevelController.getInstance().getScore();
-            scoreLabel.setText("Score: " + newScore);
-        }
-
-        // Retrieve the time label from the stage
-        Label timeLabel = stage.getRoot().findActor("timeLabel");
-        if (timeLabel != null) {
-            double time = LevelController.getInstance().getLevel().getTimer().getTime();
-            timeLabel.setText(String.format("%.1f s", time));
-        }
+        try {
 
         
 
-        Label tutorialLabel = stage.getRoot().findActor("tutorialLabel");
-        if (tutorialLabel != null) {
-            TutorialSystem tutorialSystem = LevelController.getInstance().getSystem(TutorialSystem.class);
-            if (tutorialSystem!= null){
-                tutorialLabel.setText(tutorialSystem.getTutorialMessage());
+            Label scoreLabel = stage.getRoot().findActor("scoreLabel");
+            if (scoreLabel != null) {
+                int newScore = LevelController.getInstance().getScore();
+                scoreLabel.setText("Score: " + newScore);
             }
+
+            // Retrieve the time label from the stage
+            Label timeLabel = stage.getRoot().findActor("timeLabel");
+            if (timeLabel != null) {
+                double time = LevelController.getInstance().getLevel().getTimer().getTime();
+                timeLabel.setText(String.format("%.1f s", time));
+            }
+
+            
+
+            Label tutorialLabel = stage.getRoot().findActor("tutorialLabel");
+            if (tutorialLabel != null) {
+                TutorialSystem tutorialSystem = LevelController.getInstance().getSystem(TutorialSystem.class);
+                if (tutorialSystem!= null){
+                    tutorialLabel.setText(tutorialSystem.getTutorialMessage());
+                }
+                
+            }
+            updateHeartsUI();
+            updatePowerupUI();
+        
+        } catch (NullPointerException e) {
+            // Handle the case where the label is not found
+            System.out.println("Label not found: " + e.getMessage());
         }
     }
 

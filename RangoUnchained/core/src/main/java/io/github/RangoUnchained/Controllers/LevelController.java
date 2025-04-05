@@ -2,7 +2,6 @@ package io.github.RangoUnchained.Controllers;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -18,7 +17,6 @@ import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
-import io.github.RangoUnchained.Views.GameOverView;
 import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
@@ -46,9 +44,7 @@ public class LevelController {
     }
 
     public static void resetInstance() {
-        if (levelController != null) {
-            levelController = null;
-        }
+        levelController = null;
     }
 
     /** clear systems (TODO) */
@@ -84,15 +80,17 @@ public class LevelController {
     // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems(int levelNumber) {
-        systemManager = new SystemManager();
-        level = new GameLevel(levelNumber);
-        spawnQueue = new SpawnQueue();
-        removalQueue = new RemovalQueue();
+        this.systemManager = new SystemManager();
+        this.level = new GameLevel(levelNumber);
+        this.spawnQueue = new SpawnQueue();
+        this.removalQueue = new RemovalQueue();
         ContactStrategies ContactStrategies = new ContactStrategies();
 
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
         getSystem(PowerUpSystem.class).setContactStrategies();
+
+        level.initializeCheckpoint();
     }
 
     /**updates all entities with the appropiate systems */
@@ -111,6 +109,7 @@ public class LevelController {
             return false;
         }
         if (hasDied()){
+            level.resetCheckpoint();
             return true;
         }
 
@@ -120,6 +119,7 @@ public class LevelController {
                 GameFileHandler.getInstance();
                 GameFileHandler.setProgress(levelNumber+1);
             }
+            level.resetCheckpoint();
             return true;
         }
         return false;
@@ -194,5 +194,4 @@ public class LevelController {
     public void checkpoint(float delta) {
         level.checkpoint(delta);
     }
-
 }

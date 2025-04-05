@@ -79,6 +79,9 @@ public class GameOverView extends BaseScreen {
              table.row();
          }
 
+         table.add(ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(),  game, () -> game.setView(new ScoreboardView()))).center().padBottom(20);
+         table.row();
+
         // Back to main menu button
         table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()))).center();
 

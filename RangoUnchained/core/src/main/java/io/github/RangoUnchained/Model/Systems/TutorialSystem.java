@@ -33,13 +33,13 @@ public class TutorialSystem implements System {
         // Require both TutorialComponent and InputComponent for entities processed by this system.
         filter.require(TutorialComponent.class);
         filter.require(InputComponent.class);
-        
+
         // Initialize the TutorialManager with a sequence of tutorial strategies.
         tutorialManager = new TutorialManager(Arrays.asList(
             new MoveLeftStrategy(),
             new MoveRightStrategy(),
             new ShootStrategy(),
-           
+
             new KillEnemyStrategy("Ball: Armedillo Medium",1, "shoot the armedillo to split it",15),
             new KillCountStep(2, 15,"when the armedillo splits, shoot the small balls"),
             new NoteStrategy(2,"if enemies hit you, you lose a heart"),
@@ -51,28 +51,27 @@ public class TutorialSystem implements System {
             new LevelCountDown()
         ));
     }
-    
+
     /**
      * Updates the tutorial logic for a given entity.
      *
      * @param entity    the entity containing the TutorialComponent and InputComponent
      */
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
         TutorialComponent tutorial = (TutorialComponent)entity.getComponent(TutorialComponent.class);
         InputComponent input = (InputComponent)entity.getComponent(InputComponent.class);
 
         updateContext(input);
         // get the current context of a step.
-        
-        
+
+
         // Delegate the update to the TutorialManager.
-        float delta =0.0166f;
         tutorialManager.update((delta));
-        
+
         // Update the TutorialComponent's message for display.
         tutorial.message = tutorialManager.getCurrentMessage();
     }
-    
+
     @Override
     public boolean filter(Entity entity) {
         return filter.matches(entity);

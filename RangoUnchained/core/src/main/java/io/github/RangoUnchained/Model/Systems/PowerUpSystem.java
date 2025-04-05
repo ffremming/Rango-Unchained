@@ -32,7 +32,7 @@ public class PowerUpSystem implements System, ContactStrategy {
     }
 
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
 
         if (entity instanceof PlayerEntity){
             PowerUpComponent playerUp = (PowerUpComponent) entity.getComponent(PowerUpComponent.class);
@@ -40,7 +40,7 @@ public class PowerUpSystem implements System, ContactStrategy {
         }
 
         SpeedComponent speed = (SpeedComponent) entity.getComponent(SpeedComponent.class);
-        /** 
+        /**
         if (speed.getSpeedBoostTimer() > 0) {
             float delta = Gdx.graphics.getDeltaTime();
             speed.speedBoostTimer -= delta;

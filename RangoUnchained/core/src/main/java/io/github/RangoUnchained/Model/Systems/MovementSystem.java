@@ -29,7 +29,7 @@ public class MovementSystem implements System {
     // Updates every playable entity's position based on input and velocity
     // Method called from controllers for updates
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
         BodyComponent bodyComponent = (BodyComponent) entity.getComponent(BodyComponent.class);
         InputComponent inputComponent = (InputComponent) entity.getComponent(InputComponent.class);
         Body body = bodyComponent.getBody();
@@ -47,10 +47,11 @@ public class MovementSystem implements System {
         } else if (inputComponent.isRight()) {
             newVelocityX = moveSpeed;
         }
-        
+
         // Update the body's velocity
         body.setLinearVelocity(newVelocityX, currentVelocity.y);
     }
+
 
     @Override
     public boolean filter(Entity entity) {

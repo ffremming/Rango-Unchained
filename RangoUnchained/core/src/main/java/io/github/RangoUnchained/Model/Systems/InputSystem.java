@@ -21,7 +21,7 @@ public class InputSystem implements System {
     private Touchpad touchpad;
     private ComponentFilter filter = new ComponentFilter();
 
-    public InputSystem() {        
+    public InputSystem() {
         filter
         .require(InputComponent.class);
     }
@@ -31,8 +31,8 @@ public class InputSystem implements System {
     }
 
     @Override
-    public void updateEntity(Entity entity) {
-        
+    public void updateEntity(Entity entity, float delta) {
+
         InputComponent p1_input = (InputComponent) entity.getComponent(InputComponent.class);
         if (!p1_input.isLocked()){
             handleInput(p1_input, entity);
@@ -55,7 +55,7 @@ public class InputSystem implements System {
             p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
             p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
         }
-        
+
         if (Gdx.input.isTouched()){
             p1_input.setLeft(touchpad.getKnobPercentX() < 0);
             p1_input.setRight(0.5 < touchpad.getKnobPercentX());
@@ -63,7 +63,7 @@ public class InputSystem implements System {
     }
 
     public synchronized void handleShoot(ArrayList<Entity> entities) {
-        
+
         for(Entity entity : entities){
             if(filter.matches(entity)){
                 handleShoot(entity);
@@ -80,7 +80,7 @@ public class InputSystem implements System {
             filter.require(SpriteComponent.class);
 
             if(filter.matches(entity)){
-                Sprite sprite = spriteComp.getSprite(); 
+                Sprite sprite = spriteComp.getSprite();
                 Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
                 LevelController.getInstance().handleSpawnRequests(body.getPosition().x*Constants.PPM , body.getPosition().y*Constants.PPM +sprite.getHeight()/2+16 ,0,0,"Projectile",new Vector2(0,0));
             }

@@ -4,7 +4,7 @@
     "theme": "Desert",
     "completed": false,
     "multiplayer": false,
-    "progress": 0
+    "progress": 0,
   },
   "entitiesData": [
 	{
@@ -12,7 +12,7 @@
 		"position": {}
 	},
 	{
-		"name": "Player",
+		"name": "Player-Rango",
 		"position": {
 			"x": 100,
 			"y": 150

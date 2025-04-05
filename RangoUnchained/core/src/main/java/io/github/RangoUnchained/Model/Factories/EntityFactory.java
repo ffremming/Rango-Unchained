@@ -1,4 +1,5 @@
 package io.github.RangoUnchained.Model.Factories;
+import io.github.RangoUnchained.Model.Components.AnimationComponent;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
@@ -7,6 +8,9 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -56,14 +60,14 @@ public class EntityFactory {
 
         Gdx.app.log("entity factory", "Name: " + name);
 
-        if (name.equals("Player")) {
-            return createPlayerEntity(x, y, world, hp, level);
+        if (name.startsWith("Player")) {
+            return createPlayerEntity(x, y, name, world, hp, level);
 
         } else if (name.startsWith("Ball")) {
             return createBallEntity(x, y, name, world,velocity);
 
         } else if (name.startsWith("Obsticle")) {
-            return createObstacleEntity(name, world,x,y);
+            return createObstacleEntity(name, world, x, y);
 
         } else if (name.startsWith("Projectile")) {
             return createProjectileEntity(x, y, "tounge/Tongue-3.png", world);
@@ -102,20 +106,27 @@ public class EntityFactory {
     }
 
     // Player Entity
-    public static PlayerEntity createPlayerEntity(float x, float y, World world, int hp, int level) {
-        SpriteComponent sprite = new SpriteComponent("Rango/Rango.png",86,128);
+    public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp, int level) {
 
-        float width = (float)(sprite.getSprite().getWidth()/ Constants.PPM);
-        float height = (float)(sprite.getSprite().getHeight()/ Constants.PPM);
+        String[] paths = name.split("-");
+
+        AnimationComponent animation = new AnimationComponent();
+        AnimationLoader.createPlayerAnimation(animation, paths[1]);
+
+        // Fetch the first frame and set the sprite to said frame.
+        // TODO: Should make it possible to work without animations as well.
+        TextureRegion firstFrame = animation.getAnimation(animation.getPlayerState()).getKeyFrame(0);
+        SpriteComponent sprite = new SpriteComponent(firstFrame, 86, 128);
+
+        float width = 86 / Constants.PPM;
+        float height = 128 / Constants.PPM;
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height,CATEGORY_PLAYER,MASK_PLAYER),true);
-
-
         InputComponent input = new InputComponent();
 
         HealthComponent health = hp <= 0 ? new HealthComponent(8) : new HealthComponent(hp);
 
-        PlayerEntity player = new PlayerEntity(body, sprite, input, health);
+        PlayerEntity player = new PlayerEntity(body, sprite, input, health, animation);
         if (level == 0){
             player.addComponent(new TutorialComponent());
         }
@@ -225,7 +236,7 @@ public class EntityFactory {
             width = Gdx.graphics.getWidth()/Constants.PPM;
 
             body = createBody(world, x, y, BodyDef.BodyType.StaticBody, createBoxFixture(width, height, CATEGORY_OBSTACLE,MASK_OBSTACLE),true);
-        } 
+        }
 
         else if (name.equals("Obsticle")){
             x = (int)givenX;
@@ -346,4 +357,3 @@ public class EntityFactory {
         return fixtureDef;
     }
 }
-

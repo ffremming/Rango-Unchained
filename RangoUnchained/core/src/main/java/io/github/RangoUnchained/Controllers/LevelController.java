@@ -64,7 +64,6 @@ public class LevelController {
     }
 
     public void handleRemovalRequests(Entity entity) {
-        // 
        removalQueue.addRemovalRequest(entity);
     }
 
@@ -103,7 +102,7 @@ public class LevelController {
         excecuteSpawnQueue();
         checkpoint(delta);
 
-        systemManager.update(level.getEntities());
+        systemManager.update(level.getEntities(), delta);
         level.getTimer().update(delta);
     }
 

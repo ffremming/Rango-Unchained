@@ -103,7 +103,7 @@ public class ContactSystem implements ContactListener, System {
     @Override public void postSolve(Contact contact, ContactImpulse impulse) { }
 
     @Override
-    public void updateEntity(Entity entity) {
+    public void updateEntity(Entity entity, float delta) {
         ((ContactComponent)(entity.getComponent(ContactComponent.class))).decrementContactLock();
     }
 

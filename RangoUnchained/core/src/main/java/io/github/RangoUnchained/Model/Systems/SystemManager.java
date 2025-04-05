@@ -38,9 +38,9 @@ public class SystemManager {
      * @param entities list of all entities
      *
      */
-    public void update(ArrayList<Entity> entities) {
+    public void update(ArrayList<Entity> entities, float delta) {
         for (System system : systems) {
-            system.update(entities);
+            system.update(entities, delta);
         }
     }
 
@@ -56,12 +56,15 @@ public class SystemManager {
         HealthSystem healthSystem = new HealthSystem();
         TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
+        AnimationSystem animationSystem = new AnimationSystem();
 
         world = physicsSystem.getWorld();
 
         systems.add(movementSystem);
         systems.add(physicsSystem);
         systems.add(inputSystem);
+        systems.add(animationSystem);
+
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);
         systems.add(contactSystem);

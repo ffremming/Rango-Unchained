@@ -35,7 +35,8 @@ public class GameFileHandler {
             Json json = new Json();
 
             // Open the JSON file from the local file system.
-            FileHandle progressFile = Gdx.files.internal("levels/progress.json");
+            FileHandle progressFile = Gdx.files.local("levels/progress.json");
+
 
             // Check if the file exists; if not, return default progress.
             if (!progressFile.exists()) {
@@ -188,6 +189,7 @@ public class GameFileHandler {
         if (levelData.metaData == null){
             return -1;
         }
+        System.out.println("progress number -...---------: " + levelData.metaData.progress);
         if (levelData.metaData.progress == 1){
             return levelData.metaData.levelnr;
         }

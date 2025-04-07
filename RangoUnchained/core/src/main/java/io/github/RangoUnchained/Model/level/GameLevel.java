@@ -37,7 +37,8 @@ public class GameLevel {
         levelNumber = number;
         GameFileHandler.getInstance().setLevelNumber(number);
         /*Gdx.files.local("levels/checkpoint.json").delete();
-        Gdx.files.local("levels/checkpointBackup.json").delete();*/
+        Gdx.files.local("levels/checkpointBackup.json").delete();
+        Gdx.files.local("levels/progress.json").delete();*/
 
 
         LevelData levelData = GameFileHandler.getInstance().readLevelDataFromLocal("levels/checkpoint.json");

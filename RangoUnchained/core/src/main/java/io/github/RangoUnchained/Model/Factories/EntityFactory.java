@@ -154,7 +154,7 @@ public class EntityFactory {
      // general method for creating all balls - called from factory method
      public static BallEntity createBallEntity(float x, float y, String name, World world, Vector2 velocity) {
 
-        //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "armedillo" : "tumbleweed";
+        //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "Armedillo" : "Tumbleweed";
         int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("Tumbleweed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
         int bounceType = name.endsWith("Big") ? BounceComponent.HIGH : name.endsWith("Medium") ? BounceComponent.MEDIUM : BounceComponent.LOW;
@@ -197,7 +197,7 @@ public class EntityFactory {
     }
 
 
-    // 🔹 Obstacle Entity
+    // Obstacle Entity
     public static ObstacleEntity createObstacleEntity(String name, World world, float givenX, float givenY) {
 
         BodyComponent body = null;
@@ -213,8 +213,7 @@ public class EntityFactory {
         if (name.endsWith("Left") || name.endsWith("Right")){
             if (name.endsWith("Right")){
                 x = Gdx.graphics.getWidth();
-            } else {x = 0;}
-            y = 0;
+            }
             height = Gdx.graphics.getHeight();
             width = 32/Constants.PPM;
             height = 1000/Constants.PPM*2;

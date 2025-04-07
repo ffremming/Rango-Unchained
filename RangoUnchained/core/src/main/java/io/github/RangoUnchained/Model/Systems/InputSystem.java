@@ -75,7 +75,8 @@ public class InputSystem implements System {
         SpriteComponent spriteComp = (SpriteComponent)entity.getComponent(SpriteComponent.class);
         InputComponent p1_input = (InputComponent) entity.getComponent(InputComponent.class);
         if (!p1_input.isLocked()){
-
+            p1_input.setShoot(true);
+            p1_input.setTimer(60);
             filter.require(BodyComponent.class);
             filter.require(SpriteComponent.class);
 

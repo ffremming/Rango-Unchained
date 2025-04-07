@@ -38,6 +38,7 @@ public class SpriteComponent implements Component {
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
     }
 
+    // SpriteComponents for entities with animation
     public SpriteComponent(TextureRegion region, float width, float height, String path) {
 
         sprite = new Sprite(region);

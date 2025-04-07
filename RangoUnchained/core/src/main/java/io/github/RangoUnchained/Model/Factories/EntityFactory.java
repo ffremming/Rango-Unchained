@@ -108,16 +108,16 @@ public class EntityFactory {
     // Player Entity
     public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp, int level) {
         Gdx.app.log("entity factory", name);
-        String[] paths = name.split("-");
+        String playerType = name.split("-")[1];
 
         AnimationComponent animation = new AnimationComponent();
-        AnimationLoader.createPlayerAnimation(animation, paths[1]);
+        AnimationLoader.createPlayerAnimation(animation, playerType);
 
         // Fetch the first frame and set the sprite to said frame.
         // TODO: Should make it possible to work without animations as well.
         TextureRegion firstFrame = animation.getAnimation(animation.getPlayerState()).getKeyFrame(0);
 
-        SpriteComponent sprite = new SpriteComponent(firstFrame, 86, 128, paths[1]);
+        SpriteComponent sprite = new SpriteComponent(firstFrame, 86, 128, playerType);
 
         float width = 86 / Constants.PPM;
         float height = 128 / Constants.PPM;

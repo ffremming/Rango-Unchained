@@ -21,10 +21,12 @@ public class SpriteComponent implements Component {
         sprite = new Sprite(texture);
         sprite.setColor(Color.WHITE);
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight());
+        this.path = path;
     }
 
     public SpriteComponent(String path, float width, float height) {
         this.path = path;
+        System.out.println(path);
 
         texture = new Texture(Gdx.files.internal(path));
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -36,12 +38,13 @@ public class SpriteComponent implements Component {
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
     }
 
-    public SpriteComponent(TextureRegion region, float width, float height) {
+    public SpriteComponent(TextureRegion region, float width, float height, String path) {
 
         sprite = new Sprite(region);
         sprite.setColor(Color.WHITE);
         sprite.setSize(width, height);
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        this.path = path;
     }
 
     public Sprite getSprite(float degree) {

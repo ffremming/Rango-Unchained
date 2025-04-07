@@ -41,6 +41,8 @@ public class GamePlayView extends BaseScreen {
 
         LevelController.resetInstance();
         controller = LevelController.getInstance();
+        System.out.println("---------------------------------------------");
+        System.out.println(levelNumber);
         controller.initializeSystems(levelNumber);
         pauseMenu = new PauseMenu(game, levelNumber);
         Gdx.app.log("GamePlayView: " + levelNumber, "load");
@@ -318,7 +320,7 @@ public class GamePlayView extends BaseScreen {
             table.setName("UnnamedButton");
         }
         table.setFillParent(true);
-        table.add(button);
+        table.add(button).size(100,50);
 
         stage.addActor(table);
         return table;

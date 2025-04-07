@@ -36,6 +36,9 @@ public class GameLevel {
     public void loadLevel(int number) {
         levelNumber = number;
         GameFileHandler.getInstance().setLevelNumber(number);
+        Gdx.files.local("levels/checkpoint.json").delete();
+        Gdx.files.local("levels/checkpointBackup.json").delete();
+
 
         LevelData levelData = GameFileHandler.getInstance().readLevelDataFromLocal("levels/checkpoint.json");
 
@@ -57,7 +60,7 @@ public class GameLevel {
         }
 
         System.out.println("LEVELPROGRESS: " + levelData.metaData.progress + " | LEVELNUMBER METADATA " + levelData.metaData.levelnr + " | chosen levelnumber : " + number);
-
+        System.out.println(levelData.metaData.progress);
         if (levelData.metaData.progress == 0 || levelData.metaData.levelnr != number) {
             LevelData fallbackData = GameFileHandler.getInstance().readLevelDataFromAssets("levels/level" + number + ".json");
             if (fallbackData != null) {

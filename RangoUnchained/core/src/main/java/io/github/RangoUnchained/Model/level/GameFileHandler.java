@@ -116,7 +116,8 @@ public class GameFileHandler {
             Json json = new Json();
             json.setOutputType(JsonWriter.OutputType.json);
             FileHandle file = Gdx.files.local(path);
-
+            Gdx.app.log("DEBUG", "Writing to: " + file.path());
+            System.out.println(file.exists());
             if (!file.exists()) return null;
 
             GameLevel.LevelData levelData = json.fromJson(GameLevel.LevelData.class, file.readString());
@@ -156,6 +157,7 @@ public class GameFileHandler {
         GameLevel.LevelData levelData;
         try{
             levelData = GameFileHandler.getInstance().readLevelDataFromLocal("levels/checkpoint.json");
+
 
         } catch (Exception e){
             levelData = new LevelData();

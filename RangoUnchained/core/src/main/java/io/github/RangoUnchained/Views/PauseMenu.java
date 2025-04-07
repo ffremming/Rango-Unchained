@@ -37,9 +37,9 @@ public class PauseMenu extends Stage {
             table.add(ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater)).center().padBottom(20);
             table.row();
         }
-        
+
         table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
-        
+
         table.row();
 
         addActor(table);

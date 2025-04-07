@@ -138,6 +138,8 @@ public class CheckpointHandler {
 
         // Set the name property
         entityData.name = "Player" + "-" + sprite.getPath();
+        System.out.println("--------------------");
+        System.out.println(sprite.getPath());
 
         // Set the position property
         EntityData.Position entityPosition = new EntityData.Position();

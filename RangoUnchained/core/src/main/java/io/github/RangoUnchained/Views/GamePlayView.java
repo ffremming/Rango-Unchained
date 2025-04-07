@@ -38,9 +38,11 @@ public class GamePlayView extends BaseScreen {
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
-        
+
         LevelController.resetInstance();
         controller = LevelController.getInstance();
+        System.out.println("---------------------------------------------");
+        System.out.println(levelNumber);
         controller.initializeSystems(levelNumber);
         pauseMenu = new PauseMenu(game, levelNumber);
         Gdx.app.log("GamePlayView: " + levelNumber, "load");
@@ -60,12 +62,12 @@ public class GamePlayView extends BaseScreen {
     public void render(float delta) {
         try{
 
-        
+
         // Clear the screen and update camera
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         camera.update();
         viewport.apply();
-        
+
         drawGame();
 
         if (!pauseMenu.isPaused()) {
@@ -73,7 +75,7 @@ public class GamePlayView extends BaseScreen {
             controller.step(1 / 60f, 6, 2);
             controller.update(delta);
 
-            
+
             getButtonByName("Pause").setVisible(true);
 
             // Update and draw the UI stage on top of the game
@@ -86,22 +88,22 @@ public class GamePlayView extends BaseScreen {
                 } else {
                     game.setView(new GameOverView(controller.getLevel().levelNumber,false));
                 }
-                
-            } 
-            
+
+            }
+
 
         } else {
             // Update and draw the pause menu on top of everything else
-            
+
             pauseMenu.act(delta);
             pauseMenu.draw();
             getButtonByName("Pause").setVisible(false);
             }
-        
+
         } catch (NullPointerException e) {
             //rendering must complete before the game is over
         }
-        
+
     }
 
 
@@ -121,7 +123,7 @@ public class GamePlayView extends BaseScreen {
         }
 
         //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
-        
+
         updateUI();
 
         batch.end();
@@ -134,7 +136,7 @@ public class GamePlayView extends BaseScreen {
         TextButton pauseButton = ButtonFactory.createButton("Pause", 150, 60, getSkin(), game,
             () -> pauseMenu.togglePause());
 
-        createTable(shootButton).bottom().right().pad(20);
+        createTable(shootButton).bottom().right().pad(15);
         createTable(pauseButton).top().padTop(50);
         createJoystick();
        createScoreLabel();
@@ -145,7 +147,7 @@ public class GamePlayView extends BaseScreen {
     private void updateUI(){
         try {
 
-        
+
 
             Label scoreLabel = stage.getRoot().findActor("scoreLabel");
             if (scoreLabel != null) {
@@ -160,7 +162,7 @@ public class GamePlayView extends BaseScreen {
                 timeLabel.setText(String.format("%.1f s", time));
             }
 
-            
+
 
             Label tutorialLabel = stage.getRoot().findActor("tutorialLabel");
             if (tutorialLabel != null) {
@@ -168,18 +170,18 @@ public class GamePlayView extends BaseScreen {
                 if (tutorialSystem!= null){
                     tutorialLabel.setText(tutorialSystem.getTutorialMessage());
                 }
-                
+
             }
             updateHeartsUI();
             updatePowerupUI();
-        
+
         } catch (NullPointerException e) {
             // Handle the case where the label is not found
             System.out.println("Label not found: " + e.getMessage());
         }
     }
 
-    
+
 
     private void updatePowerupUI() {
         ArrayList<Integer> powerupList = LevelController.getInstance().getPlayerActivePowerup();
@@ -196,7 +198,7 @@ public class GamePlayView extends BaseScreen {
         powerups.setFillParent(true);
 
         // Load texture (with crisp pixel look)
-        Texture heartTexture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
+        Texture heartTexture = new Texture(Gdx.files.internal("UI/Pixel_heart.png"));
         heartTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         float size = 32f;
@@ -204,23 +206,23 @@ public class GamePlayView extends BaseScreen {
         for (int powerup : powerupList) {
             Image powerupImage = null;
             if (powerup == PowerUpComponent.SPEED) {
-                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/speed.png")));
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Speed.png")));
                 powerups.add(powerupImage).size(size, size).padRight(5);
 
                 } else if (powerup == PowerUpComponent.SHIELD) {
-                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/shield.png")));
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Shield.png")));
                 powerups.add(powerupImage).size(size, size).padRight(5);
                 } else if (powerup == PowerUpComponent.BALLSIZE) {
-                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/speed.png")));
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Speed.png")));
                 powerups.add(powerupImage).size(size, size).padRight(5);
                 } else if (powerup == PowerUpComponent.BALLBOUNCE) {
-                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/speed.png")));
+                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Speed.png")));
                 powerups.add(powerupImage).size(size, size).padRight(5);
                 }
         }
 
         stage.addActor(powerups);
-        
+
     }
 
     private void updateHeartsUI() {
@@ -237,7 +239,7 @@ public class GamePlayView extends BaseScreen {
         heartTable.setFillParent(true);
 
         // Load texture (with crisp pixel look)
-        Texture heartTexture = new Texture(Gdx.files.internal("UI/pixel_heart.png"));
+        Texture heartTexture = new Texture(Gdx.files.internal("UI/Pixel_heart.png"));
         heartTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         float heartSize = 24f;
@@ -318,7 +320,7 @@ public class GamePlayView extends BaseScreen {
             table.setName("UnnamedButton");
         }
         table.setFillParent(true);
-        table.add(button);
+        table.add(button).size(100,50);
 
         stage.addActor(table);
         return table;
@@ -349,7 +351,7 @@ public class GamePlayView extends BaseScreen {
         touchpadStyle.knob = new Image(skin.getDrawable("default-round")).getDrawable();
 
         touchpad = new Touchpad(10, touchpadStyle);
-        touchpad.setBounds(50, 50, 100, 100);
+        touchpad.setBounds(15, 15, 100, 100);
         stage.addActor(touchpad);
 
         Gdx.input.setInputProcessor(stage);

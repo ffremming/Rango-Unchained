@@ -33,21 +33,22 @@ public class GameFileHandler {
         try {
             // Create a new Json instance.
             Json json = new Json();
-            
+
             // Open the JSON file from the local file system.
-            FileHandle progressFile = Gdx.files.internal("levels/progress.json");
-            
+            FileHandle progressFile = Gdx.files.local("levels/progress.json");
+
+
             // Check if the file exists; if not, return default progress.
             if (!progressFile.exists()) {
                 return 0; // Default progress if file not found
             }
-            
+
             // Read the file's contents into a String.
             String jsonString = progressFile.readString();
-            
+
             // Parse the JSON into a ProgressData object.
             ProgressData progressData = json.fromJson(ProgressData.class, jsonString);
-            
+
             // Return the progress value.
             return progressData.progress;
         } catch (Exception e) {
@@ -56,7 +57,7 @@ public class GameFileHandler {
         }
     }
 
-    
+
     /**
      * Updates the progress value and saves it to a JSON file.
      * <p>
@@ -85,64 +86,90 @@ public class GameFileHandler {
         }
     }
 
-    
 
-    public GameLevel.LevelData makeLevelData(String path) {
+
+    /**
+     * Reads level data from a file in the internal (read-only) assets directory.
+     * Used for loading predefined levels like level1.json.
+     */
+    public GameLevel.LevelData readLevelDataFromAssets(String path) {
         try {
             Json json = new Json();
             json.setOutputType(JsonWriter.OutputType.json);
-            FileHandle mainFile = Gdx.files.local(path);
+            FileHandle file = Gdx.files.internal(path);
 
-            GameLevel.LevelData levelData = json.fromJson(GameLevel.LevelData.class, mainFile.readString());
+            GameLevel.LevelData levelData = json.fromJson(GameLevel.LevelData.class, file.readString());
 
-            if (levelData == null) {
-                return new GameLevel.LevelData();
-            }
-
+            if (levelData == null) return new GameLevel.LevelData();
             return levelData;
 
         } catch (Exception e) {
+            Gdx.app.error("FILE_HANDLER", "Failed to read internal level file: " + path, e);
             return null;
         }
-
     }
 
-    public synchronized void writeLevelDataToLocalFile(GameLevel.LevelData levelData, String path) {
-        GameLevel.LevelData dataCopy = levelData;
-        dataCopy.metaData.levelnr = levelNumber;
-        
-        Json json = new Json();
-        json.setOutputType(JsonWriter.OutputType.json);
-        FileHandle file = Gdx.files.local(path);
-        FileHandle tempFile = Gdx.files.local(path);
-        
-        String jsonString = json.prettyPrint(dataCopy);
-        tempFile.writeString(jsonString, false);
-        
-        // Rename the temporary file to the original file after writing
-        if (tempFile.exists()) {
-            //tempFile.moveTo(file);
+    /**
+     * Reads checkpoint or other modifiable level data from local storage.
+     */
+    public GameLevel.LevelData readLevelDataFromLocal(String path) {
+        try {
+            Json json = new Json();
+            json.setOutputType(JsonWriter.OutputType.json);
+            FileHandle file = Gdx.files.local(path);
+            Gdx.app.log("DEBUG", "Writing to: " + file.path());
+            System.out.println(file.exists());
+            if (!file.exists()) return null;
+
+            GameLevel.LevelData levelData = json.fromJson(GameLevel.LevelData.class, file.readString());
+
+            if (levelData == null) return new GameLevel.LevelData();
+            return levelData;
+
+        } catch (Exception e) {
+            Gdx.app.error("FILE_HANDLER", "Failed to read local file: " + path, e);
+            return null;
         }
-        Gdx.app.log("Checkpoint", "Written data: " + file.readString());
-
     }
-    
+
+    /**
+     * Writes level data (typically checkpoint or save file) to local storage.
+     */
+    public void writeLevelDataToLocalFile(GameLevel.LevelData levelData, String path) {
+        try {
+            Json json = new Json();
+            json.setOutputType(JsonWriter.OutputType.json);
+            FileHandle file = Gdx.files.local(path);
+
+            if (levelData.metaData == null) {
+                levelData.metaData = new MetaData();
+            }
+
+            levelData.metaData.levelnr = levelNumber;
+
+            file.writeString(json.prettyPrint(levelData), false);
+        } catch (Exception e) {
+            Gdx.app.error("FILE_HANDLER", "Failed to write local file: " + path, e);
+        }
+    }
+
 
     public synchronized void resetCheckpointFile() {
         GameLevel.LevelData levelData;
         try{
-            levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
-           
+            levelData = GameFileHandler.getInstance().readLevelDataFromLocal("levels/checkpoint.json");
+
+
         } catch (Exception e){
             levelData = new LevelData();
-           
+
         }
         if (levelData == null){levelData = new LevelData();}
         levelData.metaData = new MetaData();
         levelData.metaData.progress = 0;
         levelData.metaData.levelnr = levelNumber;
         // Reset progress to 0 for user ended game.
-        
+
 
         // Write reset data to checkpoint
         GameFileHandler.getInstance().writeLevelDataToLocalFile(levelData, "levels/checkpoint.json");
@@ -153,15 +180,16 @@ public class GameFileHandler {
 
         GameLevel.LevelData levelData;
         try{
-            levelData = GameFileHandler.getInstance().makeLevelData("levels/checkpoint.json");
+            levelData = GameFileHandler.getInstance().readLevelDataFromLocal("levels/checkpoint.json");
         } catch (Exception e){
             return -1;
         }
         if (levelData == null){return -1;}
-        
+
         if (levelData.metaData == null){
             return -1;
         }
+        System.out.println("progress number -...---------: " + levelData.metaData.progress);
         if (levelData.metaData.progress == 1){
             return levelData.metaData.levelnr;
         }

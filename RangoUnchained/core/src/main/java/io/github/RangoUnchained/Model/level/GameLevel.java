@@ -86,9 +86,16 @@ public class GameLevel {
         CheckpointHandler.checkPoint(delta, entitiesData, entities, levelNumber, scoreManager.getScore(), timer.getTime());
     }
 
+    public LevelData.MetaData getMetaData() {
+        return metaData;
+    }
+
 
     public Timer getTimer() {
         return this.timer;
+    }
+    public int getScore() {
+        return this.scoreManager.getScore();
     }
 
 

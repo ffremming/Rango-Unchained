@@ -28,6 +28,7 @@ import io.github.RangoUnchained.Model.Systems.TutorialSystem;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.HintUtil;
 
 public class GamePlayView extends BaseScreen {
 
@@ -83,6 +84,7 @@ public class GamePlayView extends BaseScreen {
             stage.draw();
 
             if (LevelController.getInstance().isGameOver()) {
+                HintUtil.setHint(controller.getLevel().getTimer().getTime(), controller.getLevel().getScore());
                 if (LevelController.getInstance().isCompleted()){
                     game.setView(new GameOverView(controller.getLevel().levelNumber,true));
                 } else {

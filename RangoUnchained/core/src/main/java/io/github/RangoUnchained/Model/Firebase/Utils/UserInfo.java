@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.Model.Firebase;
+package io.github.RangoUnchained.Model.Firebase.Utils;
 
 public class UserInfo {
     public final String uid;
@@ -17,4 +17,3 @@ public class UserInfo {
         return "Unknown user";
     }
 }
-

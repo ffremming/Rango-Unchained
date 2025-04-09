@@ -35,6 +35,7 @@ public class GamePlayView extends BaseScreen {
     private LevelController controller;
     private Box2DDebugRenderer box2DDebugRenderer;
     private PauseMenu pauseMenu;
+    private boolean isMultiplayer;
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
@@ -355,6 +356,10 @@ public class GamePlayView extends BaseScreen {
         stage.addActor(touchpad);
 
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public void setMultiplayer(boolean isMultiplayer) {
+        this.isMultiplayer = isMultiplayer;
     }
 
     @Override

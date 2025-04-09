@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.Model.Firebase;
+package io.github.RangoUnchained.Model.Firebase.Utils;
 
 public class ScoreInfo {
     public final String displayName;

@@ -1,4 +1,4 @@
-package io.github.RangoUnchained.android;
+package io.github.RangoUnchained.android.Firebase;
 
 import com.badlogic.gdx.Gdx;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
-import io.github.RangoUnchained.Model.Firebase.ScoreInfo;
-import io.github.RangoUnchained.Model.Firebase.UserInfo;
+import io.github.RangoUnchained.Model.Firebase.Utils.ScoreInfo;
+import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 
 public class FirebaseManagerAndroid implements FirebaseManager {
 

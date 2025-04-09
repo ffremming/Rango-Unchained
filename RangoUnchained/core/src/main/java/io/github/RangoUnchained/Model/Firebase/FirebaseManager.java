@@ -2,6 +2,9 @@ package io.github.RangoUnchained.Model.Firebase;
 
 import java.util.List;
 
+import io.github.RangoUnchained.Model.Firebase.Utils.ScoreInfo;
+import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
+
 public interface FirebaseManager {
     interface Callback<T> {
         void onSuccess(T result);

@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
-import io.github.RangoUnchained.Model.Firebase.UserInfo;
+import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 

@@ -57,12 +57,14 @@ public class SystemManager {
         TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
         AnimationSystem animationSystem = new AnimationSystem();
+        AudioSystem audioSystem = new AudioSystem();
 
         world = physicsSystem.getWorld();
 
         systems.add(movementSystem);
         systems.add(physicsSystem);
         systems.add(inputSystem);
+        systems.add(audioSystem);
         systems.add(animationSystem);
 
         systems.add(lifeTimeSystem);

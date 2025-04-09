@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
@@ -54,6 +55,12 @@ public class InputSystem implements System {
         } else {
             p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
             p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
+            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.A)){
+                AudioComponent audioComponent = (AudioComponent) entity.getComponent(AudioComponent.class);
+                if (!audioComponent.audioQueue.contains(AudioComponent.ActionType.MOVE)){
+                    audioComponent.audioQueue.add(AudioComponent.ActionType.MOVE);
+                }
+            }
         }
 
         if (Gdx.input.isTouched()){
@@ -74,8 +81,9 @@ public class InputSystem implements System {
     private void handleShoot(Entity entity){
         SpriteComponent spriteComp = (SpriteComponent)entity.getComponent(SpriteComponent.class);
         InputComponent p1_input = (InputComponent) entity.getComponent(InputComponent.class);
-        if (!p1_input.isLocked()){
+        AudioComponent audioComponent = (AudioComponent) entity.getComponent(AudioComponent.class);
 
+        if (!p1_input.isLocked()){
             filter.require(BodyComponent.class);
             filter.require(SpriteComponent.class);
 
@@ -83,6 +91,7 @@ public class InputSystem implements System {
                 Sprite sprite = spriteComp.getSprite();
                 Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
                 LevelController.getInstance().handleSpawnRequests(body.getPosition().x*Constants.PPM , body.getPosition().y*Constants.PPM +sprite.getHeight()/2+16 ,0,0,"Projectile",new Vector2(0,0));
+                audioComponent.audioQueue.add(AudioComponent.ActionType.SHOOT);
             }
             filter.ignore(BodyComponent.class);
         }

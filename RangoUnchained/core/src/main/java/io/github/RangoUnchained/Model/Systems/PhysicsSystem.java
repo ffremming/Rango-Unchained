@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
@@ -60,17 +61,20 @@ public class PhysicsSystem implements System, ContactStrategy {
 
 
     private void handleBallFloorCollision(CollisionEvent collisionEvent) {
-        Gdx.app.log("contact","ballfloor");
+//        Gdx.app.log("contact","ballfloor");
         BallEntity ball;
 
         if (collisionEvent.entityA instanceof BallEntity) {
-            ball = (BallEntity) collisionEvent.entityA;;
+            ball = (BallEntity) collisionEvent.entityA;
         } else {
             ball = (BallEntity) collisionEvent.entityB;
         }
 
         BodyComponent ballBodyComponent = (BodyComponent) ball.getComponent(BodyComponent.class);
         Body ballBody = ballBodyComponent.getBody();
+
+        AudioComponent audio = (AudioComponent) ball.getComponent(AudioComponent.class);
+        audio.audioQueue.add(AudioComponent.ActionType.BOUNCE);
 
         Vector2 currentVelocity = ballBody.getLinearVelocity();
 

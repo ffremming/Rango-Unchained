@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Model.Factories;
 import io.github.RangoUnchained.Model.Components.AnimationComponent;
+import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;

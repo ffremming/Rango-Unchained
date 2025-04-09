@@ -1,17 +1,11 @@
 package io.github.RangoUnchained.Model.Components;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.Random;
+
 
 public class AudioComponent implements Component{
 

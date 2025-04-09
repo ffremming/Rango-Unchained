@@ -13,7 +13,6 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
-import io.github.RangoUnchained.Model.Components.TransformationComponent;
 
 public class PlayerEntity implements Entity{
 

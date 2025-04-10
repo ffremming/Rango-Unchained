@@ -9,6 +9,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.LobbyInfo;
@@ -64,17 +66,20 @@ public class RealtimeDBManager implements MultiplayerManager {
             .addOnFailureListener(callback::onError);
     }
 
-    @Override
+    // Store reference to dispose of the listener afterwards
+    private ValueEventListener publicLobbiesListener;
+    private DatabaseReference lobbiesRef;
     public void fetchPublicLobbies(Callback<List<LobbyInfo>> callback) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("lobbies");
+        lobbiesRef = FirebaseDatabase.getInstance().getReference("lobbies");
 
-        ref.addValueEventListener(new ValueEventListener() {
+        publicLobbiesListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 List<LobbyInfo> publicLobbies = new ArrayList<>();
                 for (DataSnapshot lobbySnap : snapshot.getChildren()) {
                     LobbyInfo lobby = lobbySnap.getValue(LobbyInfo.class);
-                    if (lobby != null && lobby.isPublic && lobby.players != null && lobby.players.size() < lobby.maxPlayers && "waiting".equals(lobby.status)) {
+                    if (lobby != null && lobby.isPublic && lobby.players != null &&
+                        lobby.players.size() < lobby.maxPlayers && "waiting".equals(lobby.status)) {
                         publicLobbies.add(lobby);
                     }
                 }
@@ -85,14 +90,28 @@ public class RealtimeDBManager implements MultiplayerManager {
             public void onCancelled(DatabaseError error) {
                 callback.onError(error.toException());
             }
-        });
+        };
 
+        lobbiesRef.addValueEventListener(publicLobbiesListener);
     }
 
     @Override
+    public void removePublicLobbiesListener() {
+        // Disposes of the listener when it's no longer needed
+        if (lobbiesRef != null && publicLobbiesListener != null) {
+            lobbiesRef.removeEventListener(publicLobbiesListener);
+        }
+    }
+
+
+    // Store reference to dispose of the listener afterwards
+    private ValueEventListener lobbyListener;
+    private DatabaseReference lobbyRef;
+    @Override
     public void listenToLobby(String lobbyId, Callback<LobbyInfo> callback) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("lobbies").child(lobbyId);
-        ref.addValueEventListener(new ValueEventListener() {
+        lobbyRef = FirebaseDatabase.getInstance().getReference("lobbies").child(lobbyId);
+
+        lobbyListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 LobbyInfo lobby = snapshot.getValue(LobbyInfo.class);
@@ -105,7 +124,17 @@ public class RealtimeDBManager implements MultiplayerManager {
             public void onCancelled(DatabaseError error) {
                 callback.onError(error.toException());
             }
-        });
+        };
+
+        lobbyRef.addValueEventListener(lobbyListener);
+    }
+
+    @Override
+    public void removeLobbyListener() {
+        // Disposes of the listener when it's no longer needed
+        if (lobbyRef != null && lobbyListener != null) {
+            lobbyRef.removeEventListener(lobbyListener);
+        }
     }
 
     @Override
@@ -126,12 +155,24 @@ public class RealtimeDBManager implements MultiplayerManager {
         }).addOnFailureListener(callback::onError);
     }
 
+    @Override
+    public void setLobbyLevel(String lobbyId, int level, Callback<Void> callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+            .getReference("lobbies").child(lobbyId).child("level");
+
+        ref.setValue(level)
+            .addOnSuccessListener(unused -> callback.onSuccess(null))
+            .addOnFailureListener(e -> callback.onError(e));
+    }
 
     @Override
-    public void startGame(String lobbyId, Callback<Void> callback) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("lobbies").child(lobbyId).child("status");
+    public void startGame(String lobbyId, int level, Callback<Void> callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("lobbies").child(lobbyId);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("status", "playing");
+        updates.put("level", level);
 
-        ref.setValue("playing")
+        ref.updateChildren(updates)
             .addOnSuccessListener(unused -> callback.onSuccess(null))
             .addOnFailureListener(callback::onError);
     }

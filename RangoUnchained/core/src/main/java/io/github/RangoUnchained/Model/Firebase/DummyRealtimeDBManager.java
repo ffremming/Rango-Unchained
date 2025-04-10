@@ -14,12 +14,20 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
 
     private final Map<String, LobbyInfo> lobbies = new HashMap<>();
 
+    // Listeners
+    private Callback<List<LobbyInfo>> publicLobbiesCallback;
+    private String listeningLobbyId = null;
+    private Callback<LobbyInfo> lobbyCallback;
+
     @Override
     public void createLobby(UserInfo host, Boolean isPublic, int maxPlayers, Callback<LobbyInfo> callback) {
         String lobbyId = generateLobbyCode();
         LobbyInfo lobbyInfo = new LobbyInfo(lobbyId, host, isPublic, maxPlayers);
         lobbies.put(lobbyId, lobbyInfo);
         callback.onSuccess(lobbyInfo);
+
+        // Notify any listeners
+        notifyPublicLobbiesListeners();
     }
 
     @Override
@@ -35,7 +43,11 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
         }
 
         lobby.players.put(player.uid, new PlayerInLobby(player));
-        callback.onSuccess(lobby); // Return updated lobby
+        callback.onSuccess(lobby);
+
+        // Notify listeners
+        notifyLobbyListener(lobbyId);
+        notifyPublicLobbiesListeners();
     }
 
     @Override
@@ -44,6 +56,9 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
         if (lobby != null) {
             lobby.players.remove(player.uid);
             callback.onSuccess(null);
+
+            notifyLobbyListener(lobbyId);
+            notifyPublicLobbiesListeners();
         } else {
             callback.onError(new Exception("Lobby not found"));
         }
@@ -51,23 +66,53 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void fetchPublicLobbies(Callback<List<LobbyInfo>> callback) {
-        List<LobbyInfo> publicLobbies = new ArrayList<>();
-        for (LobbyInfo lobby : lobbies.values()) {
-            if (lobby.isPublic && !lobby.isLobbyFull()) {
-                publicLobbies.add(lobby);
+        // Save callback so we can notify it later if something endres
+        publicLobbiesCallback = callback;
+        notifyPublicLobbiesListeners();
+    }
+
+    private void notifyPublicLobbiesListeners() {
+        if (publicLobbiesCallback != null) {
+            List<LobbyInfo> publicLobbies = new ArrayList<>();
+            for (LobbyInfo lobby : lobbies.values()) {
+                if (lobby.isPublic && !lobby.isLobbyFull() && "waiting".equals(lobby.status)) {
+                    publicLobbies.add(lobby);
+                }
             }
+            publicLobbiesCallback.onSuccess(publicLobbies);
         }
-        callback.onSuccess(publicLobbies);
+    }
+
+    @Override
+    public void removePublicLobbiesListener() {
+        publicLobbiesCallback = null;
     }
 
     @Override
     public void listenToLobby(String lobbyId, Callback<LobbyInfo> callback) {
         LobbyInfo lobby = lobbies.get(lobbyId);
         if (lobby != null) {
+            this.listeningLobbyId = lobbyId;
+            this.lobbyCallback = callback;
             callback.onSuccess(lobby);
         } else {
             callback.onError(new Exception("Lobby not found"));
         }
+    }
+
+    private void notifyLobbyListener(String lobbyId) {
+        if (lobbyId.equals(this.listeningLobbyId) && lobbyCallback != null) {
+            LobbyInfo lobby = lobbies.get(lobbyId);
+            if (lobby != null) {
+                lobbyCallback.onSuccess(lobby);
+            }
+        }
+    }
+
+    @Override
+    public void removeLobbyListener() {
+        this.listeningLobbyId = null;
+        this.lobbyCallback = null;
     }
 
     @Override
@@ -86,10 +131,25 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
 
         player.isReady = player.isReady == null ? true : !player.isReady;
         callback.onSuccess(null);
+
+        notifyLobbyListener(lobbyId);
     }
 
     @Override
-    public void startGame(String lobbyId, Callback<Void> callback) {
+    public void setLobbyLevel(String lobbyId, int level, Callback<Void> callback) {
+        LobbyInfo lobby = lobbies.get(lobbyId);
+        if (lobby != null) {
+            lobby.level = level;
+            callback.onSuccess(null);
+            notifyLobbyListener(lobbyId);
+        } else {
+            callback.onError(new Exception("Lobby not found"));
+        }
+    }
+
+
+    @Override
+    public void startGame(String lobbyId, int level, Callback<Void> callback) {
         LobbyInfo lobby = lobbies.get(lobbyId);
         if (lobby == null) {
             callback.onError(new Exception("Lobby not found"));
@@ -97,7 +157,11 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
         }
 
         lobby.status = "playing";
+        lobby.level = level;
         callback.onSuccess(null);
+
+        notifyLobbyListener(lobbyId);
+        notifyPublicLobbiesListeners();
     }
 
     private String generateLobbyCode() {

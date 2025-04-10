@@ -16,8 +16,12 @@ public interface MultiplayerManager {
     void joinLobby(String lobbyId, UserInfo player, Callback<LobbyInfo> callback);
     void leaveLobby(String lobbyId, UserInfo player, Callback<Void> callback);
     void fetchPublicLobbies(Callback<List<LobbyInfo>> callback);
+    void removePublicLobbiesListener();
     void listenToLobby(String lobbyId, Callback<LobbyInfo> callback);
+    void removeLobbyListener();
     void toggleReadyStatus(String lobbyId, String uid, Callback<Void> callback);
-    void startGame(String lobbyId, Callback<Void> callback);
+    void setLobbyLevel(String lobbyId, int level, Callback<Void> callback);
+
+    void startGame(String lobbyId, int level, Callback<Void> callback);
 
 }

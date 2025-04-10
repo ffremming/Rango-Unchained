@@ -9,6 +9,7 @@ import io.github.RangoUnchained.Model.Firebase.Utils.LobbyInfo;
 import io.github.RangoUnchained.Model.Firebase.Utils.PlayerInLobby;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class GameLobbyWaitingView extends BaseScreen {
     private final MultiplayerManager dbManager;
@@ -20,7 +21,9 @@ public class GameLobbyWaitingView extends BaseScreen {
     private Label statusLabel;
     private TextButton startGameButton;
     private TextButton isReadyButton;
-    private int level = 1;
+    private TextField selectedLevel;
+    boolean isHost;
+    private int level;
 
     public GameLobbyWaitingView(LobbyInfo lobby) {
         super(GameController.getInstance());
@@ -28,6 +31,7 @@ public class GameLobbyWaitingView extends BaseScreen {
         this.currentUid = GameController.getInstance().getCurrentUser().uid;
         this.lobby = lobby;
         this.playerTable = new Table();
+        this.isHost = currentUid.equals(lobby.hostUid);
     }
 
     @Override
@@ -53,7 +57,7 @@ public class GameLobbyWaitingView extends BaseScreen {
         statusLabel = new Label("", getSkin());
         table.add(statusLabel).padBottom(10).row();
 
-        isReadyButton = ButtonFactory.createButton("Not ready", 300, 60, getSkin(), game,
+        isReadyButton = ButtonFactory.createButton("Ready up!", 300, 60, getSkin(), game,
             this::toggleReadyStatus);
 
         startGameButton = ButtonFactory.createButton("Start Game", 300, 60, getSkin(), game,
@@ -64,22 +68,31 @@ public class GameLobbyWaitingView extends BaseScreen {
         table.add(startGameButton).padBottom(10).row();
 
         TextButton leaveButton = ButtonFactory.createButton("Leave Lobby", 300, 60, getSkin(), game,
-            () -> dbManager.leaveLobby(lobby.lobbyId, GameController.getInstance().getCurrentUser(), new MultiplayerManager.Callback<Void>() {
-                @Override
-                public void onSuccess(Void result) {
-                    Gdx.app.postRunnable(() -> game.setView(new GameLobbyView()));
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    System.out.println("Error leaving lobby: " + e.getMessage());
-                }
-            }));
+            this::leaveLobby);
         table.add(leaveButton).padBottom(10).row();
+        Label levelLabel = new Label("Selected Level:", getSkin());
+        selectedLevel = new TextField("1", getSkin());
+        table.add(levelLabel).padBottom(5).row();
+        table.add(selectedLevel).width(100).padBottom(20).row();
 
         stage.addActor(table);
 
         lobbyListener();
+        levelListener();
+    }
+
+    private void leaveLobby() {
+        dbManager.leaveLobby(lobby.lobbyId, GameController.getInstance().getCurrentUser(), new MultiplayerManager.Callback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Gdx.app.postRunnable(() -> game.setView(new GameLobbyView()));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.out.println("Error leaving lobby: " + e.getMessage());
+            }
+        });
     }
 
     private void toggleReadyStatus() {
@@ -87,7 +100,7 @@ public class GameLobbyWaitingView extends BaseScreen {
             @Override
             public void onSuccess(Void result) {
                 Gdx.app.postRunnable(() -> {
-                    isReadyButton.setText(isReadyButton.getText().toString().equals("Ready") ? "Not Ready" : "Ready");
+                    isReadyButton.setText(isReadyButton.getText().toString().equals("Ready up!") ? "Not Ready" : "Ready up!");
                 });
             }
 
@@ -111,8 +124,6 @@ public class GameLobbyWaitingView extends BaseScreen {
                     int currentCount = lobby.players != null ? lobby.players.size() : 0;
                     playerCountLabel.setText("Players in Lobby: " + currentCount + " / " + lobby.maxPlayers);
 
-                    boolean isHost = currentUid.equals(lobby.hostUid);
-
                     for (PlayerInLobby player : lobby.players.values()) {
                         StringBuilder labelText = new StringBuilder();
                         if (lobby.isHost(player.uid)) labelText.append("* ");
@@ -135,8 +146,14 @@ public class GameLobbyWaitingView extends BaseScreen {
                         statusLabel.setText("");
                     }
 
+                    // Update displayed level for all clients
+                    level = lobby.level != null ? lobby.level : 1;
+                    selectedLevel.setText(String.valueOf(level));
+                    selectedLevel.setDisabled(!isHost);
+
                     // Show "Start Game" if current user is host and lobby is full
                     startGameButton.setVisible(isHost && lobby.isAllPlayersReady());
+                    startGameButton.setDisabled(level < 1 || level > Constants.LEVELS_COUNT);
                 });
             }
 
@@ -147,6 +164,40 @@ public class GameLobbyWaitingView extends BaseScreen {
         });
     }
 
+    private void levelListener() {
+        selectedLevel.setTextFieldListener((textField, c) -> {
+            if (isHost) {
+                try {
+                    int newLevel = Integer.parseInt(textField.getText().trim());
+                    if (newLevel < 1) {
+                        newLevel = 1;
+                        textField.setText("1");
+                    } else if (newLevel > Constants.LEVELS_COUNT) {
+                        newLevel = Constants.LEVELS_COUNT;
+                        textField.setText(String.valueOf(Constants.LEVELS_COUNT));
+                    }
+
+                    this.level = newLevel;
+
+                    dbManager.setLobbyLevel(lobby.lobbyId, level, new MultiplayerManager.Callback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            System.out.println("Level updated to " + level);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            System.err.println("Failed to update level: " + e.getMessage());
+                        }
+                    });
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid level number: " + textField.getText());
+                }
+            }
+        });
+    }
+
+
     private void startGameLocally(int level) {
         GamePlayView view = new GamePlayView(level);
         view.setMultiplayer(true);
@@ -154,7 +205,7 @@ public class GameLobbyWaitingView extends BaseScreen {
     }
 
     private void startGame() {
-        dbManager.startGame(lobby.lobbyId, new MultiplayerManager.Callback<Void>() {
+        dbManager.startGame(lobby.lobbyId, level, new MultiplayerManager.Callback<Void>() {
             @Override
             public void onSuccess(Void result) {
                 System.out.println("Game started successfully.");

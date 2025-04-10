@@ -10,6 +10,7 @@ public class LobbyInfo {
     public String status;
     public boolean isPublic;
     public int maxPlayers = 4;
+    public Integer level;
     public Map<String, PlayerInLobby> players = new HashMap<>();
 
     // Default constructor for Firebase deserialization
@@ -23,6 +24,7 @@ public class LobbyInfo {
         this.status = "waiting";
         this.isPublic = isPublic;
         this.maxPlayers = maxPlayers;
+        this.level = null;
         this.players.put(host.uid, new PlayerInLobby(host));
     }
 

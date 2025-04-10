@@ -42,8 +42,6 @@ public class GamePlayView extends BaseScreen {
 
         LevelController.resetInstance();
         controller = LevelController.getInstance();
-        System.out.println("---------------------------------------------");
-        System.out.println(levelNumber);
         controller.initializeSystems(levelNumber);
         pauseMenu = new PauseMenu(game, levelNumber);
         Gdx.app.log("GamePlayView: " + levelNumber, "load");
@@ -363,10 +361,10 @@ public class GamePlayView extends BaseScreen {
     }
 
     @Override
-    public void hide() {
+    public void dispose() {
         LevelController.resetInstance();
         controller = null;
         pauseMenu = null;
+        super.dispose();
     }
-
 }

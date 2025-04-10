@@ -58,6 +58,7 @@ public class GameLobbyView extends BaseScreen {
             try {
                 maxPlayers = Integer.parseInt(maxPlayersField.getText().trim());
             } catch (NumberFormatException e) {
+                // If the input is not a valid number, default to 4
                 maxPlayers = 4;
             }
             boolean isPublic = publicCheckBox.isChecked();
@@ -153,4 +154,11 @@ public class GameLobbyView extends BaseScreen {
             }
         });
     }
+
+    @Override
+    public void dispose() {
+        dbManager.removePublicLobbiesListener();
+        super.dispose();
+    }
+
 }

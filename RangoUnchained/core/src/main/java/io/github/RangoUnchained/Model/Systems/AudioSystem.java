@@ -10,17 +10,24 @@ import java.util.Random;
 
 import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Factories.AudioLoader;
 
 public class AudioSystem implements System {
 
-    private ComponentFilter filter = new ComponentFilter();
+    private final ComponentFilter filter = new ComponentFilter();
+    private AudioLoader audioLoader;
 
     public AudioSystem(){
-        filter
-            .require(AudioComponent.class);
+
+        filter.require(AudioComponent.class);
+        audioLoader = AudioLoader.getInstance();
     }
 
-
+    private void playSound (List<Sound> sounds){
+        if (sounds != null && !sounds.isEmpty()) {
+            sounds.get(new Random().nextInt(sounds.size())).play();
+        }
+    }
 
     @Override
     public void updateEntity(Entity entity, float delta) {
@@ -28,12 +35,9 @@ public class AudioSystem implements System {
         AudioComponent.ActionType soundKey;
 
         while ((soundKey = audio.audioQueue.poll()) != null) {
-            Gdx.app.log("Audio", ""+entity + "" + soundKey);
-            List<Sound> sounds = audio.audioMap.get(soundKey);
-
-            if (sounds != null && !sounds.isEmpty()) {
-                sounds.get(new Random().nextInt(sounds.size())).play();
-            }
+            Gdx.app.log("Audio", " "+entity + " " + soundKey);
+            List<Sound> sounds = audioLoader.getSounds(soundKey);
+            playSound(sounds);
         }
     }
 

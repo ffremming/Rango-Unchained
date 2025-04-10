@@ -25,7 +25,7 @@ public class PlayerEntity implements Entity{
         addComponent(new ContactComponent());
         addComponent(new HealthComponent(3));
         addComponent(new SpeedComponent(5f));
-        addComponent(new AudioComponent(AudioComponent.EntityType.PLAYER));
+        addComponent(new AudioComponent());
         addComponent(healthComponent);
         addComponent(animationComponent);
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));

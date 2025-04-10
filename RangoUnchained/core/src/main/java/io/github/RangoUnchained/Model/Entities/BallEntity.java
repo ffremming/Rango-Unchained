@@ -23,7 +23,7 @@ public class BallEntity implements Entity{
         ContactComponent phyComp = new ContactComponent();
         phyComp.setContactLock(60);
         addComponent(phyComp);
-        addComponent(new AudioComponent(AudioComponent.EntityType.BALL));
+        addComponent(new AudioComponent());
         addComponent(bounceComp);
         addComponent(ballComp);
     }

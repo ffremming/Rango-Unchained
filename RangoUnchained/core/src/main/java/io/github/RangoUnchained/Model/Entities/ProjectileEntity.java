@@ -20,7 +20,7 @@ public class ProjectileEntity implements Entity{
         addComponent(spriteComponent);
         addComponent(lifeTimeComponent);
         addComponent(transComp);
-        addComponent(new AudioComponent(AudioComponent.EntityType.PROJECTILE));
+        addComponent(new AudioComponent());
         addComponent(new ContactComponent());
     }
     @Override

@@ -15,13 +15,13 @@ public class MusicController {
 
     private static MusicController instance;
     private Music activeSong;
-    private HashMap<Screen, Music> viewToMusic;
+    private HashMap<Class<? extends Screen>, Music> viewToMusic;
 
     private MusicController( ) {
         viewToMusic = new HashMap<>();
+        initializeMusic();
     }
 
-    // Public accessor for the singleton instance, with lazy initialization
     public static MusicController getInstance() {
         if (instance == null) {
             instance = new MusicController();
@@ -29,35 +29,24 @@ public class MusicController {
         return instance;
     }
 
-    protected void setMusic(Screen view) {
-        if (!viewToMusic.containsKey(view)){
-            selectMusic(view);
-            return;
-        }
-        changeMusic(viewToMusic.get(view));
+    private void initializeMusic(){
+        Music music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
+        viewToMusic.put(GamePlayView.class, music);
+        music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
+        viewToMusic.put(GameOverView.class, music);
+        viewToMusic.put(MainMenuView.class, music);
     }
 
-    private void selectMusic(Screen view){
-        Music music;
-        if (view instanceof GamePlayView) {
-            music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
-        }else if (view instanceof MainMenuView) {
-            music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
-        }else if (view instanceof GameOverView) {
-            music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
-        }else{
+    protected void changeMusic(Screen view){
+        Music newSong = viewToMusic.get(view.getClass());
+        if (activeSong != null && activeSong.equals(newSong) || newSong == null) {
             return;
-        }
-        viewToMusic.put(view, music);
-        changeMusic(music);
-    }
-
-    private void changeMusic(Music newSong){
-        if(!(activeSong == null)){
-            stopMusic();
+        } if (activeSong != null) {
+            activeSong.dispose();
         }
         activeSong = newSong;
-        activeSong.play();
+        playMusic();
+
     }
 
     public void changeVolume(int volume){
@@ -69,11 +58,7 @@ public class MusicController {
     }
 
     public void playMusic() {
-        activeSong.pause();
+        activeSong.play();
+        activeSong.setLooping(true);
     }
-
-    private void stopMusic() {
-        activeSong.dispose();
-    }
-
 }

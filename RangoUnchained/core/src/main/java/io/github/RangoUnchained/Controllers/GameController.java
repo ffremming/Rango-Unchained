@@ -52,13 +52,9 @@ public class GameController extends Game {
         if (currentView != null){
             currentView.dispose();
         }
-        MusicController.getInstance().setMusic(view);
+        MusicController.getInstance().changeMusic(view);
         currentView = view;
         setScreen(currentView);
-    }
-
-    public Screen getCurrentView(){
-        return currentView;
     }
 
 

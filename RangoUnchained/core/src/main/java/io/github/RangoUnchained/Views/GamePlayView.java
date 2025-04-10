@@ -60,7 +60,7 @@ public class GamePlayView extends BaseScreen {
 
     @Override
     public void render(float delta) {
-        try{
+        try {
 
 
         // Clear the screen and update camera
@@ -72,7 +72,7 @@ public class GamePlayView extends BaseScreen {
 
         if (!pauseMenu.isPaused()) {
             // Update game logic
-            controller.step(1 / 60f, 6, 2);
+            controller.step(delta, 6, 2);
             controller.update(delta);
 
 

@@ -80,9 +80,12 @@ public class EntityFactory {
         } else if (name.startsWith("ShieldPowerUp")) {
             //TODO: change sprite to actual sprite
             return createPowerUp(x, y, "Powerup/Shield.png", world, 1,velocity);
-        }else if (name.startsWith("sizePowerUp")) {
+        } else if (name.startsWith("sizePowerUp")) {
             //TODO: change sprite to actual sprite
             return createPowerUp(x, y, "Powerup/Shield.png", world, 2,velocity);
+        } else if (name.startsWith("HealthUpPowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "UI/Pixel_heart.png", world, 3,velocity);
         }
 
 
@@ -90,7 +93,7 @@ public class EntityFactory {
         return null;
     }
 
-    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpTyp, Vector2 velocity) {
+    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpType, Vector2 velocity) {
 
         SpriteComponent sprite = new SpriteComponent(spritePath,64,64);
 
@@ -99,7 +102,7 @@ public class EntityFactory {
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height, CATEGORY_POWERUP, MASK_POWERUP), true);
         body.getBody().setLinearVelocity(velocity);
-        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpTyp);
+        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpType);
         PowerUpEntity powerUp = new PowerUpEntity(body, sprite, powerUpComponent);
         body.getBody().setUserData(powerUp);
         return powerUp;

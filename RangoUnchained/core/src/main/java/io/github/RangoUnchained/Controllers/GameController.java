@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.UserInfo;
-import io.github.RangoUnchained.Views.GamePlayView;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
@@ -53,8 +52,13 @@ public class GameController extends Game {
         if (currentView != null){
             currentView.dispose();
         }
+        MusicController.getInstance().setMusic(view);
         currentView = view;
         setScreen(currentView);
+    }
+
+    public Screen getCurrentView(){
+        return currentView;
     }
 
 

@@ -55,6 +55,10 @@ public class InputSystem implements System {
         } else {
             p1_input.setLeft(Gdx.input.isKeyPressed(Input.Keys.A));
             p1_input.setRight(Gdx.input.isKeyPressed(Input.Keys.D));
+            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.A)){
+                AudioComponent audioComponent = (AudioComponent) entity.getComponent(AudioComponent.class);
+                audioComponent.audioQueue.add(AudioComponent.ActionType.MOVE);
+            }
         }
 
         if (Gdx.input.isTouched()){

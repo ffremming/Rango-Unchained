@@ -5,7 +5,7 @@ public class PlayerInLobby {
     public String displayName;
     public Boolean isReady;
     public Integer finishScore;
-    public Long finishTime;
+    public Double finishTime;
 
     // Default constructor for Firebase deserialization
     public PlayerInLobby() {

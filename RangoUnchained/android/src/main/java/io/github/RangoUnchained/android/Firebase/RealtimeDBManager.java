@@ -18,13 +18,13 @@ import io.github.RangoUnchained.Model.Firebase.Utils.PlayerInLobby;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 
 public class RealtimeDBManager implements MultiplayerManager {
-    private final DatabaseReference realtimeDb = FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference lobbiesRef = FirebaseDatabase.getInstance().getReference().child("lobbies");
     @Override
     public void createLobby(UserInfo host, Boolean isPublic, int maxPlayers, Callback<LobbyInfo> callback) {
         String lobbyId = generateLobbyCode();
         LobbyInfo lobby = new LobbyInfo(lobbyId, host, isPublic, maxPlayers);
 
-        realtimeDb.child("lobbies")
+        lobbiesRef
             .child(lobbyId)
             .setValue(lobby)
             .addOnSuccessListener(unused -> callback.onSuccess(lobby))
@@ -35,7 +35,7 @@ public class RealtimeDBManager implements MultiplayerManager {
     public void joinLobby(String lobbyId, UserInfo player, Callback<LobbyInfo> callback) {
         PlayerInLobby newPlayer = new PlayerInLobby(player);
 
-        DatabaseReference lobbyRef = realtimeDb.child("lobbies").child(lobbyId);
+        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
 
         lobbyRef.child("players")
             .child(player.uid)
@@ -54,24 +54,26 @@ public class RealtimeDBManager implements MultiplayerManager {
             .addOnFailureListener(callback::onError);
     }
 
-
     @Override
     public void leaveLobby(String lobbyId, UserInfo player, Callback<Void> callback) {
-        realtimeDb.child("lobbies")
+        lobbiesRef
             .child(lobbyId)
             .child("players")
             .child(player.uid)
             .removeValue()
-            .addOnSuccessListener(unused -> callback.onSuccess(null))
+            .addOnSuccessListener(unused -> {
+                if (lobbyRef != null && lobbyListener != null) {
+                    lobbyRef.removeEventListener(lobbyListener);
+                    lobbiesRef.removeEventListener(publicLobbiesListener);
+                }
+                callback.onSuccess(null);
+            })
             .addOnFailureListener(callback::onError);
     }
 
     // Store reference to dispose of the listener afterwards
     private ValueEventListener publicLobbiesListener;
-    private DatabaseReference lobbiesRef;
     public void fetchPublicLobbies(Callback<List<LobbyInfo>> callback) {
-        lobbiesRef = FirebaseDatabase.getInstance().getReference("lobbies");
-
         publicLobbiesListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -98,18 +100,17 @@ public class RealtimeDBManager implements MultiplayerManager {
     @Override
     public void removePublicLobbiesListener() {
         // Disposes of the listener when it's no longer needed
-        if (lobbiesRef != null && publicLobbiesListener != null) {
+        if (publicLobbiesListener != null) {
             lobbiesRef.removeEventListener(publicLobbiesListener);
         }
     }
-
 
     // Store reference to dispose of the listener afterwards
     private ValueEventListener lobbyListener;
     private DatabaseReference lobbyRef;
     @Override
     public void listenToLobby(String lobbyId, Callback<LobbyInfo> callback) {
-        lobbyRef = FirebaseDatabase.getInstance().getReference("lobbies").child(lobbyId);
+        lobbyRef = lobbiesRef.child(lobbyId);
 
         lobbyListener = new ValueEventListener() {
             @Override
@@ -117,6 +118,8 @@ public class RealtimeDBManager implements MultiplayerManager {
                 LobbyInfo lobby = snapshot.getValue(LobbyInfo.class);
                 if (lobby != null) {
                     callback.onSuccess(lobby);
+                } else {
+                    callback.onError(new Exception("Lobby data is null"));
                 }
             }
 
@@ -139,7 +142,7 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void toggleReadyStatus(String lobbyId, String uid, Callback<Void> callback) {
-        DatabaseReference ref = realtimeDb.child("lobbies")
+        DatabaseReference ref = lobbiesRef
             .child(lobbyId)
             .child("players")
             .child(uid)
@@ -157,8 +160,9 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void setLobbyLevel(String lobbyId, int level, Callback<Void> callback) {
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-            .getReference("lobbies").child(lobbyId).child("level");
+        DatabaseReference ref = lobbiesRef
+            .child(lobbyId).
+            child("level");
 
         ref.setValue(level)
             .addOnSuccessListener(unused -> callback.onSuccess(null))
@@ -167,13 +171,65 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void startGame(String lobbyId, int level, Callback<Void> callback) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("lobbies").child(lobbyId);
+        DatabaseReference ref = lobbiesRef.child(lobbyId);
+
+        // Update the lobby status and level
         Map<String, Object> updates = new HashMap<>();
         updates.put("status", "playing");
         updates.put("level", level);
 
         ref.updateChildren(updates)
             .addOnSuccessListener(unused -> callback.onSuccess(null))
+            .addOnFailureListener(callback::onError);
+    }
+
+    @Override
+    public void setPlayerFinishData(String lobbyId, String uid, int score, double finishTime, Callback<Void> callback) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("finishScore", score);
+        updates.put("finishTime", finishTime);
+
+        DatabaseReference ref = lobbiesRef
+            .child(lobbyId)
+            .child("players")
+            .child(uid);
+
+        ref.updateChildren(updates)
+            .addOnSuccessListener(unused -> callback.onSuccess(null))
+            .addOnFailureListener(callback::onError);
+    }
+
+    @Override
+    public void endGame(String lobbyId, String uid, Callback<Void> callback) {
+        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
+
+        // Set the player's isReady status to false when they finish the game
+        lobbyRef.child("players").child(uid).child("isReady").setValue(false)
+            .addOnSuccessListener(unused -> {
+                // Check if all players have finished the game
+                lobbyRef.child("players").get().addOnSuccessListener(snapshot -> {
+                    boolean allFinished = false;
+
+                    if (snapshot.exists()) {
+                        for (DataSnapshot playerSnapshot : snapshot.getChildren()) {
+                            Boolean isReady = playerSnapshot.child("isReady").getValue(Boolean.class);
+                            if (Boolean.TRUE.equals(isReady)) {
+                                allFinished = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Update the lobby status based on whether all players have finished
+                    String newStatus = !allFinished ? "waiting" : "running";
+
+                    lobbyRef.child("status")
+                        .setValue(newStatus)
+                        .addOnSuccessListener(done -> callback.onSuccess(null))
+                        .addOnFailureListener(callback::onError);
+
+                }).addOnFailureListener(callback::onError);
+            })
             .addOnFailureListener(callback::onError);
     }
 

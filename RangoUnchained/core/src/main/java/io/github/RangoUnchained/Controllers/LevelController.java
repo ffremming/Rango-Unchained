@@ -31,6 +31,7 @@ public class LevelController {
     private SystemManager systemManager;
     private SpawnQueue spawnQueue;
     private RemovalQueue removalQueue;
+    private boolean isActive = true;
 
 
     private LevelController () {
@@ -44,15 +45,11 @@ public class LevelController {
     }
 
     public static void resetInstance() {
-        levelController = null;
+        if (levelController != null) {
+            levelController.dispose();
+            levelController = null;
+        }
     }
-
-    /** clear systems (TODO) */
-    public void clearSystems() {
-        level.clear();
-    }
-
-    /** should be handled differently */
 
     /** adds entity to level */
     public void addEntity(Entity e) {
@@ -64,8 +61,7 @@ public class LevelController {
     }
 
     public void handleSpawnRequests(float xPos ,float yPos,int width, int height, String name, Vector2 velocity) {
-
-            spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld());
+        spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld());
     }
 
 
@@ -77,9 +73,9 @@ public class LevelController {
         level.removeEntities(removalQueue.getRemovalEntities(getWorld()));
     }
 
-    // Skal ta inn JSON etterhvert (tar inn info om hvilke entiteter vi vil ha på hvert level)
     // Initializes systems with entities
     public void initializeSystems(int levelNumber) {
+        this.isActive = true;
         this.systemManager = new SystemManager();
         this.level = new GameLevel(levelNumber);
         this.spawnQueue = new SpawnQueue();
@@ -153,15 +149,23 @@ public class LevelController {
     }
 
     public <T extends System> T getSystem(Class<T> systemClass) {
+        if (!isActive || systemManager == null) return null;
         return systemManager.getSystem(systemClass);
     }
 
-    /**methdo for shooting, called from view */
-    public void handleShoot(){
-        getSystem(InputSystem.class).handleShoot(level.getEntities());
+    /**methdod for shooting, called from view */
+    public void handleShoot() {
+        if (level == null || level.getEntities() == null) {
+            return;
+        }
+
+        InputSystem inputSystem = getSystem(InputSystem.class);
+        if (inputSystem != null) {
+            inputSystem.handleShoot(level.getEntities());
+        }
     }
 
-    public int getScore(){
+    public int getScore() {
         if (level == null) {
             return 0;
         }
@@ -193,5 +197,18 @@ public class LevelController {
 
     public void checkpoint(float delta) {
         level.checkpoint(delta);
+    }
+
+    public void dispose() {
+        isActive = false;
+
+        if (level != null) {
+            level.dispose();
+            level = null;
+        }
+        if (systemManager != null) {
+            systemManager.dispose();
+            systemManager = null;
+        }
     }
 }

@@ -164,6 +164,51 @@ public class DummyRealtimeDBManager implements MultiplayerManager {
         notifyPublicLobbiesListeners();
     }
 
+    @Override
+    public void setPlayerFinishData(String lobbyId, String uid, int score, double finishTime, Callback<Void> callback) {
+        LobbyInfo lobby = lobbies.get(lobbyId);
+        if (lobby != null && lobby.players.containsKey(uid)) {
+            PlayerInLobby player = lobby.players.get(uid);
+            player.finishScore = score;
+            player.finishTime = finishTime;
+            callback.onSuccess(null);
+            notifyLobbyListener(lobbyId);
+        } else {
+            callback.onError(new Exception("Lobby or player not found"));
+        }
+    }
+
+    @Override
+    public void endGame(String lobbyId, String uid, Callback<Void> callback) {
+        LobbyInfo lobby = lobbies.get(lobbyId);
+        if (lobby == null) {
+            callback.onError(new Exception("Lobby not found"));
+            return;
+        }
+
+        PlayerInLobby player = lobby.players.get(uid);
+        if (player == null) {
+            callback.onError(new Exception("Player not found"));
+            return;
+        }
+
+        player.isReady = false;
+
+        boolean allFinished = true;
+        for (PlayerInLobby p : lobby.players.values()) {
+            if (Boolean.TRUE.equals(p.isReady)) {
+                allFinished = false;
+                break;
+            }
+        }
+
+        lobby.status = allFinished ? "waiting" : "running";
+
+        callback.onSuccess(null);
+        notifyLobbyListener(lobbyId);
+        notifyPublicLobbiesListeners();
+    }
+
     private String generateLobbyCode() {
         return UUID.randomUUID().toString().substring(0, 5).replace("-", "");
     }

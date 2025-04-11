@@ -22,6 +22,7 @@ public class GameLobbyWaitingView extends BaseScreen {
     private TextButton startGameButton;
     private TextButton isReadyButton;
     private TextField selectedLevel;
+    private boolean alreadyStarted = false;
     boolean isHost;
     private int level;
 
@@ -117,8 +118,9 @@ public class GameLobbyWaitingView extends BaseScreen {
                 Gdx.app.postRunnable(() -> {
                     playerTable.clear();
 
-                    if (lobby.status.equals("playing")) {
+                    if (lobby.status.equals("playing") && !alreadyStarted) {
                         startGameLocally(level);
+                        alreadyStarted = true;
                     }
 
                     int currentCount = lobby.players != null ? lobby.players.size() : 0;
@@ -199,9 +201,10 @@ public class GameLobbyWaitingView extends BaseScreen {
 
 
     private void startGameLocally(int level) {
-        GamePlayView view = new GamePlayView(level);
-        view.setMultiplayer(true);
-        game.setView(view);
+        GamePlayView view = new GamePlayView(level, true, lobby);
+        Gdx.app.postRunnable(() -> {
+            game.setView(view);
+        });
     }
 
     private void startGame() {

@@ -23,5 +23,6 @@ public interface MultiplayerManager {
     void setLobbyLevel(String lobbyId, int level, Callback<Void> callback);
 
     void startGame(String lobbyId, int level, Callback<Void> callback);
-
+    void setPlayerFinishData(String lobbyId, String uid, int score, double finishTime, Callback<Void> callback);
+    void endGame(String lobbyId, String uid, Callback<Void> callback);
 }

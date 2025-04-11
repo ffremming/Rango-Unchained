@@ -15,7 +15,7 @@ public class GameOverView extends BaseScreen {
     private Label scoreLabel;
 
     boolean completed;
-    public GameOverView(int levelNumber,boolean completed) {
+    public GameOverView(int levelNumber, boolean completed) {
         super(GameController.getInstance());
         this.levelNumber = levelNumber;
         this.score = LevelController.getInstance().getScore();

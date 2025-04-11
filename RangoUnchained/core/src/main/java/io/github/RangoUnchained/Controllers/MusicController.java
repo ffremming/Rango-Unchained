@@ -59,6 +59,7 @@ public class MusicController {
 
     public void playMusic() {
         activeSong.play();
+        activeSong.setVolume(0.2f);
         activeSong.setLooping(true);
     }
 }

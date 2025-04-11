@@ -1,13 +1,13 @@
 package io.github.RangoUnchained.Model.Components;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class AudioComponent implements Component{
-
     public enum ActionType {
         SHOOT, MOVE, BOUNCE, POP
     }
-    public Queue<ActionType> audioQueue = new LinkedList<>();
+
+    public final AtomicBoolean hasWalkingAudio = new AtomicBoolean(false);
+    public final AtomicBoolean hasShootingAudio = new AtomicBoolean(false);
 
 }

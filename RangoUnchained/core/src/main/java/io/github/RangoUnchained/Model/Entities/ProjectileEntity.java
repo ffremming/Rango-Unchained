@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Model.Entities;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.Component;
 import io.github.RangoUnchained.Model.Components.ContactComponent;
@@ -20,7 +19,6 @@ public class ProjectileEntity implements Entity{
         addComponent(spriteComponent);
         addComponent(lifeTimeComponent);
         addComponent(transComp);
-        addComponent(new AudioComponent());
         addComponent(new ContactComponent());
     }
     @Override

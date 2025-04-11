@@ -56,16 +56,16 @@ public class SystemManager {
         HealthSystem healthSystem = new HealthSystem();
         TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
+        AudioSystem audioSystem = new AudioSystem(contactSystem);
         AnimationSystem animationSystem = new AnimationSystem();
-        AudioSystem audioSystem = new AudioSystem();
 
         world = physicsSystem.getWorld();
 
         systems.add(movementSystem);
         systems.add(physicsSystem);
         systems.add(inputSystem);
-        systems.add(audioSystem);
         systems.add(animationSystem);
+        systems.add(audioSystem);
 
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);

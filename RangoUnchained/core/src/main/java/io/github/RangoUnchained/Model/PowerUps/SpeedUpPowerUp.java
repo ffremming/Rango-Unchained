@@ -17,8 +17,6 @@ public class SpeedUpPowerUp implements PowerUpStrategy {
             return;
         }
 
-        
-
         SpeedComponent speed = (SpeedComponent) player.getComponent(SpeedComponent.class);
 
         if (speed != null) {

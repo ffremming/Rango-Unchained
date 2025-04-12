@@ -11,6 +11,7 @@ import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
+import io.github.RangoUnchained.Model.PowerUps.HealthUpPowerUp;
 import io.github.RangoUnchained.Model.PowerUps.PowerUpStrategy;
 import io.github.RangoUnchained.Model.PowerUps.ResizeballsStrategy;
 import io.github.RangoUnchained.Model.PowerUps.ShieldPowerUp;
@@ -29,6 +30,7 @@ public class PowerUpSystem implements System, ContactStrategy {
         powerUpStrategies.put(0, new SpeedUpPowerUp());
         powerUpStrategies.put(1, new ShieldPowerUp());
         powerUpStrategies.put(2,new ResizeballsStrategy());
+        powerUpStrategies.put(3,new HealthUpPowerUp());
     }
 
     @Override

@@ -90,7 +90,7 @@ public class GamePlayView extends BaseScreen {
         // Run game logic only if not paused or multiplayer
         if (!pauseMenu.isPaused() || isMultiplayer) {
             // Update game logic
-            controller.step(1 / 60f, 6, 2);
+            controller.step(delta, 6, 2);
             controller.update(delta);
         }
         if (!pauseMenu.isPaused()) {

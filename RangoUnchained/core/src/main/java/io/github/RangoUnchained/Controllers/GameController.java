@@ -8,14 +8,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
-import io.github.RangoUnchained.Model.Firebase.UserInfo;
-import io.github.RangoUnchained.Views.GamePlayView;
+import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
+import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
 
     private static GameController GameController;
     private FirebaseManager firebaseManager;
+    private MultiplayerManager multiplayerManager;
     private static SpriteBatch batch;
     private static BitmapFont font;
     private static Skin skin;
@@ -57,6 +58,12 @@ public class GameController extends Game {
         setScreen(currentView);
     }
 
+    public void setMultiplayerManager(MultiplayerManager multiplayerManager) {
+        this.multiplayerManager = multiplayerManager;
+    }
+    public MultiplayerManager getMultiplayerManager() {
+        return multiplayerManager;
+    }
 
     public static SpriteBatch getBatch() {
         if (batch == null) batch = new SpriteBatch();
@@ -84,7 +91,7 @@ public class GameController extends Game {
         this.currentUserInfo = info;
     }
 
-    public UserInfo getCurrentUserInfo() {
+    public UserInfo getCurrentUser() {
         return currentUserInfo;
     }
 

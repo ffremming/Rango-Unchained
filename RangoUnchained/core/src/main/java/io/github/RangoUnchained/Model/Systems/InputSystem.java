@@ -63,6 +63,7 @@ public class InputSystem implements System {
     }
 
     public synchronized void handleShoot(ArrayList<Entity> entities) {
+        if (entities == null) return;
 
         for(Entity entity : entities){
             if(filter.matches(entity)){

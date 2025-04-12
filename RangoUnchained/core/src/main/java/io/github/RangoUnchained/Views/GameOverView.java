@@ -15,7 +15,7 @@ public class GameOverView extends BaseScreen {
     private Label scoreLabel;
 
     boolean completed;
-    public GameOverView(int levelNumber,boolean completed) {
+    public GameOverView(int levelNumber, boolean completed) {
         super(GameController.getInstance());
         this.levelNumber = levelNumber;
         this.score = LevelController.getInstance().getScore();
@@ -30,7 +30,7 @@ public class GameOverView extends BaseScreen {
     }
 
     private void saveScoreToFirebase(int levelNumber) {
-        game.getFirebaseManager().updateScoreForLevel(GameController.getInstance().getCurrentUserInfo(), levelNumber, score, new FirebaseManager.Callback<Boolean>() {
+        game.getFirebaseManager().updateScoreForLevel(GameController.getInstance().getCurrentUser(), levelNumber, score, new FirebaseManager.Callback<Boolean>() {
             @Override
             public void onSuccess(Boolean isHighscore) {
                 if (isHighscore) {
@@ -52,7 +52,7 @@ public class GameOverView extends BaseScreen {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
         String titleText = completed ? "Level Completed" : "Level Failed";
-        
+
         Label titleLabel = new Label(titleText, labelStyle);
         scoreLabel = new Label("", getSkin());
 

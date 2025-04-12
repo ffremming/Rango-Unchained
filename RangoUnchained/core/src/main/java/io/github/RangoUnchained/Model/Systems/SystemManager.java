@@ -77,6 +77,18 @@ public class SystemManager {
      * is needed for the entityfactory
      */
     public World getWorld() {
-        return world;
+        PhysicsSystem physicsSystem = getSystem(PhysicsSystem.class);
+        return physicsSystem != null ? physicsSystem.getWorld() : null;
+    }
+
+    public void dispose() {
+        if (systems != null) {
+            systems.clear();
+            systems = null;
+        }
+        if (world != null) {
+            world.dispose();
+            world = null;
+        }
     }
 }

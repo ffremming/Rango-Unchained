@@ -1,11 +1,8 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import java.util.List;
-
-import javax.swing.text.LabelView;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
@@ -87,7 +84,7 @@ public class GameLobbyView extends BaseScreen {
         rootTable.setFillParent(true);
         rootTable.center();
         rootTable.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()))).left().padTop(20).padBottom(15);
+            this::backToMenu)).left().padTop(20).padBottom(15);
         rootTable.add(new Label("Multiplayer", getSkin())).left().padBottom(10);
         rootTable.row();
 
@@ -125,6 +122,11 @@ public class GameLobbyView extends BaseScreen {
                 });
             }
         });
+    }
+
+    private void backToMenu() {
+        game.setView(new MainMenuView());
+        dbManager.removePublicLobbiesListener();
     }
 
     private void createLobby(UserInfo user, boolean isPublic, int maxPlayers) {

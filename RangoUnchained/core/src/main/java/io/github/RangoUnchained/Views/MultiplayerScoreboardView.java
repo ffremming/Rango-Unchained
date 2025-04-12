@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class MultiplayerScoreboardView extends BaseScreen {
     private final LobbyInfo lobby;
     private final MultiplayerManager dbManager = GameController.getInstance().getMultiplayerManager();
     private Table scoreboardTable;
+    private Timer.Task lobbyPingTask;
 
     public MultiplayerScoreboardView(LobbyInfo lobby) {
         super(GameController.getInstance());
@@ -27,9 +29,8 @@ public class MultiplayerScoreboardView extends BaseScreen {
     @Override
     public void show() {
         super.show();
-        //endGame();
         createUI();
-        listenToLobby();
+        addLobbyListener();
     }
 
     private void createUI() {
@@ -79,33 +80,33 @@ public class MultiplayerScoreboardView extends BaseScreen {
             this::backToMenu)).colspan(2);
     }
 
-    private void listenToLobby() {
-        dbManager.listenToLobby(lobby.lobbyId, new MultiplayerManager.Callback<LobbyInfo>() {
-            @Override
-            public void onSuccess(LobbyInfo updatedLobby) {
-                Gdx.app.postRunnable(() -> updateScoreboard(updatedLobby));
-            }
+    private void addLobbyListener() {
+        // Ensure any existing task is cancelled
+        if (lobbyPingTask != null) {
+            lobbyPingTask.cancel();
+            lobbyPingTask = null;
+        }
 
+        // Periodic task to refresh the lobby
+        lobbyPingTask = Timer.schedule(new Timer.Task() {
             @Override
-            public void onError(Exception e) {
-                System.err.println("Failed to listen to lobby: " + e.getMessage());
+            public void run() {
+                dbManager.listenToLobby(lobby.lobbyId, new MultiplayerManager.Callback<LobbyInfo>() {
+                    @Override
+                    public void onSuccess(LobbyInfo updatedLobby) {
+                        Gdx.app.postRunnable(() -> updateScoreboard(updatedLobby));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        System.err.println("Error listening to lobby: " + e.getMessage());
+                        backToMenu();
+                    }
+                });
             }
-        });
+            // First delay, then interval in seconds
+        }, 0, 60);
     }
-
-//    private void endGame() {
-//        dbManager.endGame(lobby.lobbyId, game.getCurrentUser().uid, new MultiplayerManager.Callback<Void>() {
-//            @Override
-//            public void onSuccess(Void result) {
-//                System.out.println("Game ended successfully.");
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                System.err.println("Failed to end game: " + e.getMessage());
-//            }
-//        });
-//    }
 
     private void backToMenu() {
         dbManager.leaveLobby(lobby.lobbyId, game.getCurrentUser(), new MultiplayerManager.Callback<Void>() {
@@ -123,7 +124,15 @@ public class MultiplayerScoreboardView extends BaseScreen {
 
     @Override
     public void dispose() {
-        dbManager.removeLobbyListener();
         super.dispose();
+        dbManager.removeLobbyListener();
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (lobbyPingTask != null) {
+            lobbyPingTask.cancel();
+        }
     }
 }

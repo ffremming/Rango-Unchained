@@ -19,6 +19,7 @@ import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 
 public class RealtimeDBManager implements MultiplayerManager {
     private final DatabaseReference lobbiesRef = FirebaseDatabase.getInstance().getReference().child("lobbies");
+    private static final float INACTIVE_TIME = 60f; // In minutes
     @Override
     public void createLobby(UserInfo host, Boolean isPublic, int maxPlayers, Callback<LobbyInfo> callback) {
         String lobbyId = generateLobbyCode();
@@ -34,14 +35,15 @@ public class RealtimeDBManager implements MultiplayerManager {
     @Override
     public void joinLobby(String lobbyId, UserInfo player, Callback<LobbyInfo> callback) {
         PlayerInLobby newPlayer = new PlayerInLobby(player);
-
         DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
 
-        lobbyRef.child("players")
-            .child(player.uid)
-            .setValue(newPlayer)
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("players/" + player.uid, newPlayer);
+        updates.put("timeInState", System.currentTimeMillis());
+
+        lobbyRef.updateChildren(updates)
             .addOnSuccessListener(unused -> {
-                // After successfully adding the player, fetch the updated LobbyInfo
+                // After updating, fetch the updated LobbyInfo
                 lobbyRef.get().addOnSuccessListener(snapshot -> {
                     LobbyInfo updatedLobby = snapshot.getValue(LobbyInfo.class);
                     if (updatedLobby != null) {
@@ -54,16 +56,24 @@ public class RealtimeDBManager implements MultiplayerManager {
             .addOnFailureListener(callback::onError);
     }
 
+
     @Override
     public void leaveLobby(String lobbyId, UserInfo player, Callback<Void> callback) {
-        lobbiesRef
-            .child(lobbyId)
-            .child("players")
+        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
+
+        lobbyRef.child("players")
             .child(player.uid)
             .removeValue()
             .addOnSuccessListener(unused -> {
-                if (lobbyRef != null && lobbyListener != null) {
-                    lobbyRef.removeEventListener(lobbyListener);
+                // Check if lobby is empty and delete it if so
+                lobbyRef.child("players").get().addOnSuccessListener(snapshot -> {
+                    if (!snapshot.hasChildren()) {
+                        lobbyRef.removeValue();
+                    }
+                });
+                // Remove listeners for this player
+                if (this.lobbyRef != null && lobbyListener != null) {
+                    this.lobbyRef.removeEventListener(lobbyListener);
                     lobbiesRef.removeEventListener(publicLobbiesListener);
                 }
                 callback.onSuccess(null);
@@ -73,6 +83,7 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     // Store reference to dispose of the listener afterwards
     private ValueEventListener publicLobbiesListener;
+    @Override
     public void fetchPublicLobbies(Callback<List<LobbyInfo>> callback) {
         publicLobbiesListener = new ValueEventListener() {
             @Override
@@ -80,6 +91,10 @@ public class RealtimeDBManager implements MultiplayerManager {
                 List<LobbyInfo> publicLobbies = new ArrayList<>();
                 for (DataSnapshot lobbySnap : snapshot.getChildren()) {
                     LobbyInfo lobby = lobbySnap.getValue(LobbyInfo.class);
+
+                    // Delete lobby if it has been inactive in a state for too long
+                    if (shouldDeleteLobby(lobby, lobbySnap.getRef())) continue;
+
                     if (lobby != null && lobby.isPublic && lobby.players != null &&
                         lobby.players.size() < lobby.maxPlayers && "waiting".equals(lobby.status)) {
                         publicLobbies.add(lobby);
@@ -116,6 +131,13 @@ public class RealtimeDBManager implements MultiplayerManager {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 LobbyInfo lobby = snapshot.getValue(LobbyInfo.class);
+
+                // Delete lobby if it has been inactive in a state for too long
+                if (shouldDeleteLobby(lobby, lobbyRef)) {
+                    lobby = null;
+                    callback.onError(new Exception("Lobby has been inactive for too long."));
+                }
+
                 if (lobby != null) {
                     callback.onSuccess(lobby);
                 } else {
@@ -153,20 +175,28 @@ public class RealtimeDBManager implements MultiplayerManager {
             boolean newStatus = currentStatus == null || !currentStatus;
 
             ref.setValue(newStatus)
-                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnSuccessListener(aVoid -> {
+                    // Update timeInState when ready status changes
+                    lobbiesRef.child(lobbyId).child("timeInState").setValue(System.currentTimeMillis());
+                    callback.onSuccess(null);
+                })
                 .addOnFailureListener(callback::onError);
         }).addOnFailureListener(callback::onError);
     }
 
+
     @Override
     public void setLobbyLevel(String lobbyId, int level, Callback<Void> callback) {
-        DatabaseReference ref = lobbiesRef
-            .child(lobbyId).
-            child("level");
+        DatabaseReference ref = lobbiesRef.child(lobbyId);
 
-        ref.setValue(level)
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("level", level);
+        // Reset timeInState when level is set
+        updates.put("timeInState", System.currentTimeMillis());
+
+        ref.updateChildren(updates)
             .addOnSuccessListener(unused -> callback.onSuccess(null))
-            .addOnFailureListener(e -> callback.onError(e));
+            .addOnFailureListener(callback::onError);
     }
 
     @Override
@@ -175,8 +205,9 @@ public class RealtimeDBManager implements MultiplayerManager {
 
         // Update the lobby status and level
         Map<String, Object> updates = new HashMap<>();
-        updates.put("status", "playing");
+        updates.put("status", "running");
         updates.put("level", level);
+        updates.put("timeInState", System.currentTimeMillis());
 
         ref.updateChildren(updates)
             .addOnSuccessListener(unused -> callback.onSuccess(null))
@@ -223,8 +254,15 @@ public class RealtimeDBManager implements MultiplayerManager {
                     // Update the lobby status based on whether all players have finished
                     String newStatus = !allFinished ? "waiting" : "running";
 
-                    lobbyRef.child("status")
-                        .setValue(newStatus)
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("status", newStatus);
+
+                    // Reset timeInState if all players have finished"
+                    if ("waiting".equals(newStatus)) {
+                        updates.put("timeInState", System.currentTimeMillis());
+                    }
+
+                    lobbyRef.updateChildren(updates)
                         .addOnSuccessListener(done -> callback.onSuccess(null))
                         .addOnFailureListener(callback::onError);
 
@@ -238,4 +276,13 @@ public class RealtimeDBManager implements MultiplayerManager {
         return UUID.randomUUID().toString().substring(0, 5).replace("-", "");
     }
 
+    // Utility method to delete lobbies that have been inactive for INACTIVE_TIME minutes
+    private boolean shouldDeleteLobby(LobbyInfo lobby, DatabaseReference ref) {
+        long now = System.currentTimeMillis();
+        if (lobby != null && lobby.timeInState != 0 && now - lobby.timeInState > INACTIVE_TIME * 60 * 1000) {
+            ref.removeValue();
+            return true;
+        }
+        return false;
+    }
 }

@@ -15,6 +15,7 @@ public class MusicController {
 
     private static MusicController instance;
     private Music activeSong;
+    private float currentVolume = 0.2f;
     private HashMap<Class<? extends Screen>, Music> viewToMusic;
 
     private MusicController( ) {
@@ -50,14 +51,15 @@ public class MusicController {
     }
 
     public void changeVolume(float volume){
-        activeSong.setVolume(volume);
+        currentVolume = volume;
+        activeSong.setVolume(currentVolume);
     }
     public float getVolume(){
         return activeSong.getVolume();
     }
     public void playMusic() {
         activeSong.play();
-        activeSong.setVolume(0.2f);
+        activeSong.setVolume(currentVolume);
         activeSong.setLooping(true);
     }
 }

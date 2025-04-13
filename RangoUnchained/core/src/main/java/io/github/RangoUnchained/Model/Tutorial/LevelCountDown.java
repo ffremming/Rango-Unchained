@@ -8,8 +8,7 @@ import io.github.RangoUnchained.Views.GamePlayView;
 public class LevelCountDown implements TutorialStepStrategy{
 
     float counter = 0;
-    
-    
+
     @Override
     public void onEnter() {
         GameFileHandler.getInstance();
@@ -31,7 +30,7 @@ public class LevelCountDown implements TutorialStepStrategy{
 
     @Override
     public String getMessage() {
-        return String.format("Tutorial completed, Level 1 is starting in %.0f seconds", counter);
+        float remaining = Math.max(0, 3 - counter);
+        return String.format("Tutorial completed, Level 1 is starting in %.0f seconds", remaining);
     }
-    
 }

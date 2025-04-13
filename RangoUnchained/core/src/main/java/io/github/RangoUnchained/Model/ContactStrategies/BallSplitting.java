@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Model.ContactStrategies;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.RangoUnchained.Controllers.LevelController;
-import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
@@ -55,10 +54,6 @@ public class BallSplitting implements ContactStrategy{
         LevelController.getInstance().handleRemovalRequests(ball);
         LevelController.getInstance().getSystem(TutorialSystem.class).flagBallKilled();
         BallComponent ballcomp = (BallComponent) ball.getComponent(BallComponent.class);
-
-        AudioComponent audioComponent = (AudioComponent) projectile.getComponent(AudioComponent.class);
-        audioComponent.audioQueue.add(AudioComponent.ActionType.POP);
-
 
         String spawnName = "Ball " + ballcomp.getTypeName();
 

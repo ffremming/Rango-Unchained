@@ -6,6 +6,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import io.github.RangoUnchained.Controllers.GameController;
+import io.github.RangoUnchained.android.Firebase.FirebaseManagerAndroid;
+import io.github.RangoUnchained.android.Firebase.RealtimeDBManager;
 
 /** Launches the Android application. */
 public class AndroidLauncher extends AndroidApplication {
@@ -16,9 +18,10 @@ public class AndroidLauncher extends AndroidApplication {
         // Initialize Firebase
         com.google.firebase.FirebaseApp.initializeApp(this);
 
-        // Platform specific FirebaseManager implementation
-        FirebaseManagerAndroid firebaseManager = new FirebaseManagerAndroid();
-        GameController.getInstance().setFirebaseManager(firebaseManager);
+        // Set the FirebaseManager in the GameController
+        GameController.getInstance().setFirebaseManager(new FirebaseManagerAndroid());
+        // Set the MultiplayerManager in the GameController
+        GameController.getInstance().setMultiplayerManager(new RealtimeDBManager());
 
         AndroidApplicationConfiguration configuration = new AndroidApplicationConfiguration();
         configuration.useImmersiveMode = true; // Recommended, but not required.

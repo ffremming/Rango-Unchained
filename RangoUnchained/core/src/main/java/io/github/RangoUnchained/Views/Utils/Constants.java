@@ -13,6 +13,7 @@ public class Constants {
     public static float pixelsToMeters(float pixels) {
         return pixels / PPM;
     }
+    public static final int LEVELS_COUNT = 5;
 
     // World dimensions
     public static final float WORLD_WIDTH = 800f;

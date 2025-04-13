@@ -28,7 +28,7 @@ public class AnimationLoader {
 
         Array<TextureRegion> frames = new Array<>();
 
-        FileHandle image = Gdx.files.internal("assets/assets.txt");
+        FileHandle image = Gdx.files.local("assets/assets.txt");
         for (String asset : image.readString().split("\n")) {
             if (asset.startsWith(path)) {
                 Texture texture = new Texture(Gdx.files.internal(asset.trim()));

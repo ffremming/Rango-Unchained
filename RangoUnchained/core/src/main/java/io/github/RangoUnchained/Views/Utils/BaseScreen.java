@@ -31,12 +31,10 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.font = GameController.getFont();
 
         camera = new OrthographicCamera();
-
-
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         stage = new Stage(viewport);
 
-        camera.setToOrtho(false); // THIS IS CRUCIAL
+        camera.setToOrtho(false);
         camera.position.set(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, 0);
         camera.update();
     }
@@ -74,12 +72,14 @@ public abstract class BaseScreen extends ScreenAdapter {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
-        stage.clear();
     }
 
 
     @Override
     public void dispose() {
-        stage.dispose();
+        if (stage != null) {
+            stage.dispose();
+            stage = null;
+        }
     }
 }

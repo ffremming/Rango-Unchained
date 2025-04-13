@@ -81,9 +81,12 @@ public class EntityFactory {
         } else if (name.startsWith("ShieldPowerUp")) {
             //TODO: change sprite to actual sprite
             return createPowerUp(x, y, "Powerup/Shield.png", world, 1,velocity);
-        }else if (name.startsWith("sizePowerUp")) {
+        } else if (name.startsWith("sizePowerUp")) {
             //TODO: change sprite to actual sprite
             return createPowerUp(x, y, "Powerup/Shield.png", world, 2,velocity);
+        } else if (name.startsWith("HealthUpPowerUp")) {
+            //TODO: change sprite to actual sprite
+            return createPowerUp(x, y, "UI/Pixel_heart.png", world, 3,velocity);
         }
 
 
@@ -91,7 +94,7 @@ public class EntityFactory {
         return null;
     }
 
-    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpTyp, Vector2 velocity) {
+    private static Entity createPowerUp(float x, float y, String spritePath, World world, int powerUpType, Vector2 velocity) {
 
         SpriteComponent sprite = new SpriteComponent(spritePath,64,64);
 
@@ -100,7 +103,7 @@ public class EntityFactory {
 
         BodyComponent body = createBody(world, x, y, BodyDef.BodyType.DynamicBody, createNoxBounceBoxFixture(width, height, CATEGORY_POWERUP, MASK_POWERUP), true);
         body.getBody().setLinearVelocity(velocity);
-        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpTyp);
+        PowerUpComponent powerUpComponent = new PowerUpComponent(powerUpType);
         PowerUpEntity powerUp = new PowerUpEntity(body, sprite, powerUpComponent);
         body.getBody().setUserData(powerUp);
         return powerUp;
@@ -108,16 +111,17 @@ public class EntityFactory {
 
     // Player Entity
     public static PlayerEntity createPlayerEntity(float x, float y, String name, World world, int hp, int level) {
-
-        String[] paths = name.split("-");
+        Gdx.app.log("entity factory", name);
+        String playerType = name.split("-")[1];
 
         AnimationComponent animation = new AnimationComponent();
-        AnimationLoader.createPlayerAnimation(animation, paths[1]);
+        AnimationLoader.createPlayerAnimation(animation, playerType);
 
         // Fetch the first frame and set the sprite to said frame.
         // TODO: Should make it possible to work without animations as well.
         TextureRegion firstFrame = animation.getAnimation(animation.getPlayerState()).getKeyFrame(0);
-        SpriteComponent sprite = new SpriteComponent(firstFrame, 86, 128);
+
+        SpriteComponent sprite = new SpriteComponent(firstFrame, 86, 128, playerType);
 
         float width = 86 / Constants.PPM;
         float height = 128 / Constants.PPM;
@@ -155,7 +159,7 @@ public class EntityFactory {
      // general method for creating all balls - called from factory method
      public static BallEntity createBallEntity(float x, float y, String name, World world, Vector2 velocity) {
 
-        //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "armedillo" : "tumbleweed";
+        //String size = name.endsWith("Big") ? "plant" : name.endsWith("Medium") ? "Armedillo" : "Tumbleweed";
         int type = name.contains("Armedillo") ? BallComponent.ARMEDILLOTYPE : name.contains("Tumbleweed") ? BallComponent.TUMBLEWEEDTYPE : name.contains("Cactus") ? BallComponent.CACTUSTYPE : BallComponent.ARMEDILLOTYPE;
         int timesPopped = name.endsWith("Big") ? BIGBALLPOPPED : name.endsWith("Medium") ? MEDIUMBALLPOPPED : SMALLBALLPOPPED;
         int bounceType = name.endsWith("Big") ? BounceComponent.HIGH : name.endsWith("Medium") ? BounceComponent.MEDIUM : BounceComponent.LOW;
@@ -198,7 +202,7 @@ public class EntityFactory {
     }
 
 
-    // 🔹 Obstacle Entity
+    // Obstacle Entity
     public static ObstacleEntity createObstacleEntity(String name, World world, float givenX, float givenY) {
 
         BodyComponent body = null;
@@ -214,8 +218,7 @@ public class EntityFactory {
         if (name.endsWith("Left") || name.endsWith("Right")){
             if (name.endsWith("Right")){
                 x = Gdx.graphics.getWidth();
-            } else {x = 0;}
-            y = 0;
+            }
             height = Gdx.graphics.getHeight();
             width = 32/Constants.PPM;
             height = 1000/Constants.PPM*2;

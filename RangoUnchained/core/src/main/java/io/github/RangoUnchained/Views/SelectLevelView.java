@@ -8,6 +8,7 @@ import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class SelectLevelView extends BaseScreen {
 
@@ -31,16 +32,16 @@ public class SelectLevelView extends BaseScreen {
         table.top().padTop(50);
         table.add(titleLabel).center().padBottom(50);
         table.row();
-        
+
         // Add level selection buttons
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 0; i <= Constants.LEVELS_COUNT; i++) {
             final int level = i;
             String buttonText = "Level " + i;
             if (i== 0){
                 buttonText = "Tutorial";
             }
             table.add(ButtonFactory.createButton(buttonText, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padTop(20);
-            
+
             if (i == GameFileHandler.inProgresslevelnumber()){
                 table.row();
                 TextButton.TextButtonStyle customStyle = new TextButton.TextButtonStyle(getSkin().get(TextButton.TextButtonStyle.class));

@@ -31,9 +31,9 @@ public class MusicController {
     }
 
     private void initializeMusic(){
-        Music music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
+        Music music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_1.mp3"));
         viewToMusic.put(GamePlayView.class, music);
-        music = Gdx.audio.newMusic(Gdx.files.internal("SoundEffects/rangoMusic.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_2.mp3"));
         viewToMusic.put(GameOverView.class, music);
         viewToMusic.put(MainMenuView.class, music);
     }

@@ -25,24 +25,15 @@ public class BallSplitting implements ContactStrategy{
 
     public void ProjectileBallContact(CollisionEvent collisionEvent){
 
-       
-
-        Gdx.app.log("Projectile","fjfj");
-
         BallEntity ball;
-        ProjectileEntity projectile;
 
         if (collisionEvent.entityA instanceof BallEntity) {
             ball = (BallEntity) collisionEvent.entityA;
-            projectile = (ProjectileEntity) collisionEvent.entityB;
         } else {
-            projectile = (ProjectileEntity) collisionEvent.entityA;
             ball = (BallEntity) collisionEvent.entityB;
         }
 
         SpriteComponent spriteComponent = (SpriteComponent) ball.getComponent(SpriteComponent.class);
-
-
         StatComponent statComponent = (StatComponent) ball.getComponent(StatComponent.class);
 
         float xPos = spriteComponent.getSprite().getX();

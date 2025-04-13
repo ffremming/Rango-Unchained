@@ -54,6 +54,7 @@ public class GameController extends Game {
         if (currentView != null){
             currentView.dispose();
         }
+        MusicController.getInstance().changeMusic(view);
         currentView = view;
         setScreen(currentView);
     }
@@ -94,6 +95,10 @@ public class GameController extends Game {
     public UserInfo getCurrentUser() {
         return currentUserInfo;
     }
+
+    public float getVolume() {return MusicController.getInstance().getVolume();}
+
+    public void setVolume(float volume) {MusicController.getInstance().changeVolume(volume);}
 
     @Override
     public void dispose(){

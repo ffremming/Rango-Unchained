@@ -56,6 +56,7 @@ public class SystemManager {
         HealthSystem healthSystem = new HealthSystem();
         TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
+        AudioSystem audioSystem = new AudioSystem(contactSystem);
         AnimationSystem animationSystem = new AnimationSystem();
 
         world = physicsSystem.getWorld();
@@ -64,6 +65,7 @@ public class SystemManager {
         systems.add(physicsSystem);
         systems.add(inputSystem);
         systems.add(animationSystem);
+        systems.add(audioSystem);
 
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);

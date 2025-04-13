@@ -279,7 +279,8 @@ public class RealtimeDBManager implements MultiplayerManager {
     // Utility method to delete lobbies that have been inactive for INACTIVE_TIME minutes
     private boolean shouldDeleteLobby(LobbyInfo lobby, DatabaseReference ref) {
         long now = System.currentTimeMillis();
-        if (lobby != null && lobby.timeInState != 0 && now - lobby.timeInState > INACTIVE_TIME * 60 * 1000) {
+        if (lobby != null && lobby.timeInState != null && lobby.timeInState != 0 &&
+            now - lobby.timeInState > INACTIVE_TIME * 60 * 1000) {
             ref.removeValue();
             return true;
         }

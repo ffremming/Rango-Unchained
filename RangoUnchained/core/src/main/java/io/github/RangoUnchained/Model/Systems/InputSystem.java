@@ -78,6 +78,9 @@ public class InputSystem implements System {
 
         if (!p1_input.isLocked()){
             p1_input.setShoot(true);
+            p1_input.setLeft(false);
+            p1_input.setRight(false);
+
             p1_input.setTimer(60);
             filter.require(BodyComponent.class);
             filter.require(SpriteComponent.class);

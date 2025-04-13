@@ -2,6 +2,7 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Timer;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
@@ -25,6 +26,7 @@ public class GameLobbyWaitingView extends BaseScreen {
     private boolean alreadyStarted = false;
     boolean isHost;
     private int level;
+    private Timer.Task lobbyPingTask;
 
     public GameLobbyWaitingView(LobbyInfo lobby) {
         super(GameController.getInstance());
@@ -39,6 +41,7 @@ public class GameLobbyWaitingView extends BaseScreen {
     public void show() {
         super.show();
         createUI();
+        addLobbyListener();
     }
 
     public void createUI() {
@@ -78,7 +81,6 @@ public class GameLobbyWaitingView extends BaseScreen {
 
         stage.addActor(table);
 
-        lobbyListener();
         levelListener();
     }
 
@@ -87,6 +89,7 @@ public class GameLobbyWaitingView extends BaseScreen {
             @Override
             public void onSuccess(Void result) {
                 Gdx.app.postRunnable(() -> game.setView(new GameLobbyView()));
+                dbManager.removeLobbyListener();
             }
 
             @Override
@@ -111,59 +114,73 @@ public class GameLobbyWaitingView extends BaseScreen {
             }
         });
     }
-    private void lobbyListener() {
-        dbManager.listenToLobby(lobby.lobbyId, new MultiplayerManager.Callback<LobbyInfo>() {
-            @Override
-            public void onSuccess(LobbyInfo lobby) {
-                Gdx.app.postRunnable(() -> {
-                    playerTable.clear();
+    private void addLobbyListener() {
+        // Ensure any existing task is cancelled
+        if (lobbyPingTask != null) {
+            lobbyPingTask.cancel();
+            lobbyPingTask = null;
+        }
 
-                    if (lobby.status.equals("playing") && !alreadyStarted) {
-                        startGameLocally(level);
-                        alreadyStarted = true;
-                    }
+        // Periodic task to refresh the lobby
+        lobbyPingTask = Timer.schedule(new Timer.Task() {
+        @Override
+        public void run() {
+            dbManager.removeLobbyListener();
+            dbManager.listenToLobby(lobby.lobbyId, new MultiplayerManager.Callback<LobbyInfo>() {
+                @Override
+                public void onSuccess(LobbyInfo lobby) {
+                    Gdx.app.postRunnable(() -> {
+                        playerTable.clear();
 
-                    int currentCount = lobby.players != null ? lobby.players.size() : 0;
-                    playerCountLabel.setText("Players in Lobby: " + currentCount + " / " + lobby.maxPlayers);
+                        if (lobby.status.equals("running") && !alreadyStarted) {
+                            startGameLocally(level);
+                        }
 
-                    for (PlayerInLobby player : lobby.players.values()) {
-                        StringBuilder labelText = new StringBuilder();
-                        if (lobby.isHost(player.uid)) labelText.append("* ");
-                        labelText.append(player.displayName);
-                        if (player.uid.equals(currentUid)) labelText.append(" (You)");
+                        int currentCount = lobby.players != null ? lobby.players.size() : 0;
+                        playerCountLabel.setText("Players in Lobby: " + currentCount + " / " + lobby.maxPlayers);
 
-                        Label nameLabel = new Label(labelText.toString(), getSkin());
-                        Label readyLabel = new Label(Boolean.TRUE.equals(player.isReady) ? " Ready" : " Not Ready", getSkin());
+                        for (PlayerInLobby player : lobby.players.values()) {
+                            StringBuilder labelText = new StringBuilder();
+                            if (lobby.isHost(player.uid)) labelText.append("* ");
+                            labelText.append(player.displayName);
+                            if (player.uid.equals(currentUid)) labelText.append(" (You)");
 
-                        Table row = new Table();
-                        row.add(nameLabel).left().padRight(10);
-                        row.add(readyLabel).left();
-                        playerTable.add(row).padBottom(5).row();
-                    }
+                            Label nameLabel = new Label(labelText.toString(), getSkin());
+                            Label readyLabel = new Label(Boolean.TRUE.equals(player.isReady) ? " Ready" : " Not Ready", getSkin());
 
-                    // Status display
-                    if (currentCount < lobby.maxPlayers) {
-                        statusLabel.setText("Waiting for players...");
-                    } else {
-                        statusLabel.setText("");
-                    }
+                            Table row = new Table();
+                            row.add(nameLabel).left().padRight(10);
+                            row.add(readyLabel).left();
+                            playerTable.add(row).padBottom(5).row();
+                        }
 
-                    // Update displayed level for all clients
-                    level = lobby.level != null ? lobby.level : 1;
-                    selectedLevel.setText(String.valueOf(level));
-                    selectedLevel.setDisabled(!isHost);
+                        // Status display
+                        if (currentCount < lobby.maxPlayers) {
+                            statusLabel.setText("Waiting for players...");
+                        } else {
+                            statusLabel.setText("");
+                        }
 
-                    // Show "Start Game" if current user is host and lobby is full
-                    startGameButton.setVisible(isHost && lobby.isAllPlayersReady());
-                    startGameButton.setDisabled(level < 1 || level > Constants.LEVELS_COUNT);
-                });
-            }
+                        // Update displayed level for all clients
+                        level = lobby.level != null ? lobby.level : 1;
+                        selectedLevel.setText(String.valueOf(level));
+                        selectedLevel.setDisabled(!isHost);
 
-            @Override
-            public void onError(Exception e) {
-                System.err.println("Error listening to lobby: " + e.getMessage());
-            }
-        });
+                        // Show "Start Game" if current user is host and lobby is full
+                        startGameButton.setVisible(isHost && lobby.isAllPlayersReady());
+                        startGameButton.setDisabled(level < 1 || level > Constants.LEVELS_COUNT);
+                    });
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    System.err.println("Error listening to lobby: " + e.getMessage());
+                    leaveLobby();
+                }
+            });
+        }
+        // First delay, then interval in seconds
+    }, 0, 60);
     }
 
     private void levelListener() {
@@ -199,11 +216,11 @@ public class GameLobbyWaitingView extends BaseScreen {
         });
     }
 
-
     private void startGameLocally(int level) {
         GamePlayView view = new GamePlayView(level, true, lobby);
         Gdx.app.postRunnable(() -> {
             game.setView(view);
+            alreadyStarted = true;
         });
     }
 
@@ -219,5 +236,13 @@ public class GameLobbyWaitingView extends BaseScreen {
                 System.err.println("Failed to start game: " + e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (lobbyPingTask != null) {
+            lobbyPingTask.cancel();
+        }
     }
 }

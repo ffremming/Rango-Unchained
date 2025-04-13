@@ -11,6 +11,7 @@ public class LobbyInfo {
     public boolean isPublic;
     public int maxPlayers = 4;
     public Integer level;
+    public Long timeInState;
     public Map<String, PlayerInLobby> players = new HashMap<>();
 
     // Default constructor for Firebase deserialization
@@ -25,6 +26,7 @@ public class LobbyInfo {
         this.isPublic = isPublic;
         this.maxPlayers = maxPlayers;
         this.level = null;
+        this.timeInState = System.currentTimeMillis();
         this.players.put(host.uid, new PlayerInLobby(host));
     }
 

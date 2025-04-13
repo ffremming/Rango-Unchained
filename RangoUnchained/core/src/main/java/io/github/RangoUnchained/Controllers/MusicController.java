@@ -49,14 +49,12 @@ public class MusicController {
 
     }
 
-    public void changeVolume(int volume){
+    public void changeVolume(float volume){
         activeSong.setVolume(volume);
     }
-
-    public void pauseMusic() {
-        activeSong.pause();
+    public float getVolume(){
+        return activeSong.getVolume();
     }
-
     public void playMusic() {
         activeSong.play();
         activeSong.setVolume(0.2f);

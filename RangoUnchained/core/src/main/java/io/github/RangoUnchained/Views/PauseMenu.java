@@ -1,8 +1,12 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -54,11 +58,30 @@ public class PauseMenu extends Stage {
                 table.row();
             }
         }
-
         table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
         table.row();
 
+        Table bottomTable = new Table();
+        bottomTable.setFillParent(true);
+        bottomTable.bottom().padBottom(20);
+
+        Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
+        volumeSlider.setValue(game.getVolume());
+        volumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float newVolume = volumeSlider.getValue();
+                game.setVolume(newVolume);
+            }
+        });
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = GameController.getFont();
+        Label volumeLabel = new Label("Volume: ", labelStyle);
+        bottomTable.add(volumeLabel);
+        bottomTable.add(volumeSlider);
+
         addActor(table);
+        addActor(bottomTable);
     }
 
     public void togglePause() {

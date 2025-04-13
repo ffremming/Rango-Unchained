@@ -96,6 +96,10 @@ public class GameController extends Game {
         return currentUserInfo;
     }
 
+    public float getVolume() {return MusicController.getInstance().getVolume();}
+
+    public void setVolume(float volume) {MusicController.getInstance().changeVolume(volume);}
+
     @Override
     public void dispose(){
         batch.dispose();

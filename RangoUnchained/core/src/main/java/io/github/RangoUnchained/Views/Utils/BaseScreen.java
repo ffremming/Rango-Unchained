@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
+import io.github.RangoUnchained.Controllers.MusicController;
 
 public abstract class BaseScreen extends ScreenAdapter {
 
@@ -66,6 +66,10 @@ public abstract class BaseScreen extends ScreenAdapter {
         viewport.apply();
         stage.act(delta);
         stage.draw();
+    }
+
+    public MusicController.MusicKey getMusicKey(){
+        return MusicController.MusicKey.DEFAULT;
     }
 
 

@@ -6,20 +6,22 @@ import com.badlogic.gdx.audio.Music;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Screen;
-
-import io.github.RangoUnchained.Views.GameOverView;
-import io.github.RangoUnchained.Views.GamePlayView;
-import io.github.RangoUnchained.Views.MainMenuView;
+import io.github.RangoUnchained.Views.Utils.BaseScreen;
 
 public class MusicController {
 
     private static MusicController instance;
     private Music activeSong;
     private float currentVolume = 0.2f;
-    private HashMap<Class<? extends Screen>, Music> viewToMusic;
+    private HashMap<MusicKey, Music> keyToMusic;
+
+    public enum MusicKey {
+        DEFAULT,
+        GAMEPLAY
+    }
 
     private MusicController( ) {
-        viewToMusic = new HashMap<>();
+        keyToMusic = new HashMap<>();
         initializeMusic();
     }
 
@@ -32,14 +34,17 @@ public class MusicController {
 
     private void initializeMusic(){
         Music music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_1.mp3"));
-        viewToMusic.put(GamePlayView.class, music);
-        music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_2.mp3"));
-        viewToMusic.put(GameOverView.class, music);
-        viewToMusic.put(MainMenuView.class, music);
+        keyToMusic.put(MusicKey.GAMEPLAY, music);
+        music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_3.mp3"));
+        keyToMusic.put(MusicKey.DEFAULT, music);
     }
 
     protected void changeMusic(Screen view){
-        Music newSong = viewToMusic.get(view.getClass());
+        Gdx.app.log("MusicController", "Changing music" + view.getClass());
+        MusicKey key = ((BaseScreen) view).getMusicKey();
+        Gdx.app.log("MusicController"," " + key);
+        Music newSong = keyToMusic.get(key);
+
         if (activeSong != null && activeSong.equals(newSong) || newSong == null) {
             return;
         } if (activeSong != null) {
@@ -47,16 +52,17 @@ public class MusicController {
         }
         activeSong = newSong;
         playMusic();
-
     }
 
     public void changeVolume(float volume){
         currentVolume = volume;
         activeSong.setVolume(currentVolume);
     }
+
     public float getVolume(){
         return activeSong.getVolume();
     }
+
     public void playMusic() {
         activeSong.play();
         activeSong.setVolume(currentVolume);

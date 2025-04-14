@@ -5,15 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
 import io.github.RangoUnchained.Model.level.GameLevel;
 
 public class HintUtil {
 
-    public static String hint = "";
+    public static String hint;
 
     public static Map<Integer, ArrayList<String>> hints = new HashMap<>();
 
-    public static void setHints() {
+    public static void initializeHints() {
         hints = new HashMap<>();
 
         // Scenario 1: Early death with low score
@@ -65,16 +67,20 @@ public class HintUtil {
         return hint;
     }
 
-    // Shoot balls by clicking shoot - Kommer hvis du dør fort uten å ta noen baller
-    // Pick up power ups - Kommer etter at power up har spawna, men du døde
-    // Avoid debuffs - Kommer etter å dø til debuff
-    // Finish one ball before starting the next - Kommer hvis du har skutt baller, men dør fort
-    // Have patience - Når du nesten er ferdig
-    public static void setHint(double timer, int score) {
-        System.out.println(timer + " " + score);
-        HintUtil.setHints();
-        Random random = new Random();
+    public static void setHint(GameLevel level) {
 
+        HintUtil.initializeHints();
+        Random random = new Random();
+        double timer = level.getTimer().getTime();
+        int score = level.getScore();
+
+        // If powerups spawned but were not yet picked up
+        for (Entity entity : level.getEntities()) {
+            if (entity instanceof PowerUpEntity) {
+                hint = hints.get(4).get(random.nextInt(hints.get(4).size()));
+                return;
+            }
+        }
         // Early death with low points
         if (timer < 15 && score < 5) {
             hint = hints.get(1).get(random.nextInt(hints.get(1).size()));
@@ -86,10 +92,6 @@ public class HintUtil {
         // TODO: Death after collecting debuff
         else if (timer == 0) {
             hint = hints.get(3).get(random.nextInt(hints.get(3).size()));
-        }
-        //TODO: Death after not picking up power-up
-        else if (timer == 1) {
-            hint = hints.get(4).get(random.nextInt(hints.get(4).size()));
         }
         // Death after long time
         else if (timer > 20) {

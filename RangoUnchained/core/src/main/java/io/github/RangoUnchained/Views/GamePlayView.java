@@ -404,8 +404,8 @@ public class GamePlayView extends BaseScreen {
             );
         } else {
             Gdx.app.postRunnable(() -> {
+                HintUtil.setHint(controller.getLevel());
                 if (controller.isCompleted()) {
-                    HintUtil.setHint(controller.getLevel().getTimer().getTime(), controller.getLevel().getScore());
                     game.setView(new GameOverView(controller.getLevel().levelNumber, true));
                 } else {
                     game.setView(new GameOverView(controller.getLevel().levelNumber, false));

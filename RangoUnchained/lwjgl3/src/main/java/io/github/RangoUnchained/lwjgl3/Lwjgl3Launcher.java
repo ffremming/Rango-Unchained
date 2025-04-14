@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.DummyFirebaseManager;
+import io.github.RangoUnchained.Model.Firebase.DummyRealtimeDBManager;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
@@ -16,8 +17,8 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3Application createApplication() {
         // Platform specific FirebaseManager implementation
-        DummyFirebaseManager firebaseManager = new DummyFirebaseManager();
-        GameController.getInstance().setFirebaseManager(firebaseManager);
+        GameController.getInstance().setFirebaseManager(new DummyFirebaseManager());
+        GameController.getInstance().setMultiplayerManager(new DummyRealtimeDBManager());
         return new Lwjgl3Application(GameController.getInstance(), getDefaultConfiguration());
     }
 

@@ -3,6 +3,8 @@ package io.github.RangoUnchained.Model.level;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
+
 import java.util.ArrayList;
 
 import io.github.RangoUnchained.Controllers.LevelController;
@@ -169,13 +171,15 @@ public class GameLevel {
     }
 
     public void removeEntities(ArrayList<Entity> removalEntities) {
+        World world = LevelController.getInstance().getWorld();
+        if (world == null) return;
 
         for (Entity e : removalEntities){
 
             if (e.getComponent(BodyComponent.class)!= null){
                 Body body = ((BodyComponent) e.getComponent(BodyComponent.class)).getBody();
                 if (body != null) {
-                    LevelController.getInstance().getWorld().destroyBody(body);
+                    world.destroyBody(body);
                 }
             }
         }
@@ -213,7 +217,11 @@ public class GameLevel {
     }
 
     public void dispose() {
-        removeEntities(entities);
+        try {
+            removeEntities(new ArrayList<>(entities));
+        } catch (Exception e) {
+            System.err.println("Error during GameLevel.dispose(): " + e.getMessage());
+        }
     }
 
     public void initializeCheckpoint() {

@@ -7,7 +7,7 @@ import java.util.List;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
-import io.github.RangoUnchained.Model.Firebase.ScoreInfo;
+import io.github.RangoUnchained.Model.Firebase.Utils.ScoreInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 

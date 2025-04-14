@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.github.RangoUnchained.Model.Firebase.Utils.ScoreInfo;
+import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
+
 public class DummyFirebaseManager implements FirebaseManager {
     private String currentEmail = null;
     private String currentUid = null;

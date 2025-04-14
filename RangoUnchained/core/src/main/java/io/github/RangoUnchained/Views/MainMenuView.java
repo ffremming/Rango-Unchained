@@ -1,10 +1,12 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import io.github.RangoUnchained.Controllers.GameController;
-import io.github.RangoUnchained.Model.Firebase.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 
@@ -47,13 +49,16 @@ public class MainMenuView extends BaseScreen {
         table.add(ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(), game,
             () -> game.setView(new ScoreboardView()))).center().padBottom(20);
         table.row();
-        // Add log out button if user is logged in
+        // Add extra options for logged in users
         if (game.getIsLoggedIn()) {
-            table.add(ButtonFactory.createButton("Change username", 300, 60, getSkin(), game,
-                () -> game.setView(new CreateUsernameView()))).center().padBottom(50);
+            table.add(ButtonFactory.createButton("Multiplayer", 300, 60, getSkin(), game,
+                () -> game.setView(new GameLobbyView()))).center().padBottom(50);
             table.row();
             // Display logged in user
-            table.add(new Label("Logged in as: " + game.getCurrentUserInfo().getDisplayName(), labelStyle)).padBottom(20);
+            table.add(new Label("Logged in as: " + game.getCurrentUser().getDisplayName(), labelStyle)).padBottom(20);
+            table.row();
+            table.add(ButtonFactory.createButton("Change username", 300, 60, getSkin(), game,
+                () -> game.setView(new CreateUsernameView()))).center().padBottom(20);
             table.row();
             table.add(ButtonFactory.createButton("Log Out", 300, 60, getSkin(), game, () -> {
                 game.getFirebaseManager().signOut();
@@ -61,7 +66,27 @@ public class MainMenuView extends BaseScreen {
                 game.setView(new MainMenuView());
             })).center();
         }
+
+        Table bottomTable = new Table();
+        bottomTable.setFillParent(true);
+        bottomTable.bottom().padBottom(20);
+
+        Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
+        volumeSlider.setValue(game.getVolume());
+        volumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float newVolume = volumeSlider.getValue();
+                game.setVolume(newVolume);
+            }
+        });
+        Label volumeLabel = new Label("Volume: ", labelStyle);
+        volumeLabel.setFontScale(1.3f);
+        bottomTable.add(volumeLabel);
+        bottomTable.add(volumeSlider);
+
         // Add table to stage
         stage.addActor(table);
+        stage.addActor(bottomTable);
     }
 }

@@ -1,13 +1,11 @@
 package io.github.RangoUnchained.Model.ContactStrategies;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
-import io.github.RangoUnchained.Model.Components.TutorialComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
@@ -27,21 +25,15 @@ public class BallSplitting implements ContactStrategy{
 
     public void ProjectileBallContact(CollisionEvent collisionEvent){
 
-       
-
-        Gdx.app.log("Projectile","fjfj");
-
         BallEntity ball;
 
         if (collisionEvent.entityA instanceof BallEntity) {
-            ball = (BallEntity) collisionEvent.entityA;;
+            ball = (BallEntity) collisionEvent.entityA;
         } else {
             ball = (BallEntity) collisionEvent.entityB;
         }
 
         SpriteComponent spriteComponent = (SpriteComponent) ball.getComponent(SpriteComponent.class);
-
-
         StatComponent statComponent = (StatComponent) ball.getComponent(StatComponent.class);
 
         float xPos = spriteComponent.getSprite().getX();
@@ -53,7 +45,6 @@ public class BallSplitting implements ContactStrategy{
         LevelController.getInstance().handleRemovalRequests(ball);
         LevelController.getInstance().getSystem(TutorialSystem.class).flagBallKilled();
         BallComponent ballcomp = (BallComponent) ball.getComponent(BallComponent.class);
-        
 
         String spawnName = "Ball " + ballcomp.getTypeName();
 

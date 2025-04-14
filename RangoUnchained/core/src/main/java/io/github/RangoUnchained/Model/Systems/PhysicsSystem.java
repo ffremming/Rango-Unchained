@@ -1,6 +1,5 @@
 package io.github.RangoUnchained.Model.Systems;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -60,11 +59,11 @@ public class PhysicsSystem implements System, ContactStrategy {
 
 
     private void handleBallFloorCollision(CollisionEvent collisionEvent) {
-        Gdx.app.log("contact","ballfloor");
+//        Gdx.app.log("contact","ballfloor");
         BallEntity ball;
 
         if (collisionEvent.entityA instanceof BallEntity) {
-            ball = (BallEntity) collisionEvent.entityA;;
+            ball = (BallEntity) collisionEvent.entityA;
         } else {
             ball = (BallEntity) collisionEvent.entityB;
         }

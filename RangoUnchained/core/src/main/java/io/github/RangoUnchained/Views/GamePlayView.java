@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -23,9 +22,10 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
+import io.github.RangoUnchained.Model.Firebase.Utils.LobbyInfo;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.TutorialSystem;
-import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.HintUtil;
@@ -34,36 +34,53 @@ public class GamePlayView extends BaseScreen {
 
     private Touchpad touchpad;
     private LevelController controller;
-    private Box2DDebugRenderer box2DDebugRenderer;
     private PauseMenu pauseMenu;
+    private boolean isMultiplayer = false;
+    private LobbyInfo lobby;
+    private final int levelNumber;
+    private boolean hasSentFinishData;
+    private boolean shouldInitialize = true;
+    private boolean initialized = false;
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
+        this.levelNumber = levelNumber;
+    }
 
-        LevelController.resetInstance();
-        controller = LevelController.getInstance();
-        System.out.println("---------------------------------------------");
-        System.out.println(levelNumber);
-        controller.initializeSystems(levelNumber);
-        pauseMenu = new PauseMenu(game, levelNumber);
-        Gdx.app.log("GamePlayView: " + levelNumber, "load");
-        box2DDebugRenderer = new Box2DDebugRenderer();
-
+    // Constructor for multiplayer
+    public GamePlayView(int levelNumber, boolean isMultiplayer, LobbyInfo lobby) {
+        super(GameController.getInstance());
+        this.levelNumber = levelNumber;
+        this.isMultiplayer = isMultiplayer;
+        this.lobby = lobby;
     }
 
     @Override
     public void show() {
         super.show();
 
+        // Safely initialize a new level
+        if (shouldInitialize) {
+            shouldInitialize = false;
+            Gdx.app.postRunnable(() -> {
+                controller = LevelController.getInstance();
+                controller.initializeSystems(levelNumber);
+                // Initialize pause menu based on multiplayer flag
+                pauseMenu = isMultiplayer ? new PauseMenu(game, levelNumber, lobby) : new PauseMenu(game, levelNumber);
+                controller.getSystem(InputSystem.class).setTouchpad(touchpad);
+                initialized = true;
+            });
+        }
+
         createUI();
-        controller.getSystem(InputSystem.class).setTouchpad(touchpad);
     }
 
     @Override
     public void render(float delta) {
+        // Skip rendering if not initialized yet
+        if (!initialized) return;
+
         try{
-
-
         // Clear the screen and update camera
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         camera.update();
@@ -71,48 +88,34 @@ public class GamePlayView extends BaseScreen {
 
         drawGame();
 
-        if (!pauseMenu.isPaused()) {
+        // Run game logic only if not paused or multiplayer
+        if (!pauseMenu.isPaused() || isMultiplayer) {
             // Update game logic
-            controller.step(1 / 60f, 6, 2);
+            controller.step(delta, 6, 2);
             controller.update(delta);
-
-
+        }
+        if (!pauseMenu.isPaused()) {
             getButtonByName("Pause").setVisible(true);
-
-            // Update and draw the UI stage on top of the game
             stage.act(delta);
             stage.draw();
-
-            if (LevelController.getInstance().isGameOver()) {
-                HintUtil.setHint(controller.getLevel().getTimer().getTime(), controller.getLevel().getScore());
-                if (LevelController.getInstance().isCompleted()){
-                    game.setView(new GameOverView(controller.getLevel().levelNumber,true));
-                } else {
-                    game.setView(new GameOverView(controller.getLevel().levelNumber,false));
-                }
-
-            }
-
-
         } else {
-            // Update and draw the pause menu on top of everything else
-
             pauseMenu.act(delta);
             pauseMenu.draw();
             getButtonByName("Pause").setVisible(false);
-            }
-
-        } catch (NullPointerException e) {
-            //rendering must complete before the game is over
         }
 
+        // Game over
+            if (controller.isGameOver()) {
+                checkGameOver();
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Rendering error: " + e.getMessage());
+        }
     }
-
 
     private void drawGame() {
         batch.begin();
 
-        //controller.getPhysicsSystem().getWorld().step(1/60f, 6, 2);
         for (Entity e : controller.getEntities()) {
 
             BodyComponent comp = (BodyComponent)e.getComponent(BodyComponent.class);
@@ -124,8 +127,6 @@ public class GamePlayView extends BaseScreen {
             sprite.draw(batch);
         }
 
-        //box2DDebugRenderer.render(controller.getWorld(), camera.combined);
-
         updateUI();
 
         batch.end();
@@ -134,7 +135,13 @@ public class GamePlayView extends BaseScreen {
 
     private void createUI() {
         TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
-            () -> controller.handleShoot());
+            () -> {
+                if (controller != null) {
+                    controller.handleShoot();
+                } else {
+                    System.out.println("Shoot ignored: controller is null");
+                }
+            });
         TextButton pauseButton = ButtonFactory.createButton("Pause", 150, 60, getSkin(), game,
             () -> pauseMenu.togglePause());
 
@@ -148,9 +155,6 @@ public class GamePlayView extends BaseScreen {
 
     private void updateUI(){
         try {
-
-
-
             Label scoreLabel = stage.getRoot().findActor("scoreLabel");
             if (scoreLabel != null) {
                 int newScore = LevelController.getInstance().getScore();
@@ -163,9 +167,6 @@ public class GamePlayView extends BaseScreen {
                 double time = LevelController.getInstance().getLevel().getTimer().getTime();
                 timeLabel.setText(String.format("%.1f s", time));
             }
-
-
-
             Label tutorialLabel = stage.getRoot().findActor("tutorialLabel");
             if (tutorialLabel != null) {
                 TutorialSystem tutorialSystem = LevelController.getInstance().getSystem(TutorialSystem.class);
@@ -182,8 +183,6 @@ public class GamePlayView extends BaseScreen {
             System.out.println("Label not found: " + e.getMessage());
         }
     }
-
-
 
     private void updatePowerupUI() {
         ArrayList<Integer> powerupList = LevelController.getInstance().getPlayerActivePowerup();
@@ -222,9 +221,7 @@ public class GamePlayView extends BaseScreen {
                 powerups.add(powerupImage).size(size, size).padRight(5);
                 }
         }
-
         stage.addActor(powerups);
-
     }
 
     private void updateHeartsUI() {
@@ -275,8 +272,6 @@ public class GamePlayView extends BaseScreen {
         stage.addActor(tutorialLabel);
     }
 
-
-
     private void createScoreLabel() {
         Skin skin = getSkin();
 
@@ -311,7 +306,6 @@ public class GamePlayView extends BaseScreen {
 
         // Add the table to the stage
         stage.addActor(timeTable);
-
     }
 
     private Table createTable(Button button) {
@@ -359,11 +353,82 @@ public class GamePlayView extends BaseScreen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
-    public void hide() {
-        LevelController.resetInstance();
-        controller = null;
-        pauseMenu = null;
+    private void checkGameOver() {
+        if (isMultiplayer && !hasSentFinishData && lobby != null) {
+            hasSentFinishData = true;
+
+            double time = 0;
+            int score = 0;
+
+            // Get the player's score and playtime
+            if (LevelController.getInstance().getLevel() != null &&
+                LevelController.getInstance().getLevel().getTimer() != null) {
+                time = LevelController.getInstance().getLevel().getTimer().getTime();
+                score = controller.getScore();
+            }
+
+            String uid = game.getCurrentUser().uid;
+            MultiplayerManager manager = game.getMultiplayerManager();
+
+            // Set player finish score and time)
+            manager.setPlayerFinishData(lobby.lobbyId, uid, score, (long) time,
+                new MultiplayerManager.Callback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        // Call endGame after successfully setting player finish data
+                        manager.endGame(lobby.lobbyId, uid, new MultiplayerManager.Callback<Void>() {
+                            @Override
+                            public void onSuccess(Void r) {
+                                Gdx.app.postRunnable(() ->
+                                    game.setView(new MultiplayerScoreboardView(lobby))
+                                );
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                System.err.println("EndGame failed: " + e.getMessage());
+                                Gdx.app.postRunnable(() ->
+                                    game.setView(new MultiplayerScoreboardView(lobby))
+                                );
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Gdx.app.postRunnable(() ->
+                            game.setView(new MultiplayerScoreboardView(lobby))
+                        );
+                    }
+                }
+            );
+        } else {
+            Gdx.app.postRunnable(() -> {
+                if (controller.isCompleted()) {
+                    HintUtil.setHint(controller.getLevel().getTimer().getTime(), controller.getLevel().getScore());
+                    game.setView(new GameOverView(controller.getLevel().levelNumber, true));
+                } else {
+                    game.setView(new GameOverView(controller.getLevel().levelNumber, false));
+                }
+            });
+        }
     }
 
+    @Override
+    public void hide() {
+        super.hide();
+        dispose();
+    }
+
+    @Override
+    public void dispose() {
+        Gdx.input.setInputProcessor(null);
+        if (controller != null) {
+            controller.dispose();
+            controller = null;
+        }
+        LevelController.resetInstance();
+        pauseMenu = null;
+        super.dispose();
+    }
 }

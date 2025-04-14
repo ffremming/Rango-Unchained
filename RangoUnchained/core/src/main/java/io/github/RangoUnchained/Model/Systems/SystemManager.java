@@ -56,6 +56,7 @@ public class SystemManager {
         HealthSystem healthSystem = new HealthSystem();
         TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
+        AudioSystem audioSystem = new AudioSystem(contactSystem);
         AnimationSystem animationSystem = new AnimationSystem();
 
         world = physicsSystem.getWorld();
@@ -64,6 +65,7 @@ public class SystemManager {
         systems.add(physicsSystem);
         systems.add(inputSystem);
         systems.add(animationSystem);
+        systems.add(audioSystem);
 
         systems.add(lifeTimeSystem);
         systems.add(transformationSystem);
@@ -77,6 +79,18 @@ public class SystemManager {
      * is needed for the entityfactory
      */
     public World getWorld() {
-        return world;
+        PhysicsSystem physicsSystem = getSystem(PhysicsSystem.class);
+        return physicsSystem != null ? physicsSystem.getWorld() : null;
+    }
+
+    public void dispose() {
+        if (systems != null) {
+            systems.clear();
+            systems = null;
+        }
+        if (world != null) {
+            world.dispose();
+            world = null;
+        }
     }
 }

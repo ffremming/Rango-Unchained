@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.MusicController;
 
-public abstract class BaseScreen extends ScreenAdapter implements MusicProvider {
+public abstract class BaseScreen extends ScreenAdapter {
 
     protected final GameController game;
     protected final SpriteBatch batch;
@@ -68,7 +68,6 @@ public abstract class BaseScreen extends ScreenAdapter implements MusicProvider 
         stage.draw();
     }
 
-    @Override
     public MusicController.MusicKey getMusicKey(){
         return MusicController.MusicKey.DEFAULT;
     }

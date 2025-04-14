@@ -6,7 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Screen;
-import io.github.RangoUnchained.Views.Utils.MusicProvider;
+import io.github.RangoUnchained.Views.Utils.BaseScreen;
 
 public class MusicController {
 
@@ -40,7 +40,9 @@ public class MusicController {
     }
 
     protected void changeMusic(Screen view){
-        MusicKey key = ((MusicProvider) view).getMusicKey();
+        Gdx.app.log("MusicController", "Changing music" + view.getClass());
+        MusicKey key = ((BaseScreen) view).getMusicKey();
+        Gdx.app.log("MusicController"," " + key);
         Music newSong = keyToMusic.get(key);
 
         if (activeSong != null && activeSong.equals(newSong) || newSong == null) {

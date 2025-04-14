@@ -55,4 +55,8 @@ public class AudioLoader {
         sounds.add(Gdx.audio.newSound(Gdx.files.internal("SoundEffects/BalloonBounce.mp3")));
         audioMap.put(AudioComponent.ActionType.BOUNCE, sounds);
     }
+
+    public void dispose(){
+        audioMap.forEach((actionType, sounds) -> sounds.forEach(Sound::dispose));
+    }
 }

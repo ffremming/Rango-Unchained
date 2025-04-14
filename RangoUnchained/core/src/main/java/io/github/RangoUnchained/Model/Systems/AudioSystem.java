@@ -25,15 +25,17 @@ public class AudioSystem implements System {
 
     private static final long COLLISION_SOUND_COOLDOWN_MS = 175;
     private static final int MAX_CONCURRENT_SOUNDS = 5;
-    private static final float SOUND_EXPIRE_TIME = 1.0f;
+    private static final float SOUND_EXPIRE_TIME = 2f;
 
-    private static final float VOLUME_BOUNCE = 0.5f;
-    private static final float VOLUME_POP = 10f;
-    private static final float VOLUME_MOVE = 1.5f;
-    private static final float VOLUME_SHOOT = 0.7f;
+    private static final float VOLUME_BOUNCE = 1f;
+    private static final float VOLUME_POP = 20f;
+    private static final float VOLUME_MOVE = 3f;
+    private static final float VOLUME_SHOOT = 1.4f;
 
-    private static final float DELAY_WALKING = 0.5f;
-    private static final float DELAY_SHOOTING = 1.2f;
+    private static final float DELAY_WALKING = 1f;
+    private static final float DELAY_SHOOTING = 2.4f;
+
+    private static float globalVolumeMultiplier;
 
 
     private final ComponentFilter filter = new ComponentFilter();
@@ -42,15 +44,16 @@ public class AudioSystem implements System {
     private long lastCollisionSoundTime = 0;
     private final Queue<PlayingSound> activeSounds = new LinkedList<>();
 
-
     private static class PlayingSound {
         public final Sound sound;
         public final long soundId;
+        public final float baseVolume;
         public final AudioComponent.ActionType actionType;
-        public PlayingSound(Sound sound, long soundId, AudioComponent.ActionType actionType) {
+        public PlayingSound(Sound sound, long soundId, AudioComponent.ActionType actionType, float baseVolume) {
             this.sound = sound;
             this.soundId = soundId;
             this.actionType = actionType;
+            this.baseVolume = baseVolume;
         }
     }
 
@@ -69,9 +72,10 @@ public class AudioSystem implements System {
         }
     }
 
-    public AudioSystem(ContactSystem centralContactListener){
+    public AudioSystem(ContactSystem centralContactListener, float volume){
         filter.require(AudioComponent.class);
         audioLoader = AudioLoader.getInstance();
+        globalVolumeMultiplier = volume;
 
         centralContactListener.subscribe(
             BallEntity.class, FloorEntity.class,
@@ -131,11 +135,12 @@ public class AudioSystem implements System {
         }
 
         //Adds the new sound to the active sounds.
+        float adjustedVolume = volume * globalVolumeMultiplier;
         Sound sound = sounds.get(random.nextInt(sounds.size()));
-        long soundId = sound.play(volume);
+        long soundId = sound.play(adjustedVolume);
         Gdx.app.log("AudioSystem", "Playing sound: " + sound);
 
-        PlayingSound playing = new PlayingSound(sound, soundId, soundKey);
+        PlayingSound playing = new PlayingSound(sound, soundId, soundKey, volume);
         activeSounds.add(playing);
 
         Timer.schedule(new Timer.Task(){
@@ -174,6 +179,18 @@ public class AudioSystem implements System {
 
         }
 
+    }
+
+    public void setVolume(float multiplier) {
+        if (multiplier < 0f) {
+            multiplier = 0f;
+        }
+        globalVolumeMultiplier = multiplier;
+        // Update the volume of all currently active sounds.
+        for (PlayingSound ps : activeSounds) {
+            float adjustedVolume = ps.baseVolume * globalVolumeMultiplier;
+            ps.sound.setVolume(ps.soundId, adjustedVolume);
+        }
     }
 
     @Override

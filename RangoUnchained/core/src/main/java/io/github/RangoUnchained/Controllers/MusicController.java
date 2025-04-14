@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 import java.util.HashMap;
-import java.util.List;
 
 import com.badlogic.gdx.Screen;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
@@ -74,5 +73,7 @@ public class MusicController {
         if (activeSong != null){
             activeSong.dispose();
         }
+        keyToMusic.forEach((musicKey, music) -> music.dispose());
+        keyToMusic.clear();
     }
 }

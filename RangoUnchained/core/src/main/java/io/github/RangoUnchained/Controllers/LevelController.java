@@ -11,6 +11,7 @@ import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategies;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Systems.AudioSystem;
 import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
@@ -147,6 +148,8 @@ public class LevelController {
     public World getWorld() {
         return systemManager.getWorld();
     }
+
+    public AudioSystem getAudioSystem(){return systemManager != null ? systemManager.getAudioSystem() : null;}
 
     public <T extends System> T getSystem(Class<T> systemClass) {
         if (!isActive || systemManager == null) return null;

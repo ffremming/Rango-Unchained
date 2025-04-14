@@ -71,22 +71,43 @@ public class MainMenuView extends BaseScreen {
         bottomTable.setFillParent(true);
         bottomTable.bottom().padBottom(20);
 
+        Label volumeLabel = new Label("Volume: ", labelStyle);
+        volumeLabel.setFontScale(1.3f);
         Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
-        volumeSlider.setValue(game.getVolume());
+
+        volumeSlider.setValue(game.getMusicVolume());
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float newVolume = volumeSlider.getValue();
-                game.setVolume(newVolume);
+                game.setMusicVolume(newVolume);
             }
         });
-        Label volumeLabel = new Label("Volume: ", labelStyle);
-        volumeLabel.setFontScale(1.3f);
+
         bottomTable.add(volumeLabel);
         bottomTable.add(volumeSlider);
+
+        Label SFXLabel = new Label("Volume sfx: ", labelStyle);
+        SFXLabel.setFontScale(1.3f);
+        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
+
+        SFXSlider.setValue(game.getSFXVolume());
+        SFXSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float newVolume = SFXSlider.getValue();
+                game.setSFXVolume(newVolume);
+            }
+        });
+
+        bottomTable.row();
+        bottomTable.add(SFXLabel).pad(20);
+        bottomTable.add(SFXSlider);
 
         // Add table to stage
         stage.addActor(table);
         stage.addActor(bottomTable);
+
     }
+
 }

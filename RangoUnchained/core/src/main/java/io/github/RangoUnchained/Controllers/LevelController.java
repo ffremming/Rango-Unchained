@@ -145,7 +145,7 @@ public class LevelController {
     }
 
     public World getWorld() {
-        return getSystem(PhysicsSystem.class).getWorld();
+        return systemManager.getWorld();
     }
 
     public <T extends System> T getSystem(Class<T> systemClass) {

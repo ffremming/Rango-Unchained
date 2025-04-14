@@ -22,6 +22,6 @@ public class MoveRightStrategy implements TutorialStepStrategy {
 
     @Override
     public String getMessage() {
-        return "press D to move right";
+        return "use the joystick to move right";
     }
 }

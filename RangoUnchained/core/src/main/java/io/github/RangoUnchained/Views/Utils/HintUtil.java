@@ -22,42 +22,42 @@ public class HintUtil {
         ArrayList<String> earlyDeathHints = new ArrayList<>();
         earlyDeathHints.add("HINT: Click shoot to shoot the balls.\nHitting them will make them smaller and eventually destroy them.");
         earlyDeathHints.add("HINT: Try moving side to side early on to avoid getting trapped.");
-        earlyDeathHints.add("HINT: Don’t rush into the middle—observe the ball patterns first!");
+        earlyDeathHints.add("HINT: Don’t rush into the middle, observe the ball patterns first!");
         hints.put(1, earlyDeathHints);
 
         // Scenario 2: Decent score but sudden death
         ArrayList<String> decentScoreHints = new ArrayList<>();
-        decentScoreHints.add("HINT: Watch your corners—don’t get trapped when balls split.");
+        decentScoreHints.add("HINT: Watch your corners, don’t get trapped when balls split.");
         decentScoreHints.add("HINT: You're getting the hang of it! Now focus on dodging after ball splits.");
         decentScoreHints.add("HINT: Try clearing one side before engaging the other to avoid being overwhelmed.");
         hints.put(2, decentScoreHints);
 
         // Scenario 3: Death after collecting a debuff
         ArrayList<String> debuffDeathHints = new ArrayList<>();
-        debuffDeathHints.add("HINT: Not all pickups are helpful - some are debuffs!");
+        debuffDeathHints.add("HINT: Not all pickups are helpful, some are debuffs!");
         debuffDeathHints.add("HINT: If you pick up a debuff, prioritize dodging until the effect wears off.");
         hints.put(3, debuffDeathHints);
 
         // Scenario 4: Power-up spawned but wasnt picked up
         ArrayList<String> missedPowerupHints = new ArrayList<>();
-        missedPowerupHints.add("HINT: Grab power-ups when it's safe—they can make a huge difference!");
-        missedPowerupHints.add("HINT: A shield or speed boost might’ve saved you — don’t leave them behind.");
+        missedPowerupHints.add("HINT: Grab power, ups when it's safe, they can make a huge difference!");
+        missedPowerupHints.add("HINT: A shield or speed boost might’ve saved you, don’t leave them behind.");
         hints.put(4, missedPowerupHints);
 
         // Scenario 6: Long survival but chaotic death
         ArrayList<String> longSurvivalHints = new ArrayList<>();
         longSurvivalHints.add("HINT: Great endurance! Try to keep the screen clear before grabbing items.");
         longSurvivalHints.add("HINT: Too many balls? Split them slowly to stay in control. Patience is key.");
-        longSurvivalHints.add("HINT: The longer you last, the more careful you need to be with spacing and power-up timing.");
+        longSurvivalHints.add("HINT: The longer you last, the more careful you need to be with spacing and power, up timing.");
         hints.put(5, longSurvivalHints);
 
         // Scenario 7: General tips or motivational hints
         ArrayList<String> generalTips = new ArrayList<>();
-        generalTips.add("HINT: Every run teaches you something — keep practicing!");
+        generalTips.add("HINT: Every run teaches you something, keep practicing!");
         generalTips.add("HINT: Getting better? Try improving your split timing.");
         generalTips.add("HINT: Watch for patterns in the way balls bounce and split.");
         generalTips.add("HINT: Split balls when there's enough space to react to the new ones.");
-        generalTips.add("HINT: The smallest balls bounce low and fast—stay sharp!");
+        generalTips.add("HINT: The smallest balls bounce low and fast, stay sharp!");
         hints.put(6, generalTips);
     }
 

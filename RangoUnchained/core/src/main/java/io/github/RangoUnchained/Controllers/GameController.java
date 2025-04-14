@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import io.github.RangoUnchained.Model.Factories.AnimationLoader;
+import io.github.RangoUnchained.Model.Factories.AudioLoader;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
+import io.github.RangoUnchained.Model.Systems.AudioSystem;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
@@ -102,12 +105,15 @@ public class GameController extends Game {
 
     @Override
     public void dispose(){
+        super.dispose();
         batch.dispose();
         skin.dispose();
         font.dispose();
         if (currentView != null){
             currentView.dispose();
         }
+        AudioLoader.getInstance().dispose();
+        MusicController.getInstance().dispose();
     }
 }
 

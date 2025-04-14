@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.badlogic.gdx.Screen;
 
@@ -43,7 +44,7 @@ public class MusicController {
         if (activeSong != null && activeSong.equals(newSong) || newSong == null) {
             return;
         } if (activeSong != null) {
-            activeSong.dispose();
+            activeSong.stop();
         }
         activeSong = newSong;
         playMusic();
@@ -61,5 +62,11 @@ public class MusicController {
         activeSong.play();
         activeSong.setVolume(currentVolume);
         activeSong.setLooping(true);
+    }
+
+    public void dispose(){
+        if (activeSong != null){
+            activeSong.dispose();
+        }
     }
 }

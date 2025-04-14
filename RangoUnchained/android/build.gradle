@@ -84,7 +84,7 @@ dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
   implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
   implementation project(':core')
-  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
   // gdx-platform natives for multiple ABIs
   natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
@@ -104,12 +104,12 @@ dependencies {
   implementation("com.google.firebase:firebase-firestore")
   implementation 'com.google.firebase:firebase-database:21.0.0'
 
-  // Dependencies for font
+  // FreeType dependencies
   implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-  natives "com.badlogicgames.gdx:gdx-freetype:$gdxVersion:natives-armeabi-v7a"
-  natives "com.badlogicgames.gdx:gdx-freetype:$gdxVersion:natives-arm64-v8a"
-  natives "com.badlogicgames.gdx:gdx-freetype:$gdxVersion:natives-x86"
-  natives "com.badlogicgames.gdx:gdx-freetype:$gdxVersion:natives-x86_64"
+  natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+  natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+  natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+  natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 }
 
 // This task extracts the native .so files from the 'natives' configuration into the libs folder

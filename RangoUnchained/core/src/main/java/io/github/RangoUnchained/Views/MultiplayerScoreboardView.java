@@ -73,11 +73,11 @@ public class MultiplayerScoreboardView extends BaseScreen {
         }
 
         scoreboardTable.row().padTop(40);
-        scoreboardTable.add(ButtonFactory.createButton("Back to lobby", 300, 60, getSkin(), game,
-            () -> game.setView(new GameLobbyWaitingView(lobby)))).colspan(2).padBottom(20).row();
+        ButtonFactory.createButton("Back to lobby", 300, 60, getSkin(), game,
+            () -> game.setView(new GameLobbyWaitingView(lobby)), "customLoginStyle", scoreboardTable);
 
-        scoreboardTable.add(ButtonFactory.createButton("Back to menu", 300, 60, getSkin(), game,
-            this::backToMenu)).colspan(2);
+        ButtonFactory.createButton("Back to menu", 300, 60, getSkin(), game,
+            this::backToMenu, "customLoginStyle", scoreboardTable);
     }
 
     private void addLobbyListener() {

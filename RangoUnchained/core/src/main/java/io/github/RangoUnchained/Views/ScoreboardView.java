@@ -1,5 +1,8 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -23,6 +26,16 @@ public class ScoreboardView extends BaseScreen {
     }
 
     private void createUI() {
+        // Add background image
+        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
+        Image backgroundImage = new Image(backgroundTexture);
+
+        // Make the image fill the screen
+        backgroundImage.setFillParent(true);
+
+        // Add to stage first so it's behind everything else
+        stage.addActor(backgroundImage);
+        
         Label titleLabel = new Label("High Scores", getSkin());
 
         Table table = new Table();
@@ -64,9 +77,8 @@ public class ScoreboardView extends BaseScreen {
                     }
                 }
 
-                table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-                        () -> game.setView(new MainMenuView())))
-                    .center().padTop(20);
+                ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
+                        () -> game.setView(new MainMenuView()), "customLoginStyle", table);
             }
 
             @Override
@@ -77,9 +89,8 @@ public class ScoreboardView extends BaseScreen {
                 table.add(new Label("Error loading scores: " + e.getMessage(), getSkin()))
                     .center().padBottom(10);
                 table.row();
-                table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-                        () -> game.setView(new MainMenuView())))
-                    .center().padTop(20);
+                ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
+                        () -> game.setView(new MainMenuView()), "customLoginStyle", table);
             }
         });
 

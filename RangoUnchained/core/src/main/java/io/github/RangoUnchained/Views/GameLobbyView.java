@@ -50,7 +50,7 @@ public class GameLobbyView extends BaseScreen {
         leftTable.add(publicCheckBox).padBottom(20).row();
 
         // Create lobby button
-        leftTable.add(ButtonFactory.createButton("Create Lobby", 300, 60, getSkin(), game, () -> {
+        ButtonFactory.createButton("Create Lobby", 300, 60, getSkin(), game, () -> {
             int maxPlayers;
             try {
                 maxPlayers = Integer.parseInt(maxPlayersField.getText().trim());
@@ -60,7 +60,7 @@ public class GameLobbyView extends BaseScreen {
             }
             boolean isPublic = publicCheckBox.isChecked();
             createLobby(currentUser, isPublic, maxPlayers);
-        })).center().padBottom(30).row();
+        }, "customLoginStyle", leftTable);
 
         // Manual join by code
         leftTable.add(new Label("Or join by code:", getSkin())).center().padBottom(10).row();
@@ -68,8 +68,8 @@ public class GameLobbyView extends BaseScreen {
         TextField codeField = new TextField("", getSkin());
         leftTable.add(joinLabel).padBottom(5).row();
         leftTable.add(codeField).width(200).padBottom(10).row();
-        leftTable.add(ButtonFactory.createButton("Join Lobby", 300, 60, getSkin(), game,
-            () -> joinLobby(codeField.getText()))).padBottom(40).row();
+        ButtonFactory.createButton("Join Lobby", 300, 60, getSkin(), game,
+            () -> joinLobby(codeField.getText()), "customLoginStyle", leftTable);
 
         // Create right table for displaying public lobbies
         Table rightTable = new Table();
@@ -83,8 +83,8 @@ public class GameLobbyView extends BaseScreen {
         Table rootTable = new Table();
         rootTable.setFillParent(true);
         rootTable.center();
-        rootTable.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            this::backToMenu)).left().padTop(20).padBottom(15);
+        rootTable.add(ButtonFactory.createButton("Back", getSkin(), game,
+            this::backToMenu, "customLoginStyle")).left().padTop(20).padBottom(15);
         rootTable.add(new Label("Multiplayer", getSkin())).left().padBottom(10);
         rootTable.row();
 
@@ -108,8 +108,8 @@ public class GameLobbyView extends BaseScreen {
 
                     for (LobbyInfo lobby : lobbies) {
                         String text = "Join Lobby " + lobby.lobbyId + " (" + lobby.players.size() + "/" + lobby.maxPlayers + ")";
-                        table.add(ButtonFactory.createButton(text, 300, 50, getSkin(), game,
-                            () -> joinLobby(lobby.lobbyId))).padBottom(10).row();
+                        ButtonFactory.createButton(text, 300, 50, getSkin(), game,
+                            () -> joinLobby(lobby.lobbyId), "customLoginStyle", table);
                     }
                 });
             }

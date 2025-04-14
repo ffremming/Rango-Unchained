@@ -61,18 +61,18 @@ public class GameLobbyWaitingView extends BaseScreen {
         statusLabel = new Label("", getSkin());
         table.add(statusLabel).padBottom(10).row();
 
-        isReadyButton = ButtonFactory.createButton("Ready up!", 300, 60, getSkin(), game,
-            this::toggleReadyStatus);
+        isReadyButton = ButtonFactory.createButton("Ready up!", getSkin(), game,
+            this::toggleReadyStatus, "customLoginStyle");
 
-        startGameButton = ButtonFactory.createButton("Start Game", 300, 60, getSkin(), game,
-            this::startGame);
+        startGameButton = ButtonFactory.createButton("Start Game", getSkin(), game,
+            this::startGame, "customLoginStyle");
         startGameButton.setVisible(false); // Hidden by default
         table.add(isReadyButton).padBottom(10).row();
 
         table.add(startGameButton).padBottom(10).row();
 
-        TextButton leaveButton = ButtonFactory.createButton("Leave Lobby", 300, 60, getSkin(), game,
-            this::leaveLobby);
+        TextButton leaveButton = ButtonFactory.createButton("Leave Lobby", getSkin(), game,
+            this::leaveLobby, "customLoginStyle");
         table.add(leaveButton).padBottom(10).row();
         Label levelLabel = new Label("Selected Level:", getSkin());
         selectedLevel = new TextField("1", getSkin());

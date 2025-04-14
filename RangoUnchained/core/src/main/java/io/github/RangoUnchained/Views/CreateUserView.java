@@ -1,6 +1,12 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -28,8 +34,29 @@ public class CreateUserView extends BaseScreen {
     }
 
     private void createUI() {
+        // Add background image
+        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
+        Image backgroundImage = new Image(backgroundTexture);
+
+        // Make the image fill the screen
+        backgroundImage.setFillParent(true);
+
+        // Add to stage first so it's behind everything else
+        stage.addActor(backgroundImage);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/RioGrande.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 62; // Set desired font size
+        parameter.color = Color.BLACK;
+        parameter.spaceX = 2;
+
+        BitmapFont font = generator.generateFont(parameter);
+        generator.dispose(); // Dispose to prevent memory leaks
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+       
         // Create UI elements
-        Label titleLabel = new Label("Create User", getSkin());
+        Label titleLabel = new Label("Create User", labelStyle);
         emailField = new TextField("", getSkin());
         passwordField = new TextField("", getSkin());
         passwordField.setPasswordMode(true);
@@ -41,9 +68,9 @@ public class CreateUserView extends BaseScreen {
         table.top().padTop(50);
 
         // Back to main button
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()))).left();
-        table.row();
+        ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
+            () -> game.setView(new MainMenuView()), "customLoginStyle", table);
+
         table.add(titleLabel).center().padBottom(20);
         table.row();
 
@@ -72,8 +99,8 @@ public class CreateUserView extends BaseScreen {
         // Switch scene to login
         table.add(new Label("Already have a user?", getSkin())).center().padBottom(10);
         table.row();
-        table.add(ButtonFactory.createButton("Back to Login", 300, 60, getSkin(), game,
-            () -> game.setView(new LoginView()))).center().padBottom(20);
+        ButtonFactory.createButton("Back to Login", 300, 60, getSkin(), game,
+            () -> game.setView(new LoginView()), "customLoginStyle", table);
 
         stage.addActor(table);
     }
@@ -83,7 +110,7 @@ public class CreateUserView extends BaseScreen {
     }
 
     private Button createSignUpButton() {
-        return ButtonFactory.createButton("Sign Up", 300, 60, getSkin(), game, () -> {
+        return ButtonFactory.createButton("Sign Up",  getSkin(), game, () -> {
             String email = emailField.getText().trim();
             String password = passwordField.getText();
 
@@ -114,6 +141,6 @@ public class CreateUserView extends BaseScreen {
                     displayError(e);
                 }
             });
-        });
+        }, "customLoginStyle");
     }
 }

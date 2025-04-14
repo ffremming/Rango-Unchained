@@ -1,5 +1,11 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -23,8 +29,27 @@ public class SelectLevelView extends BaseScreen {
     }
 
     private void createUI() {
+        // Add background image
+        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
+        Image backgroundImage = new Image(backgroundTexture);
+
+        // Make the image fill the screen
+        backgroundImage.setFillParent(true);
+
+        // Add to stage first so it's behind everything else
+        stage.addActor(backgroundImage);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/RioGrande.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 62; // Set desired font size
+        parameter.color = Color.BLACK;
+        parameter.spaceX = 2;
+
+        BitmapFont font = generator.generateFont(parameter);
+        generator.dispose(); // Dispose to prevent memory leaks
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
+
         Label titleLabel = new Label("Select Level", labelStyle);
 
         Table table = new Table();
@@ -40,8 +65,8 @@ public class SelectLevelView extends BaseScreen {
             if (i== 0){
                 buttonText = "Tutorial";
             }
-            table.add(ButtonFactory.createButton(buttonText, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padTop(20);
-
+            ButtonFactory.createButton(buttonText, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)), "customLoginStyle", table);
+            
             if (i == GameFileHandler.inProgresslevelnumber()){
                 table.row();
                 TextButton.TextButtonStyle customStyle = new TextButton.TextButtonStyle(getSkin().get(TextButton.TextButtonStyle.class));
@@ -51,7 +76,11 @@ public class SelectLevelView extends BaseScreen {
 
                 TextButton continueButton = new TextButton("(continue)", customStyle);
                 continueButton.getStyle().fontColor = getSkin().getColor("white");
-                table.add(continueButton).center().padBottom(0);
+                table.add(continueButton)            
+                .width(300)
+                .height(60)
+                .center()
+                .padBottom(20);
             } else {
                 table.row();
             }
@@ -61,7 +90,7 @@ public class SelectLevelView extends BaseScreen {
         }
 
         // Back button to ScreenController Menu
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, () -> game.setView(new MainMenuView()))).center().padTop(20);
+        ButtonFactory.createButton("Back", 300, 60, getSkin(), game, () -> game.setView(new MainMenuView()), "customLoginStyle", table);
 
         stage.addActor(table);
     }

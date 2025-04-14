@@ -48,18 +48,15 @@ public class PauseMenu extends Stage {
         table.setFillParent(true);
         table.center();
 
-        table.add(ButtonFactory.createButton("Back to game", 300, 60, GameController.getSkin(), game, this::togglePause)).center().padBottom(20);
-        table.row();
+        ButtonFactory.createButton("Back to game", 300, 60, GameController.getSkin(), game, this::togglePause, "customLoginStyle", table);
         if (!isMultiplayer) {
-            table.add(ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart)).center().padBottom(20);
-            table.row();
+            ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart, "customLoginStyle", table);
             if (levelNumber > 0) {
-                table.add(ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater)).center().padBottom(20);
-                table.row();
+                ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater, "customLoginStyle", table);
             }
         }
-        table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
-        table.row();
+        ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame, "customLoginStyle", table);
+        
 
         Table bottomTable = new Table();
         bottomTable.setFillParent(true);

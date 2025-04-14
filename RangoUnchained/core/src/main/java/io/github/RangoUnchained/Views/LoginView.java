@@ -1,6 +1,9 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -28,9 +31,19 @@ public class LoginView extends BaseScreen {
     }
 
     private void createUI() {
+        // Add background image
+        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
+        Image backgroundImage = new Image(backgroundTexture);
+
+        // Make the image fill the screen
+        backgroundImage.setFillParent(true);
+
+        // Add to stage first so it's behind everything else
+        stage.addActor(backgroundImage);
+
         // Create UI elements
         Label titleLabel = new Label("Log In", getSkin());
-        emailField = new TextField("", getSkin());
+        emailField = new TextField("", getSkin(), "customLoginStyle-textField");
         passwordField = new TextField("", getSkin());
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
@@ -41,25 +54,40 @@ public class LoginView extends BaseScreen {
         table.top().padTop(50);
 
         // Back to main button
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()))).left();
-        table.row();
-        table.add(titleLabel).center().padBottom(20);
+        ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
+            () -> game.setView(new MainMenuView()), "customLoginStyle", table);
+        table.add(titleLabel)            
+            .width(300)
+            .height(60)
+            .center()
+            .padBottom(20);
         table.row();
 
         // Email field
         table.add(new Label("Email", getSkin())).left().padBottom(5);
         table.row();
-        table.add(emailField).width(300).padBottom(15);
+        table.add(emailField)            
+            .width(300)
+            .height(60)
+            .center()
+            .padBottom(20);
         table.row();
 
         // Password field
         table.add(new Label("Password", getSkin())).left().padBottom(5);
         table.row();
-        table.add(passwordField).width(300).padBottom(10);
+        table.add(passwordField)            
+        .width(300)
+        .height(60)
+        .center()
+        .padBottom(20);
         table.row();
-        table.add(createLoginButton()).center().padBottom(20);
-        table.row();
+        table.add(createLoginButton())
+        .width(300)
+        .height(60)
+        .center()
+        .padBottom(20);
+
 
         // Error label
         errorLabel = new Label("", getSkin());
@@ -73,8 +101,8 @@ public class LoginView extends BaseScreen {
         table.row();
         table.add(new Label("Don't have a user?", getSkin())).center().padBottom(10);
         table.row();
-        table.add(ButtonFactory.createButton("Create User", 300, 60, getSkin(), game,
-            () -> game.setView(new CreateUserView()))).center().padBottom(20);
+        ButtonFactory.createButton("Create User", 300, 60, getSkin(), game,
+            () -> game.setView(new CreateUserView()), "customLoginStyle", table);
         stage.addActor(table);
     }
 
@@ -83,7 +111,7 @@ public class LoginView extends BaseScreen {
     }
 
     private Button createLoginButton() {
-        return ButtonFactory.createButton("Log In", 300, 60, getSkin(), game, () -> {
+        return ButtonFactory.createButton("Log In", getSkin(), game, () -> {
             String email = emailField.getText().trim();
             String password = passwordField.getText();
 
@@ -109,7 +137,7 @@ public class LoginView extends BaseScreen {
                     displayError(e);
                 }
             });
-        });
+        }, "customLoginStyle");
     }
 
 }

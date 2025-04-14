@@ -39,20 +39,35 @@ public class CreateUsernameView extends BaseScreen {
         table.setFillParent(true);
         table.top().padTop(50);
 
-        table.add(ButtonFactory.createButton("back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()))).left();
-        table.row();
-        table.add(titleLabel).center().padBottom(20);
+        ButtonFactory.createButton("back", 300, 60, getSkin(), game,
+            () -> game.setView(new MainMenuView()), "customLoginStyle", table);
+        table.add(titleLabel)           
+        .width(300)
+        .height(60)
+        .center()
+        .padBottom(20);
         table.row();
 
         table.add(new Label("New Username:", getSkin())).left().padBottom(5);
         table.row();
-        table.add(usernameField).width(300).padBottom(15);
+        table.add(usernameField)            
+        .width(300)
+        .height(60)
+        .center()
+        .padBottom(20);
         table.row();
 
-        table.add(createConfirmButton()).center().padBottom(15);
+        table.add(createConfirmButton())            
+        .width(300)
+        .height(60)
+        .center()
+        .padBottom(20);
         table.row();
-        table.add(errorLabel).width(300).padBottom(10);
+        table.add(errorLabel)            
+        .width(300)
+        .height(60)
+        .center()
+        .padBottom(20);
         table.row();
 
         stage.addActor(table);
@@ -63,7 +78,7 @@ public class CreateUsernameView extends BaseScreen {
     }
 
     private Button createConfirmButton() {
-        return ButtonFactory.createButton("Confirm", 300, 60, getSkin(), game, () -> {
+        return ButtonFactory.createButton("Confirm", getSkin(), game, () -> {
             String username = usernameField.getText().trim();
 
             if (username.isEmpty()) {
@@ -83,6 +98,6 @@ public class CreateUsernameView extends BaseScreen {
                     displayError(e.getMessage());
                 }
             });
-        });
+        }, "customLoginStyle");
     }
 }

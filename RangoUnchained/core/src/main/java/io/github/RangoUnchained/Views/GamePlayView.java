@@ -14,6 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -141,19 +144,13 @@ public class GamePlayView extends BaseScreen {
     }
 
     private void createUI() {
-        TextButton shootButton = ButtonFactory.createButton("Shoot", 300, 60, getSkin(), game,
-            () -> {
-                if (controller != null) {
-                    controller.handleShoot();
-                } else {
-                    System.out.println("Shoot ignored: controller is null");
-                }
-            });
-        TextButton pauseButton = ButtonFactory.createButton("Pause", 150, 60, getSkin(), game,
-            () -> pauseMenu.togglePause());
+        TextButton shootButton = ButtonFactory.createButton("Shoot", getSkin(), game,
+            () -> controller.handleShoot(), "customLoginStyle");
+        TextButton pauseButton = ButtonFactory.createButton("Pause", getSkin(), game,
+            () -> pauseMenu.togglePause(), "customLoginStyle");
 
         createTable(shootButton).bottom().right().pad(15);
-        createTable(pauseButton).top().padTop(50);
+        createTable(pauseButton).top().padTop(50).setWidth(300);
         createJoystick();
        createScoreLabel();
        createTimeLabel();
@@ -323,7 +320,7 @@ public class GamePlayView extends BaseScreen {
             table.setName("UnnamedButton");
         }
         table.setFillParent(true);
-        table.add(button).size(100,50);
+        table.add(button).size(100,50); // This controls the size of shoot and pause buttons 
 
         stage.addActor(table);
         return table;
@@ -351,10 +348,26 @@ public class GamePlayView extends BaseScreen {
 
         Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
         touchpadStyle.background = joystickImage.getDrawable();
-        touchpadStyle.knob = new Image(skin.getDrawable("default-round")).getDrawable();
+        // Image knobImage = new Image(skin.getDrawable("default-rect-pad"));
+        // knobImage.setSize(40, 40); // set your desired size
 
+        // // Now convert to Drawable, preserving the size
+        // Drawable scaledKnobDrawable = knobImage.getDrawable();
+        // touchpadStyle.knob = scaledKnobDrawable;
+        Drawable knobDrawable = skin.getDrawable("default-rect-pad");
+
+        if (knobDrawable instanceof NinePatchDrawable) {
+            NinePatchDrawable resizedKnob = new NinePatchDrawable((NinePatchDrawable) knobDrawable);
+            resizedKnob.setMinWidth(80);
+            resizedKnob.setMinHeight(50);
+            touchpadStyle.knob = resizedKnob;
+        } else {
+            Gdx.app.error("Touchpad", "Unsupported drawable type: " + knobDrawable.getClass().getName());
+        }
+        
+        
         touchpad = new Touchpad(10, touchpadStyle);
-        touchpad.setBounds(15, 15, 100, 100);
+        touchpad.setBounds(15, 15, 140, 140);
         stage.addActor(touchpad);
 
         Gdx.input.setInputProcessor(stage);

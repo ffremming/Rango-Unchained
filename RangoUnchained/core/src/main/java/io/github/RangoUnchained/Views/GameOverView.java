@@ -1,5 +1,8 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import io.github.RangoUnchained.Controllers.GameController;
@@ -51,6 +54,16 @@ public class GameOverView extends BaseScreen {
     }
 
     private void createUI() {
+        // Add background image
+        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
+        Image backgroundImage = new Image(backgroundTexture);
+
+        // Make the image fill the screen
+        backgroundImage.setFillParent(true);
+
+        // Add to stage first so it's behind everything else
+        stage.addActor(backgroundImage);
+       
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
         String titleText = completed ? "Level Completed" : "Level Failed";
@@ -76,20 +89,17 @@ public class GameOverView extends BaseScreen {
 
 
         // Retry button (goes back to level selection)
-        table.add(ButtonFactory.createButton("Play again", 300, 60, getSkin(),  game, () -> game.setView(new SelectLevelView()))).center().padBottom(20);
-        table.row();
+        ButtonFactory.createButton("Play again", 300, 60, getSkin(),  game, () -> game.setView(new SelectLevelView()), "customLoginStyle", table);
 
          // Retry button (goes back to level selection)
          if (levelNumber < 5 && (completed || GameFileHandler.getInstance().getProgress() > levelNumber)) {
-             table.add(ButtonFactory.createButton("Next level", 300, 60, getSkin(),  game, () -> game.setView(new GamePlayView(levelNumber+1)))).center().padBottom(20);
-             table.row();
+            ButtonFactory.createButton("Next level", 300, 60, getSkin(),  game, () -> game.setView(new GamePlayView(levelNumber+1)), "customLoginStyle", table);
          }
 
-         table.add(ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(),  game, () -> game.setView(new ScoreboardView()))).center().padBottom(20);
-         table.row();
+        ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(),  game, () -> game.setView(new ScoreboardView()), "customLoginStyle", table);
 
         // Back to main menu button
-        table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()))).center();
+        ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()), "customLoginStyle", table);
 
         stage.addActor(table);
     }

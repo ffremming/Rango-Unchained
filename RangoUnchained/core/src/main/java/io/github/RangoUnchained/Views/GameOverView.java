@@ -8,6 +8,8 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.HintUtil;
+
 public class GameOverView extends BaseScreen {
 
     int levelNumber;
@@ -64,7 +66,11 @@ public class GameOverView extends BaseScreen {
         table.add(titleLabel).center().padBottom(10);
         table.row();
         // Score label
-        table.add(scoreLabel).center().padBottom(50);
+        table.add(scoreLabel).center().padBottom(10);
+        table.row();
+        // Hint label
+        Label hintLabel = new Label(HintUtil.getHint(), getSkin());
+        table.add(hintLabel).center().padBottom(50);
         table.row();
 
 

@@ -28,6 +28,7 @@ import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.TutorialSystem;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.HintUtil;
 
 public class GamePlayView extends BaseScreen {
 
@@ -403,6 +404,7 @@ public class GamePlayView extends BaseScreen {
             );
         } else {
             Gdx.app.postRunnable(() -> {
+                HintUtil.setHint(controller.getLevel());
                 if (controller.isCompleted()) {
                     game.setView(new GameOverView(controller.getLevel().levelNumber, true));
                 } else {

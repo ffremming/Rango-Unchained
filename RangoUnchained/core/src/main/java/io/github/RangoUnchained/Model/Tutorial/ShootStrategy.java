@@ -21,6 +21,6 @@ public class ShootStrategy implements TutorialStepStrategy {
 
     @Override
     public String getMessage() {
-        return "press SPACE to shoot";
+        return "press the button in the bottom right to shoot";
     }
 }

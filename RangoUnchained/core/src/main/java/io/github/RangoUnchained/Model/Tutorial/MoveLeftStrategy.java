@@ -25,9 +25,9 @@ public class MoveLeftStrategy implements TutorialStepStrategy {
     @Override
     public String getMessage() {
         if (started){
-            return "press A to move left";
+            return "use the joystick to move left";
         }
         else {return "";}
-        
+
     }
 }

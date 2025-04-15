@@ -10,8 +10,10 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
+import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
@@ -20,7 +22,7 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Factories.AudioLoader;
 
-public class AudioSystem implements System {
+public class AudioSystem implements System, ContactStrategy {
 
 
     private static final long COLLISION_SOUND_COOLDOWN_MS = 175;
@@ -43,6 +45,20 @@ public class AudioSystem implements System {
     private final AudioLoader audioLoader;
     private long lastCollisionSoundTime = 0;
     private final Queue<PlayingSound> activeSounds = new LinkedList<>();
+
+    @Override
+    public void setContactStrategies() {
+        ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
+
+        centralContactListener.subscribe(
+            BallEntity.class, FloorEntity.class,
+            collisionEvent -> playSound(AudioComponent.ActionType.BOUNCE, VOLUME_BOUNCE),
+            null);
+        centralContactListener.subscribe(
+            BallEntity.class, ProjectileEntity.class,
+            collisionEvent -> playSound(AudioComponent.ActionType.POP, VOLUME_POP),
+            null);
+    }
 
     private static class PlayingSound {
         public final Sound sound;
@@ -72,23 +88,11 @@ public class AudioSystem implements System {
         }
     }
 
-    public AudioSystem(ContactSystem centralContactListener, float volume){
+    public AudioSystem( float volume){
         filter.require(AudioComponent.class);
         audioLoader = AudioLoader.getInstance();
         globalVolumeMultiplier = volume;
 
-        centralContactListener.subscribe(
-            BallEntity.class, FloorEntity.class,
-            collisionEvent -> playSound(AudioComponent.ActionType.BOUNCE, VOLUME_BOUNCE),
-            null);
-        centralContactListener.subscribe(
-            BallEntity.class, ObstacleEntity.class,
-            collisionEvent -> playSound(AudioComponent.ActionType.BOUNCE, VOLUME_BOUNCE),
-            null);
-        centralContactListener.subscribe(
-            BallEntity.class, ProjectileEntity.class,
-            collisionEvent -> playSound(AudioComponent.ActionType.POP, VOLUME_POP),
-            null);
     }
 
 

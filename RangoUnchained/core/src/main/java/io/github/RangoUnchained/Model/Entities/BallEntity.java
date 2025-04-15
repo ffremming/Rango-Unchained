@@ -12,9 +12,7 @@ import io.github.RangoUnchained.Model.Components.ContactComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 
-public class BallEntity implements Entity{
-
-    private Map<Class<? extends Component>, Component> components = new HashMap<>();
+public class BallEntity extends Entity{
 
     public BallEntity(BodyComponent bodyComponent, StatComponent statComponent, SpriteComponent spriteComponent, BounceComponent bounceComp, BallComponent ballComp) {
         addComponent(bodyComponent);
@@ -26,13 +24,5 @@ public class BallEntity implements Entity{
         addComponent(new AudioComponent());
         addComponent(bounceComp);
         addComponent(ballComp);
-    }
-
-    @Override
-    public Component getComponent(Class<? extends Component> componentClass) {
-        return components.get(componentClass);
-    }
-    public <T extends Component> void addComponent(T component) {
-        components.put(component.getClass(), component);
     }
 }

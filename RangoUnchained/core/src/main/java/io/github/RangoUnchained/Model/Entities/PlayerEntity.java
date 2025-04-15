@@ -14,9 +14,7 @@ import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 
-public class PlayerEntity implements Entity{
-
-    private Map<Class<? extends Component>, Component> components = new HashMap<>();
+public class PlayerEntity extends Entity{
 
     public PlayerEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, InputComponent inputComponent, HealthComponent healthComponent, AnimationComponent animationComponent) {
         addComponent(bodyComponent);
@@ -31,12 +29,5 @@ public class PlayerEntity implements Entity{
         //addComponent(new TransformationComponent(2, 2, 2, 160,TransformationComponent.RECTANGLE));
         addComponent(new PowerUpComponent(-1));
     }
-    @Override
-    public Component getComponent(Class<? extends Component> componentClass) {
-        return components.get(componentClass);
-    }
 
-    public <T extends Component> void addComponent(T component) {
-        components.put(component.getClass(), component);
-    }
 }

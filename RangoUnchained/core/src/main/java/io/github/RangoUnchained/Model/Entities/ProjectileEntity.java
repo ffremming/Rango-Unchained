@@ -10,9 +10,7 @@ import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.TransformationComponent;
 
-public class ProjectileEntity implements Entity{
-
-    private Map<Class<? extends Component>, Component> components = new HashMap<>();
+public class ProjectileEntity extends Entity{
 
     public ProjectileEntity(BodyComponent bodyComponent, SpriteComponent spriteComponent, LifeTimeComponent lifeTimeComponent,TransformationComponent transComp) {
         addComponent(bodyComponent);
@@ -20,12 +18,5 @@ public class ProjectileEntity implements Entity{
         addComponent(lifeTimeComponent);
         addComponent(transComp);
         addComponent(new ContactComponent());
-    }
-    @Override
-    public Component getComponent(Class<? extends Component> componentClass) {
-        return components.get(componentClass);
-    }
-    private <T extends Component> void addComponent(T component) {
-        components.put(component.getClass(), component);
     }
 }

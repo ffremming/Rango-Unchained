@@ -53,22 +53,6 @@ public class AnimationSystem implements System{
 
         }
 
-
-        /*switch (input.getInputState()) {
-            case LEFT:
-                animationComponent.setPlayerState("LEFT");
-                break;
-            case RIGHT:
-                animationComponent.setPlayerState("RIGHT");
-                break;
-            case SHOOTING:
-                animationComponent.setPlayerState("SHOOTING");
-                break;
-            case IDLE:
-                animationComponent.setPlayerState("IDLE");
-                break;
-        }*/
-
         // Update animation time
         animationComponent.increaseDelta(delta);
 

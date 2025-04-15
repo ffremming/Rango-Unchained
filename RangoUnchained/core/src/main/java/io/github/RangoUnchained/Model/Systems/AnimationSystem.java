@@ -1,19 +1,16 @@
 package io.github.RangoUnchained.Model.Systems;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Timer;
 
 import io.github.RangoUnchained.Model.Components.AnimationComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Views.Utils.Constants;
 
-public class AnimationSystem implements System{
+public class AnimationSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
 

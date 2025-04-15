@@ -16,7 +16,7 @@ import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
-public class InputSystem implements System {
+public class InputSystem implements Systems {
 
     private Touchpad touchpad;
     private ComponentFilter filter = new ComponentFilter();

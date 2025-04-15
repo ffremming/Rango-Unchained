@@ -8,7 +8,7 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
 
-public class HealthSystem implements System, ContactStrategy{
+public class HealthSystem implements Systems, ContactStrategy{
 
     private ComponentFilter filter = new ComponentFilter();
 

@@ -1,12 +1,10 @@
 package io.github.RangoUnchained.Model.Systems;
 
-import com.badlogic.gdx.Gdx;
-
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
-public class LifeTimeSystem implements System{
+public class LifeTimeSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
 

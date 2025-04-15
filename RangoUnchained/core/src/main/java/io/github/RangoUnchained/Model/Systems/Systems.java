@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import io.github.RangoUnchained.Model.Entities.Entity;
 
-public interface System {
+public interface Systems {
     /**
      * Updates all entities that match the filter of the system
      * @param entities list of all entities

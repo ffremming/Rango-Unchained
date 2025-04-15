@@ -2,10 +2,7 @@ package io.github.RangoUnchained.Model.Systems;
 
 import com.badlogic.gdx.physics.box2d.*;
 
-import io.github.RangoUnchained.Controllers.LevelController;
-import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.ContactComponent;
-import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ContactSystem implements ContactListener, System {
+public class ContactSystem implements ContactListener, Systems {
 
     private ComponentFilter filter = new ComponentFilter();
 

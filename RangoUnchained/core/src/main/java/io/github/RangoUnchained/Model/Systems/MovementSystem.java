@@ -1,19 +1,15 @@
 package io.github.RangoUnchained.Model.Systems;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Factories.EntityFactory;
-import io.github.RangoUnchained.Views.Utils.Constants;
 
-public class MovementSystem implements System {
+public class MovementSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
 

@@ -132,7 +132,7 @@ public class GameLobbyWaitingView extends BaseScreen {
                     Gdx.app.postRunnable(() -> {
                         playerTable.clear();
 
-                        if (lobby.status.equals("running") && !alreadyStarted) {
+                        if ("running".equals(lobby.status) && !alreadyStarted) {
                             startGameLocally(level);
                         }
 
@@ -140,10 +140,11 @@ public class GameLobbyWaitingView extends BaseScreen {
                         playerCountLabel.setText("Players in Lobby: " + currentCount + " / " + lobby.maxPlayers);
 
                         for (PlayerInLobby player : lobby.players.values()) {
+                            if (player == null) continue; // Skip null players (happens when a player leaves)
                             StringBuilder labelText = new StringBuilder();
                             if (lobby.isHost(player.uid)) labelText.append("* ");
                             labelText.append(player.displayName);
-                            if (player.uid.equals(currentUid)) labelText.append(" (You)");
+                            if (currentUid.equals(player.uid)) labelText.append(" (You)");
 
                             Label nameLabel = new Label(labelText.toString(), getSkin());
                             Label readyLabel = new Label(Boolean.TRUE.equals(player.isReady) ? " Ready" : " Not Ready", getSkin());

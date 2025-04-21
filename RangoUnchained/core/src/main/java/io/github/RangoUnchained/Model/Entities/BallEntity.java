@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Model.Entities;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;

@@ -16,7 +16,6 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Factories.AudioLoader;

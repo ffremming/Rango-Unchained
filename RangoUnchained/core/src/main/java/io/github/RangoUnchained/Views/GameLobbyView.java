@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
@@ -143,7 +144,11 @@ public class GameLobbyView extends BaseScreen {
         });
     }
 
+    private static final Pattern LOBBY_ID_OK =
+        Pattern.compile("^[A-Za-z0-9_-]+$");
     private void joinLobby(String lobbyId) {
+        if (lobbyId == null || !LOBBY_ID_OK.matcher(lobbyId).matches()) return;
+
         dbManager.joinLobby(lobbyId, currentUser, new MultiplayerManager.Callback<LobbyInfo>() {
             @Override
             public void onSuccess(LobbyInfo lobby) {

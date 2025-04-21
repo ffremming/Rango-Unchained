@@ -18,7 +18,7 @@ import io.github.RangoUnchained.Views.Utils.Constants;
 
 
 
-public class TransformationSystem implements System{
+public class TransformationSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
 

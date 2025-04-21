@@ -18,7 +18,7 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Factories.AudioLoader;
 
-public class AudioSystem implements System {
+public class AudioSystem implements Systems {
 
     private final ComponentFilter filter = new ComponentFilter();
     private final Random random = new Random();

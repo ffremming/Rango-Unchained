@@ -10,7 +10,7 @@ import io.github.RangoUnchained.Model.Entities.Entity;
 public class SystemManager {
 
     /**all systems */
-    private ArrayList<System> systems = new ArrayList<>();
+    private ArrayList<Systems> systems = new ArrayList<>();
     private World world;
 
     public SystemManager() {
@@ -24,8 +24,8 @@ public class SystemManager {
      * @param systemClass the class of the system to return
      * @return the system of the specified class type, or null if not found
      */
-    public <T extends System> T getSystem(Class<T> systemClass) {
-        for (System system : systems) {
+    public <T extends Systems> T getSystem(Class<T> systemClass) {
+        for (Systems system : systems) {
             if (systemClass.isInstance(system)) {
                 return systemClass.cast(system);
             }
@@ -39,7 +39,7 @@ public class SystemManager {
      *
      */
     public void update(ArrayList<Entity> entities, float delta) {
-        for (System system : systems) {
+        for (Systems system : systems) {
             system.update(entities, delta);
         }
     }

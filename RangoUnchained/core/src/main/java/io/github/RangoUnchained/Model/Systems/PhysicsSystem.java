@@ -16,7 +16,7 @@ import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
-public class PhysicsSystem implements System, ContactStrategy {
+public class PhysicsSystem implements Systems, ContactStrategy {
 
     private World world;
     private ComponentFilter filter = new ComponentFilter();

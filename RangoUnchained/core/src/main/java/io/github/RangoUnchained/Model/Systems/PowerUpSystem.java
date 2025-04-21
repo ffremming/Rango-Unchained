@@ -18,7 +18,7 @@ import io.github.RangoUnchained.Model.PowerUps.ShieldPowerUp;
 import io.github.RangoUnchained.Model.PowerUps.SpeedUpPowerUp;
 import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 
-public class PowerUpSystem implements System, ContactStrategy {
+public class PowerUpSystem implements Systems, ContactStrategy {
     private ComponentFilter filter = new ComponentFilter();
     private Map<Integer, PowerUpStrategy> powerUpStrategies = new HashMap<>();
 

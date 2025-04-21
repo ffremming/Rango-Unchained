@@ -19,11 +19,18 @@ import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 
 public class RealtimeDBManager implements MultiplayerManager {
     private final DatabaseReference lobbiesRef = FirebaseDatabase.getInstance().getReference().child("lobbies");
-    private static final float INACTIVE_TIME = 60f; // In minutes
+    // Store reference to dispose of the listener afterwards
+    private ValueEventListener lobbyListener;
+    private DatabaseReference lobbyRef;
+    private static final long INACTIVE_TIMEOUT = 60; // In minutes
+
     @Override
     public void createLobby(UserInfo host, Boolean isPublic, int maxPlayers, Callback<LobbyInfo> callback) {
         String lobbyId = generateLobbyCode();
         LobbyInfo lobby = new LobbyInfo(lobbyId, host, isPublic, maxPlayers);
+
+        // Add disconnect listener for the host
+        addDisconnectListener(lobbyId, host);
 
         lobbiesRef
             .child(lobbyId)
@@ -34,48 +41,57 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void joinLobby(String lobbyId, UserInfo player, Callback<LobbyInfo> callback) {
-        PlayerInLobby newPlayer = new PlayerInLobby(player);
-        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
+        DatabaseReference lobbyRef  = lobbiesRef.child(lobbyId);
+        DatabaseReference playersRef = lobbyRef.child("players");
+        PlayerInLobby newPlayer      = new PlayerInLobby(player);
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("players/" + player.uid, newPlayer);
-        updates.put("timeInState", System.currentTimeMillis());
+        lobbyRef.get().addOnSuccessListener(snap -> {
+            // Check if lobby exists, return if it does not.
+            if (!snap.exists()) {
+                callback.onError(new Exception("Lobby " + lobbyId + " does not exist"));
+                return;
+            }
 
-        lobbyRef.updateChildren(updates)
-            .addOnSuccessListener(unused -> {
-                // After updating, fetch the updated LobbyInfo
-                lobbyRef.get().addOnSuccessListener(snapshot -> {
-                    LobbyInfo updatedLobby = snapshot.getValue(LobbyInfo.class);
-                    if (updatedLobby != null) {
-                        callback.onSuccess(updatedLobby);
-                    } else {
-                        callback.onError(new Exception("Failed to fetch updated lobby info."));
-                    }
-                }).addOnFailureListener(callback::onError);
-            })
-            .addOnFailureListener(callback::onError);
+            // Add disconnect listener for the player
+            addDisconnectListener(lobbyId, player);
+
+            // Update lobby with new player
+            Map<String,Object> updates = new HashMap<>();
+            updates.put(player.uid, newPlayer);
+            playersRef.updateChildren(updates)
+                .addOnSuccessListener(u ->
+                    callback.onSuccess(snap.getValue(LobbyInfo.class)))
+                .addOnFailureListener(callback::onError);
+        }).addOnFailureListener(callback::onError);
     }
-
 
     @Override
     public void leaveLobby(String lobbyId, UserInfo player, Callback<Void> callback) {
-        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
+        DatabaseReference lobbyRef  = lobbiesRef.child(lobbyId);
+        DatabaseReference playerRef = lobbyRef.child("players").child(player.uid);
 
-        lobbyRef.child("players")
-            .child(player.uid)
-            .removeValue()
+        // Stop the queued on‑disconnect delete for this player
+        playerRef.onDisconnect().cancel();
+
+        // Remove the player immediately
+        playerRef.removeValue()
             .addOnSuccessListener(unused -> {
-                // Check if lobby is empty and delete it if so
+
+                // If the lobby is now empty, remove the lobby
                 lobbyRef.child("players").get().addOnSuccessListener(snapshot -> {
                     if (!snapshot.hasChildren()) {
                         lobbyRef.removeValue();
                     }
                 });
-                // Remove listeners for this player
+
+                // Clean up local listeners
                 if (this.lobbyRef != null && lobbyListener != null) {
                     this.lobbyRef.removeEventListener(lobbyListener);
+                }
+                if (publicLobbiesListener != null) {
                     lobbiesRef.removeEventListener(publicLobbiesListener);
                 }
+
                 callback.onSuccess(null);
             })
             .addOnFailureListener(callback::onError);
@@ -95,8 +111,7 @@ public class RealtimeDBManager implements MultiplayerManager {
                     // Delete lobby if it has been inactive in a state for too long
                     if (shouldDeleteLobby(lobby, lobbySnap.getRef())) continue;
 
-                    if (lobby != null && lobby.isPublic && lobby.players != null &&
-                        lobby.players.size() < lobby.maxPlayers && "waiting".equals(lobby.status)) {
+                    if (lobby.isPublic && lobby.players != null && lobby.players.size() < lobby.maxPlayers && "waiting".equals(lobby.status)) {
                         publicLobbies.add(lobby);
                     }
                 }
@@ -120,9 +135,6 @@ public class RealtimeDBManager implements MultiplayerManager {
         }
     }
 
-    // Store reference to dispose of the listener afterwards
-    private ValueEventListener lobbyListener;
-    private DatabaseReference lobbyRef;
     @Override
     public void listenToLobby(String lobbyId, Callback<LobbyInfo> callback) {
         lobbyRef = lobbiesRef.child(lobbyId);
@@ -183,7 +195,6 @@ public class RealtimeDBManager implements MultiplayerManager {
                 .addOnFailureListener(callback::onError);
         }).addOnFailureListener(callback::onError);
     }
-
 
     @Override
     public void setLobbyLevel(String lobbyId, int level, Callback<Void> callback) {
@@ -276,14 +287,51 @@ public class RealtimeDBManager implements MultiplayerManager {
         return UUID.randomUUID().toString().substring(0, 5).replace("-", "");
     }
 
-    // Utility method to delete lobbies that have been inactive for INACTIVE_TIME minutes
+    // Utility method to delete lobbies
     private boolean shouldDeleteLobby(LobbyInfo lobby, DatabaseReference ref) {
-        long now = System.currentTimeMillis();
-        if (lobby != null && lobby.timeInState != null && lobby.timeInState != 0 &&
-            now - lobby.timeInState > INACTIVE_TIME * 60 * 1000) {
+        // Delete lobby if it doesn't exist
+        if (lobby == null) {
             ref.removeValue();
             return true;
         }
+
+        long now = System.currentTimeMillis();
+
+        // Check if lobby has been inactive for INACTIVE_TIME (in minutes)
+        if (lobby.timeInState != null && lobby.timeInState != 0 &&
+            now - lobby.timeInState > INACTIVE_TIMEOUT * 60 * 1000) {
+            ref.removeValue();
+            return true;
+        }
+
+        // Check if all players have disconnected
+        if (lobby.players == null || lobby.players.isEmpty()) {
+            ref.removeValue();
+            return true;
+        }
+
         return false;
+    }
+
+    public void addDisconnectListener(String lobbyId, UserInfo player) {
+        // Define a disconnectRef for this player
+        DatabaseReference playerRef = lobbiesRef
+            .child(lobbyId)
+            .child("players")
+            .child(player.uid);
+
+        DatabaseReference connectedRef =
+            FirebaseDatabase.getInstance().getReference(".info/connected");
+
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                Boolean connected = snap.getValue(Boolean.class);
+                if (Boolean.TRUE.equals(connected)) {
+                    // Delete player from lobby when disconnected
+                    playerRef.onDisconnect().removeValue();
+                }
+            }
+            @Override public void onCancelled(DatabaseError error) {}
+        });
     }
 }

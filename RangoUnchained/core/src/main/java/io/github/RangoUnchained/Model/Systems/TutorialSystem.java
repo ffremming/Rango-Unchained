@@ -1,6 +1,5 @@
 package io.github.RangoUnchained.Model.Systems;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -21,7 +20,7 @@ import io.github.RangoUnchained.Model.Tutorial.TutorialManager;
  * ECS system responsible for updating the tutorial.
  * It leverages the TutorialManager to drive tutorial progression via the Strategy Pattern.
  */
-public class TutorialSystem implements System {
+public class TutorialSystem implements Systems {
 
     private final ComponentFilter filter = new ComponentFilter();
     private final TutorialManager tutorialManager;

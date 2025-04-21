@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import io.github.RangoUnchained.Model.Factories.AudioLoader;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
+import io.github.RangoUnchained.Model.Systems.AudioSystem;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
@@ -23,6 +25,7 @@ public class GameController extends Game {
     private Screen currentView;
     private Boolean isLoggedIn = false;
     private UserInfo currentUserInfo;
+    private float sfxVolume = 0.5f;
 
     private GameController() {
     }
@@ -96,18 +99,31 @@ public class GameController extends Game {
         return currentUserInfo;
     }
 
-    public float getVolume() {return MusicController.getInstance().getVolume();}
+    public float getMusicVolume() {return MusicController.getInstance().getVolume();}
 
-    public void setVolume(float volume) {MusicController.getInstance().changeVolume(volume);}
+    public void setMusicVolume(float volume) {MusicController.getInstance().changeVolume(volume);}
+
+    public float getSFXVolume() {return sfxVolume;}
+
+    public void setSFXVolume(float volume) {
+        sfxVolume = volume;
+        AudioSystem audioSystem = LevelController.getInstance().getAudioSystem();
+        if (audioSystem != null){
+            audioSystem.setVolume(sfxVolume);
+        }
+    }
 
     @Override
     public void dispose(){
+        super.dispose();
         batch.dispose();
         skin.dispose();
         font.dispose();
         if (currentView != null){
             currentView.dispose();
         }
+        AudioLoader.getInstance().dispose();
+        MusicController.getInstance().dispose();
     }
 }
 

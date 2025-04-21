@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Model.Entities;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.RangoUnchained.Model.Components.AudioComponent;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.BounceComponent;
@@ -21,7 +20,6 @@ public class BallEntity extends Entity{
         ContactComponent phyComp = new ContactComponent();
         phyComp.setContactLock(60);
         addComponent(phyComp);
-        addComponent(new AudioComponent());
         addComponent(bounceComp);
         addComponent(ballComp);
     }

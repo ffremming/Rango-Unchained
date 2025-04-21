@@ -61,27 +61,49 @@ public class PauseMenu extends Stage {
         table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
         table.row();
 
+        Table bottomTable = createSlidersUI();
+        addActor(table);
+        addActor(bottomTable);
+    }
+
+    private Table createSlidersUI (){
         Table bottomTable = new Table();
         bottomTable.setFillParent(true);
         bottomTable.bottom().padBottom(20);
 
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = GameController.getFont();
+
+        Label volumeLabel = new Label("Volume: ", labelStyle);
         Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
-        volumeSlider.setValue(game.getVolume());
+        volumeSlider.setValue(game.getMusicVolume());
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float newVolume = volumeSlider.getValue();
-                game.setVolume(newVolume);
+                game.setMusicVolume(newVolume);
             }
         });
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = GameController.getFont();
-        Label volumeLabel = new Label("Volume: ", labelStyle);
+
         bottomTable.add(volumeLabel);
         bottomTable.add(volumeSlider);
 
-        addActor(table);
-        addActor(bottomTable);
+        Label SFXLabel = new Label("Volume sfx: ", labelStyle);
+        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
+        SFXSlider.setValue(game.getSFXVolume());
+        SFXSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float newVolume = SFXSlider.getValue();
+                game.setSFXVolume(newVolume);
+            }
+        });
+
+        bottomTable.row();
+        bottomTable.add(SFXLabel).pad(20);
+        bottomTable.add(SFXSlider);
+
+        return bottomTable;
     }
 
     public void togglePause() {

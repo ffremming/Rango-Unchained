@@ -57,7 +57,7 @@ public class SystemManager {
         HealthSystem healthSystem = new HealthSystem();
         TutorialSystem tutorialSystem = new TutorialSystem();
         PowerUpSystem powerUpSystem = new PowerUpSystem();
-        AudioSystem audioSystem = new AudioSystem(GameController.getInstance().getSFXVolume());
+        AudioSystem audioSystem = new AudioSystem(contactSystem, GameController.getInstance().getSFXVolume());
         AnimationSystem animationSystem = new AnimationSystem();
 
         world = physicsSystem.getWorld();
@@ -82,9 +82,6 @@ public class SystemManager {
     public World getWorld() {
         PhysicsSystem physicsSystem = getSystem(PhysicsSystem.class);
         return physicsSystem != null ? physicsSystem.getWorld() : null;
-    }
-    public AudioSystem getAudioSystem() {
-        return getSystem(AudioSystem.class);
     }
 
     public void dispose() {

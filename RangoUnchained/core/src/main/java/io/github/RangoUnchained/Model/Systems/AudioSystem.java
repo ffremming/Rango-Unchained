@@ -17,7 +17,6 @@ import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.FloorEntity;
-import io.github.RangoUnchained.Model.Entities.ObstacleEntity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Factories.AudioLoader;
@@ -27,15 +26,14 @@ public class AudioSystem implements System, ContactStrategy {
 
     private static final long COLLISION_SOUND_COOLDOWN_MS = 175;
     private static final int MAX_CONCURRENT_SOUNDS = 5;
-    private static final float SOUND_EXPIRE_TIME = 2f;
+    private static final float SOUND_EXPIRE_TIME = 1f;
 
-    private static final float VOLUME_BOUNCE = 1f;
     private static final float VOLUME_POP = 20f;
     private static final float VOLUME_MOVE = 3f;
-    private static final float VOLUME_SHOOT = 1.4f;
+    private static final float VOLUME_SHOOT = 2.4f;
 
     private static final float DELAY_WALKING = 1f;
-    private static final float DELAY_SHOOTING = 2.4f;
+    private static final float DELAY_SHOOTING = 1f;
 
     private static float globalVolumeMultiplier;
 
@@ -50,10 +48,8 @@ public class AudioSystem implements System, ContactStrategy {
     public void setContactStrategies() {
         ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
 
-        centralContactListener.subscribe(
-            BallEntity.class, FloorEntity.class,
-            collisionEvent -> playSound(AudioComponent.ActionType.BOUNCE, VOLUME_BOUNCE),
-            null);
+        Gdx.app.log("Audio", "Hello you are here");
+
         centralContactListener.subscribe(
             BallEntity.class, ProjectileEntity.class,
             collisionEvent -> playSound(AudioComponent.ActionType.POP, VOLUME_POP),
@@ -88,11 +84,16 @@ public class AudioSystem implements System, ContactStrategy {
         }
     }
 
-    public AudioSystem( float volume){
+    public AudioSystem(ContactSystem centralContactListener, float volume){
         filter.require(AudioComponent.class);
         audioLoader = AudioLoader.getInstance();
         globalVolumeMultiplier = volume;
 
+
+//        centralContactListener.subscribe(
+//            BallEntity.class, ProjectileEntity.class,
+//            collisionEvent -> playSound(AudioComponent.ActionType.POP, VOLUME_POP),
+//            null);
     }
 
 

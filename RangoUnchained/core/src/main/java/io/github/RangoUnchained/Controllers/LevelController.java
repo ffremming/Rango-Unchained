@@ -149,7 +149,7 @@ public class LevelController {
         return systemManager.getWorld();
     }
 
-    public AudioSystem getAudioSystem(){return systemManager != null ? systemManager.getAudioSystem() : null;}
+    public AudioSystem getAudioSystem(){return systemManager != null ? systemManager.getSystem(AudioSystem.class) : null;}
 
     public <T extends System> T getSystem(Class<T> systemClass) {
         if (!isActive || systemManager == null) return null;

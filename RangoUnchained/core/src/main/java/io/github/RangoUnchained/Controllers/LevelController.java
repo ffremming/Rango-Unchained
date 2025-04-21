@@ -86,6 +86,7 @@ public class LevelController {
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
         getSystem(PowerUpSystem.class).setContactStrategies();
+        getSystem(AudioSystem.class).setContactStrategies();
 
         level.initializeCheckpoint();
     }

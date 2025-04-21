@@ -47,8 +47,6 @@ public class AudioSystem implements Systems, ContactStrategy {
     public void setContactStrategies() {
         ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
 
-        Gdx.app.log("Audio", "Hello you are here");
-
         centralContactListener.subscribe(
             BallEntity.class, ProjectileEntity.class,
             collisionEvent -> playSound(AudioComponent.ActionType.POP, VOLUME_POP),
@@ -83,16 +81,10 @@ public class AudioSystem implements Systems, ContactStrategy {
         }
     }
 
-    public AudioSystem(ContactSystem centralContactListener, float volume){
+    public AudioSystem(float volume){
         filter.require(AudioComponent.class);
         audioLoader = AudioLoader.getInstance();
         globalVolumeMultiplier = volume;
-
-
-//        centralContactListener.subscribe(
-//            BallEntity.class, ProjectileEntity.class,
-//            collisionEvent -> playSound(AudioComponent.ActionType.POP, VOLUME_POP),
-//            null);
     }
 
 

@@ -23,7 +23,7 @@ public class RealtimeDBManager implements MultiplayerManager {
     private ValueEventListener lobbyListener;
     private DatabaseReference lobbyRef;
     private static final long INACTIVE_TIMEOUT = 60; // In minutes
-    
+
     @Override
     public void createLobby(UserInfo host, Boolean isPublic, int maxPlayers, Callback<LobbyInfo> callback) {
         String lobbyId = generateLobbyCode();
@@ -41,29 +41,28 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void joinLobby(String lobbyId, UserInfo player, Callback<LobbyInfo> callback) {
-        PlayerInLobby newPlayer = new PlayerInLobby(player);
-        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
+        DatabaseReference lobbyRef  = lobbiesRef.child(lobbyId);
+        DatabaseReference playersRef = lobbyRef.child("players");
+        PlayerInLobby newPlayer      = new PlayerInLobby(player);
 
-        // Add disconnect listener for the player
-        addDisconnectListener(lobbyId, player);
+        lobbyRef.get().addOnSuccessListener(snap -> {
+            // Check if lobby exists, return if it does not.
+            if (!snap.exists()) {
+                callback.onError(new Exception("Lobby " + lobbyId + " does not exist"));
+                return;
+            }
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("players/" + player.uid, newPlayer);
-        updates.put("timeInState", System.currentTimeMillis());
+            // Add disconnect listener for the player
+            addDisconnectListener(lobbyId, player);
 
-        lobbyRef.updateChildren(updates)
-            .addOnSuccessListener(unused -> {
-                // After updating, fetch the updated LobbyInfo
-                lobbyRef.get().addOnSuccessListener(snapshot -> {
-                    LobbyInfo updatedLobby = snapshot.getValue(LobbyInfo.class);
-                    if (updatedLobby != null) {
-                        callback.onSuccess(updatedLobby);
-                    } else {
-                        callback.onError(new Exception("Failed to fetch updated lobby info."));
-                    }
-                }).addOnFailureListener(callback::onError);
-            })
-            .addOnFailureListener(callback::onError);
+            // Update lobby with new player
+            Map<String,Object> updates = new HashMap<>();
+            updates.put(player.uid, newPlayer);
+            playersRef.updateChildren(updates)
+                .addOnSuccessListener(u ->
+                    callback.onSuccess(snap.getValue(LobbyInfo.class)))
+                .addOnFailureListener(callback::onError);
+        }).addOnFailureListener(callback::onError);
     }
 
     @Override

@@ -16,9 +16,9 @@ import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
+import io.github.RangoUnchained.Model.Systems.Systems;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
-import io.github.RangoUnchained.Model.Systems.System;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Model.level.GameLevel;
@@ -151,7 +151,7 @@ public class LevelController {
 
     public AudioSystem getAudioSystem(){return systemManager != null ? systemManager.getSystem(AudioSystem.class) : null;}
 
-    public <T extends System> T getSystem(Class<T> systemClass) {
+    public <T extends Systems> T getSystem(Class<T> systemClass) {
         if (!isActive || systemManager == null) return null;
         return systemManager.getSystem(systemClass);
     }

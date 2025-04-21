@@ -20,7 +20,7 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Factories.AudioLoader;
 
-public class AudioSystem implements System, ContactStrategy {
+public class AudioSystem implements Systems, ContactStrategy {
 
 
     private static final long COLLISION_SOUND_COOLDOWN_MS = 175;

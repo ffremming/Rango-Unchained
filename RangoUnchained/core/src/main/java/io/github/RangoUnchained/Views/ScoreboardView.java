@@ -1,8 +1,6 @@
 package io.github.RangoUnchained.Views;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -13,6 +11,7 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.ScoreInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
 
 public class ScoreboardView extends BaseScreen {
     public ScoreboardView() {
@@ -26,17 +25,9 @@ public class ScoreboardView extends BaseScreen {
     }
 
     private void createUI() {
-        // Add background image
-        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
-        Image backgroundImage = new Image(backgroundTexture);
-
-        // Make the image fill the screen
-        backgroundImage.setFillParent(true);
-
-        // Add to stage first so it's behind everything else
-        stage.addActor(backgroundImage);
         
-        Label titleLabel = new Label("High Scores", getSkin());
+        Label titleLabel = LabelFactory.createLabel("High Scores", getSkin(), "titleFont", Color.BLACK);
+
 
         Table table = new Table();
         table.setFillParent(true);
@@ -45,9 +36,7 @@ public class ScoreboardView extends BaseScreen {
         table.row();
 
         // Add a loading message while fetching scores
-        Label loadingLabel = new Label("Loading scores...", getSkin());
-        table.add(loadingLabel).center().padBottom(10);
-        table.row();
+        LabelFactory.createLabel("Loading scores...", getSkin(), "defaultFont", null, 300, 60, 10, table).center();
 
         stage.addActor(table);
 
@@ -64,16 +53,12 @@ public class ScoreboardView extends BaseScreen {
                 table.row();
 
                 if (scores.isEmpty()) {
-                    table.add(new Label("No scores found.", getSkin()))
-                        .center().padBottom(10);
-                    table.row();
+                    LabelFactory.createLabel("No Scores found.", getSkin(), "defaultFont", null, 300, 60, 10, table).center();
                 } else {
                     for (int i = 0; i < scores.size(); i++) {
                         ScoreInfo entry = scores.get(i);
                         String scoreText = (i + 1) + ". " + entry.displayName + ": " + entry.score + " points";
-                        table.add(new Label(scoreText, getSkin()))
-                            .center().padBottom(10);
-                        table.row();
+                        LabelFactory.createLabel(scoreText, getSkin(), "rioGrandeFont", Color.BLACK, 300, 60, 10, table).center();
                     }
                 }
 
@@ -86,9 +71,9 @@ public class ScoreboardView extends BaseScreen {
                 table.clear();
                 table.add(titleLabel).center().padBottom(50);
                 table.row();
-                table.add(new Label("Error loading scores: " + e.getMessage(), getSkin()))
-                    .center().padBottom(10);
-                table.row();
+
+                LabelFactory.createLabel("Error loading scores: " + e.getMessage(), getSkin(), "defaultFont", Color.RED, 300, 60, 10, table).center();
+
                 ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
                         () -> game.setView(new MainMenuView()), "customLoginStyle", table);
             }

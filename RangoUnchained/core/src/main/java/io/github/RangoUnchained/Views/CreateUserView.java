@@ -1,13 +1,9 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
@@ -16,10 +12,14 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class CreateUserView extends BaseScreen {
 
     private TextField emailField;
+    private Table emailFieldContainer;
+    private Table passwordFieldContainer;
     private TextField passwordField;
     private Label errorLabel;
 
@@ -34,62 +34,57 @@ public class CreateUserView extends BaseScreen {
     }
 
     private void createUI() {
-        // Add background image
-        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
-        Image backgroundImage = new Image(backgroundTexture);
-
-        // Make the image fill the screen
-        backgroundImage.setFillParent(true);
-
-        // Add to stage first so it's behind everything else
-        stage.addActor(backgroundImage);
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/RioGrande.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 62; // Set desired font size
-        parameter.color = Color.BLACK;
-        parameter.spaceX = 2;
-
-        BitmapFont font = generator.generateFont(parameter);
-        generator.dispose(); // Dispose to prevent memory leaks
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-       
         // Create UI elements
-        Label titleLabel = new Label("Create User", labelStyle);
-        emailField = new TextField("", getSkin());
-        passwordField = new TextField("", getSkin());
-        passwordField.setPasswordMode(true);
-        passwordField.setPasswordCharacter('*');
+
 
         // Create a table to align UI-elements
         Table table = new Table();
-        table.setFillParent(true);
-        table.top().padTop(50);
+        table.top().padTop(20);
+        table.defaults().padLeft(20).center();
 
-        // Back to main button
-        ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()), "customLoginStyle", table);
-
-        table.add(titleLabel).center().padBottom(20);
+        LabelFactory.createLabel("Create User", getSkin(), "titleFont", null, 0, 0, 20, table); 
         table.row();
 
-        // Email field
-        table.add(new Label("Email", getSkin())).left().padBottom(5);
-        table.row();
-        table.add(emailField).width(300).padBottom(15);
-        table.row();
+        table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
+        emailField =  new TextField("", getSkin(), "textFieldStyle-textField");
 
-        // Password field
-        table.add(new Label("Password", getSkin())).left().padBottom(5);
+        emailFieldContainer = TextFieldFactory.createTextField(            
+        getSkin(),
+        "",
+        "textFieldStyle-textField",
+        "textfield",
+        true,     // transparent background
+        60,       // inner padding
+        300,      // width
+        90,
+        emailField
+        );      
+        table.add(emailFieldContainer).row();
+        // Password field;
+        LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, 0, 0, 5, table).row();
+        
+        passwordField =  new TextField("", getSkin(), "textFieldStyle-textField");
+        passwordField.setPasswordMode(true);
+        passwordField.setPasswordCharacter('-');
+        passwordFieldContainer =  TextFieldFactory.createTextField(            
+            getSkin(),
+            "",
+            "textFieldStyle-textField",
+            "textfield",
+            true,     // transparent background
+            60,       // inner padding
+            300,      // width
+            90,
+            passwordField
+            );       
+        table.add(passwordFieldContainer);
+        
         table.row();
-        table.add(passwordField).width(300).padBottom(10);
-        table.row();
-        table.add(createSignUpButton()).center().padBottom(20);
+        table.add(createSignUpButton()).width(300).height(60).center().padBottom(20);
         table.row();
 
         // Error label
-        errorLabel = new Label("", getSkin());
+        errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
         errorLabel.setColor(1, 0, 0, 1);
         errorLabel.setWrap(true);
         errorLabel.setWidth(300);
@@ -97,12 +92,27 @@ public class CreateUserView extends BaseScreen {
         table.row();
 
         // Switch scene to login
-        table.add(new Label("Already have a user?", getSkin())).center().padBottom(10);
-        table.row();
-        ButtonFactory.createButton("Back to Login", 300, 60, getSkin(), game,
-            () -> game.setView(new LoginView()), "customLoginStyle", table);
+        table.add(LabelFactory.createLabel("Already have a user?", getSkin(), "defaultFont", null));    
 
-        stage.addActor(table);
+
+                         // 🔁 ScrollPane wraps your contentTable
+        ScrollPane scrollPane = new ScrollPane(table, getSkin());
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+
+        Gdx.app.postRunnable(() -> {
+            scrollPane.layout();           // Force layout pass
+            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.updateVisualScroll();
+        });
+        // 📦 Main table that fills the screen
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.top().add(scrollPane).expand().fill().row();
+        ButtonFactory.createButton("Back to Login", 300, 60, getSkin(), game,
+            () -> game.setView(new LoginView()), "customLoginStyle", mainTable);
+
+        stage.addActor(mainTable);
     }
 
     private void displayError(Exception e) {

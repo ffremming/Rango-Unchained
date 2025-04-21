@@ -14,6 +14,7 @@ import io.github.RangoUnchained.Model.Firebase.Utils.LobbyInfo;
 import io.github.RangoUnchained.Model.Firebase.Utils.PlayerInLobby;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
 
 public class MultiplayerScoreboardView extends BaseScreen {
     private final LobbyInfo lobby;
@@ -45,7 +46,7 @@ public class MultiplayerScoreboardView extends BaseScreen {
     private void updateScoreboard(LobbyInfo lobby) {
         scoreboardTable.clear();
 
-        Label title = new Label("Results for lobby: " + lobby.lobbyId, getSkin());
+        Label title = LabelFactory.createLabel("Results for lobby: " + lobby.lobbyId, getSkin(), "rioGrandeFont", null);
         scoreboardTable.add(title).colspan(2).padBottom(30).row();
 
         List<PlayerInLobby> players = new ArrayList<>(lobby.players.values());
@@ -67,8 +68,8 @@ public class MultiplayerScoreboardView extends BaseScreen {
             String time = String.format("%.1f s", p.finishTime);
             String timeText = "Time: " + (p.finishTime != null ? time + "s" : "N/A");
 
-            scoreboardTable.add(new Label(name, getSkin())).padRight(20);
-            scoreboardTable.add(new Label(scoreText + ", " + timeText, getSkin())).row();
+            LabelFactory.createLabel(name, getSkin(), "rioGrandeFont", null, 1000, 300, 20, scoreboardTable);
+            LabelFactory.createLabel(scoreText + ", " + timeText, getSkin(), "rioGrandeFont", null, 1000, 300, 20, scoreboardTable);
             rank++;
         }
 

@@ -46,5 +46,8 @@ public class ButtonFactory {
         return table;
     }
 
+    public static Table createDefaultButton(String text, Runnable onClickAction, Table table){
+        return createButton(text, 300, 60, GameController.getSkin(), GameController.getInstance(), onClickAction, "customLoginStyle", table);
+    }
     
 }

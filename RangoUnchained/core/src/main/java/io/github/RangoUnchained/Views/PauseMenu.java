@@ -1,12 +1,8 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -17,6 +13,7 @@ import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.Constants;
+import io.github.RangoUnchained.Views.Utils.SliderFactory;
 
 public class PauseMenu extends Stage {
     private boolean isPaused = false;
@@ -62,19 +59,7 @@ public class PauseMenu extends Stage {
         bottomTable.setFillParent(true);
         bottomTable.bottom().padBottom(20);
 
-        Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
-        volumeSlider.setValue(game.getVolume());
-        volumeSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                float newVolume = volumeSlider.getValue();
-                game.setVolume(newVolume);
-            }
-        });
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = GameController.getFont();
-        Label volumeLabel = new Label("Volume: ", labelStyle);
-        bottomTable.add(volumeLabel);
+        Table volumeSlider = SliderFactory.createVolumeSlider(game, GameController.getSkin());
         bottomTable.add(volumeSlider);
 
         addActor(table);

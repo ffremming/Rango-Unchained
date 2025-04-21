@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Controllers;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -12,7 +11,6 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.MainMenuView;
-import io.github.RangoUnchained.Views.Utils.FontUtils;
 
 public class GameController extends Game {
 
@@ -34,7 +32,6 @@ public class GameController extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
         skin = new Skin(com.badlogic.gdx.Gdx.files.internal("skin/uiskin.json"));
-        FontUtils.addFontAndTextButtonStyleToSkin(skin, "rioGrande", "rioGrande", "fonts/RioGrande.ttf", 24, Color.WHITE);
         setView(new MainMenuView());
     }
 
@@ -110,7 +107,7 @@ public class GameController extends Game {
         font.dispose();
         if (currentView != null){
             currentView.dispose();
-        }   
+        }
     }
 }
 

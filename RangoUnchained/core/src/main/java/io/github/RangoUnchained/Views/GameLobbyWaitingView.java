@@ -11,6 +11,8 @@ import io.github.RangoUnchained.Model.Firebase.Utils.PlayerInLobby;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.Constants;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class GameLobbyWaitingView extends BaseScreen {
     private final MultiplayerManager dbManager;
@@ -46,19 +48,18 @@ public class GameLobbyWaitingView extends BaseScreen {
 
     public void createUI() {
         Table table = new Table();
-        table.setFillParent(true);
         table.top().padTop(50);
+        table.defaults().padLeft(20).center();
 
-        Label lobbyLabel = new Label("Lobby ID: " + lobby.lobbyId, getSkin());
-        table.add(lobbyLabel).padBottom(20).row();
+        LabelFactory.createLabel("Lobby ID: " + lobby.lobbyId, getSkin(), "defaultFont", null, BUTTON_WIDTH, BUTTON_HEIGHT, 10, table).row();
 
-        playerCountLabel = new Label("Players in Lobby: ...", getSkin());
+        playerCountLabel = LabelFactory.createLabel("Players in Lobby: ...", getSkin(), "defaultFont", null);
         table.add(playerCountLabel).padBottom(10).row();
 
-        table.add(playerCountLabel).padBottom(10).row();
+        // table.add(playerCountLabel).padBottom(10).row();
         table.add(playerTable).padBottom(30).row();
 
-        statusLabel = new Label("", getSkin());
+        statusLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
         table.add(statusLabel).padBottom(10).row();
 
         isReadyButton = ButtonFactory.createButton("Ready up!", getSkin(), game,
@@ -67,20 +68,48 @@ public class GameLobbyWaitingView extends BaseScreen {
         startGameButton = ButtonFactory.createButton("Start Game", getSkin(), game,
             this::startGame, "customLoginStyle");
         startGameButton.setVisible(false); // Hidden by default
-        table.add(isReadyButton).padBottom(10).row();
+        table.add(isReadyButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(10).row();
 
-        table.add(startGameButton).padBottom(10).row();
+        table.add(startGameButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(10).row();
 
         TextButton leaveButton = ButtonFactory.createButton("Leave Lobby", getSkin(), game,
             this::leaveLobby, "customLoginStyle");
-        table.add(leaveButton).padBottom(10).row();
-        Label levelLabel = new Label("Selected Level:", getSkin());
-        selectedLevel = new TextField("1", getSkin());
+        Label levelLabel = LabelFactory.createLabel("Selected Level:", getSkin(), "defaultFont", null);
+        selectedLevel = new TextField("1", getSkin(), "textFieldStyle-textField");
+        table.add(leaveButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(10).row();
+
+        Table selectedLevelContainer = TextFieldFactory.createTextField(            
+        getSkin(),
+        "",
+        "textFieldStyle-textField",
+        "textfield",
+        true,     // transparent background
+        60,       // inner padding
+        300,      // width
+        90,
+        selectedLevel
+        );      
         table.add(levelLabel).padBottom(5).row();
-        table.add(selectedLevel).width(100).padBottom(20).row();
+        table.add(selectedLevelContainer).row();
+        // table.add(selectedLevel).width(100).padBottom(20).row();
 
-        stage.addActor(table);
+        // 🔁 ScrollPane wraps your contentTable
+        ScrollPane scrollPane = new ScrollPane(table, getSkin());
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
 
+        Gdx.app.postRunnable(() -> {
+            scrollPane.layout();           // Force layout pass
+            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.updateVisualScroll();
+        });
+        // 📦 Main table that fills the screen
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.top().add(scrollPane).expand().fill().row();
+ 
+
+        stage.addActor(mainTable);
         levelListener();
     }
 
@@ -142,13 +171,13 @@ public class GameLobbyWaitingView extends BaseScreen {
                         for (PlayerInLobby player : lobby.players.values()) {
                             if (player == null) continue; // Skip null players (happens when a player leaves)
                             StringBuilder labelText = new StringBuilder();
-                            if (lobby.isHost(player.uid)) labelText.append("* ");
+                            if (lobby.isHost(player.uid)) labelText.append("- ");
                             labelText.append(player.displayName);
                             if (currentUid.equals(player.uid)) labelText.append(" (You)");
 
-                            Label nameLabel = new Label(labelText.toString(), getSkin());
-                            Label readyLabel = new Label(Boolean.TRUE.equals(player.isReady) ? " Ready" : " Not Ready", getSkin());
 
+                            Label nameLabel = LabelFactory.createLabel(labelText.toString(), getSkin(), "defaultFont", null);
+                            Label readyLabel =  LabelFactory.createLabel(Boolean.TRUE.equals(player.isReady) ? " Ready" : " Not Ready", getSkin(), "defaultFont", null);
                             Table row = new Table();
                             row.add(nameLabel).left().padRight(10);
                             row.add(readyLabel).left();

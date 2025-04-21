@@ -3,6 +3,7 @@ package io.github.RangoUnchained.Views;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,11 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -33,6 +32,7 @@ import io.github.RangoUnchained.Model.Systems.TutorialSystem;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.HintUtil;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
 
 public class GamePlayView extends BaseScreen {
 
@@ -45,10 +45,16 @@ public class GamePlayView extends BaseScreen {
     private boolean hasSentFinishData;
     private boolean shouldInitialize = true;
     private boolean initialized = false;
+    private Table leftTable;
+    private Table centralTable;
+    private Table righTable;
+    private Table shootTable;
+
 
     public GamePlayView(int levelNumber) {
         super(GameController.getInstance());
         this.levelNumber = levelNumber;
+        removeBackground();
     }
 
     // Constructor for multiplayer
@@ -57,6 +63,7 @@ public class GamePlayView extends BaseScreen {
         this.levelNumber = levelNumber;
         this.isMultiplayer = isMultiplayer;
         this.lobby = lobby;
+        removeBackground();
     }
 
     @Override
@@ -144,17 +151,23 @@ public class GamePlayView extends BaseScreen {
     }
 
     private void createUI() {
-        TextButton shootButton = ButtonFactory.createButton("Shoot", getSkin(), game,
-            () -> controller.handleShoot(), "customLoginStyle");
-        TextButton pauseButton = ButtonFactory.createButton("Pause", getSkin(), game,
-            () -> pauseMenu.togglePause(), "customLoginStyle");
+        centralTable = new Table();
+        centralTable.setFillParent(true); 
+        centralTable.top().padTop(40).toFront();
+        shootTable = new Table();
+        shootTable.setFillParent(true);
+        shootTable.right().bottom().padBottom(30).padRight(50).toFront();
 
-        createTable(shootButton).bottom().right().pad(15);
-        createTable(pauseButton).top().padTop(50).setWidth(300);
+        ButtonFactory.createDefaultButton("Pause", () -> pauseMenu.togglePause(), centralTable).row();
+        ButtonFactory.createButton("LICK EM!", BUTTON_WIDTH/2, 50, getSkin(), game, () -> controller.handleShoot(), "customLoginStyle", shootTable);
+
         createJoystick();
-       createScoreLabel();
-       createTimeLabel();
-       createTutorialLabel();
+        createScoreLabel();
+        createTimeLabel();
+        createTutorialLabel();
+
+        stage.addActor(centralTable);
+        stage.addActor(shootTable);
     }
 
     private void updateUI(){
@@ -174,6 +187,7 @@ public class GamePlayView extends BaseScreen {
             Label tutorialLabel = stage.getRoot().findActor("tutorialLabel");
             if (tutorialLabel != null) {
                 TutorialSystem tutorialSystem = LevelController.getInstance().getSystem(TutorialSystem.class);
+                System.out.println("Tutorial text: " + tutorialSystem.getTutorialMessage());
                 if (tutorialSystem!= null){
                     tutorialLabel.setText(tutorialSystem.getTutorialMessage());
                 }
@@ -199,7 +213,7 @@ public class GamePlayView extends BaseScreen {
         // New top-left-aligned heart container
         Table powerups = new Table();
         powerups.setName("powerupContainer");
-        powerups.top().right().padTop(10).padLeft(42);
+        powerups.top().right().padTop(50).padRight(15);
         powerups.setFillParent(true);
 
         // Load texture (with crisp pixel look)
@@ -238,7 +252,7 @@ public class GamePlayView extends BaseScreen {
         // New top-left-aligned heart container
         Table heartTable = new Table();
         heartTable.setName("heartContainer");
-        heartTable.top().left().padTop(10).padLeft(10);
+        heartTable.top().left().padTop(20).padLeft(15);
         heartTable.setFillParent(true);
 
         // Load texture (with crisp pixel look)
@@ -263,34 +277,30 @@ public class GamePlayView extends BaseScreen {
         Skin skin = getSkin();
 
         // Create a label to display the score
-        Label tutorialLabel = new Label("", skin);
+        Label tutorialLabel =  LabelFactory.createLabel("", skin, "defaultFont", Color.BLACK);
         tutorialLabel.setName("tutorialLabel"); // Set a name to easily update it later
 
         tutorialLabel.setBounds(stage.getWidth()/2, stage.getHeight()/2, 100, 50);
 
-        Table scoreTable = new Table();
-        scoreTable.setFillParent(true); // Let the table span the whole stage
-        scoreTable.top().right().padTop(10).padLeft(30); // Align top-right with some padding
+        centralTable.add(tutorialLabel).expandX();
 
-        scoreTable.add(tutorialLabel);
-        stage.addActor(tutorialLabel);
     }
 
     private void createScoreLabel() {
         Skin skin = getSkin();
 
         // Create a label to display the score
-        Label scoreLabel = new Label("Score: 0", skin);
+        Label scoreLabel = LabelFactory.createLabel("", skin, "defaultFont", null);
         scoreLabel.setName("scoreLabel"); // Set a name to easily update it later
 
-        scoreLabel.setBounds(5, stage.getHeight()-(44 + 10 + 50/2), 100, 50);
+        // scoreLabel.setBounds(10, stage.getHeight()-(44 + 5 + 50/2), 100, 50);
 
         Table scoreTable = new Table();
         scoreTable.setFillParent(true); // Let the table span the whole stage
-        scoreTable.top().right().padTop(10).padLeft(30); // Align top-right with some padding
+        scoreTable.top().left().padTop(50).padLeft(15);
 
         scoreTable.add(scoreLabel);
-        stage.addActor(scoreLabel);
+        stage.addActor(scoreTable);
     }
 
     private void createTimeLabel() {
@@ -298,32 +308,18 @@ public class GamePlayView extends BaseScreen {
         Skin skin = getSkin();
 
         // Create the label and name it for future updates
-        Label timeLabel = new Label("0 s", skin);
+        Label timeLabel = LabelFactory.createLabel("0 s", skin, "defaultFont", null);
         timeLabel.setName("timeLabel");
 
         // Create a table to position the label at the top-right
         Table timeTable = new Table();
         timeTable.setFillParent(true); // Let the table span the whole stage
-        timeTable.right().top().padTop(40); // Align at the top and center with padding
+        timeTable.right().top().padRight(15).padTop(20);
 
         timeTable.add(timeLabel);
 
         // Add the table to the stage
         stage.addActor(timeTable);
-    }
-
-    private Table createTable(Button button) {
-        Table table = new Table();
-        if (button instanceof TextButton) {
-            table.setName(((TextButton) button).getText().toString());
-        } else {
-            table.setName("UnnamedButton");
-        }
-        table.setFillParent(true);
-        table.add(button).size(100,50); // This controls the size of shoot and pause buttons 
-
-        stage.addActor(table);
-        return table;
     }
 
     private Table getTableByName(String name) {
@@ -348,12 +344,7 @@ public class GamePlayView extends BaseScreen {
 
         Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
         touchpadStyle.background = joystickImage.getDrawable();
-        // Image knobImage = new Image(skin.getDrawable("default-rect-pad"));
-        // knobImage.setSize(40, 40); // set your desired size
 
-        // // Now convert to Drawable, preserving the size
-        // Drawable scaledKnobDrawable = knobImage.getDrawable();
-        // touchpadStyle.knob = scaledKnobDrawable;
         Drawable knobDrawable = skin.getDrawable("default-rect-pad");
 
         if (knobDrawable instanceof NinePatchDrawable) {

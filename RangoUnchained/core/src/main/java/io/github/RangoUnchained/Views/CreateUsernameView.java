@@ -10,10 +10,13 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class CreateUsernameView extends BaseScreen {
 
-    private TextField usernameField;
+    private Table usernameFieldContainer;
+    private TextField usernameField; // Store the TextField reference
     private Label errorLabel;
 
     public CreateUsernameView() {
@@ -27,10 +30,13 @@ public class CreateUsernameView extends BaseScreen {
     }
 
     private void createUI() {
-        Label titleLabel = new Label("Create a New Username", getSkin());
-        usernameField = new TextField("", getSkin());
-
-        errorLabel = new Label("", getSkin());
+        //Create the TextField first
+        TextField textField = new TextField("", getSkin(), "textFieldStyle-textField");
+        this.usernameField = textField; // Save reference to the actual TextField
+        Label titleLabel = LabelFactory.createLabel("Create a New Username", getSkin(), "defaultFont", null);
+        usernameFieldContainer = TextFieldFactory.createTextField(getSkin(), "", "textFieldStyle-textField", "textfield", true, 60, 300, 90, usernameField);
+        
+        errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
         errorLabel.setColor(1, 0, 0, 1);
         errorLabel.setWrap(true);
         errorLabel.setWidth(300);
@@ -48,9 +54,9 @@ public class CreateUsernameView extends BaseScreen {
         .padBottom(20);
         table.row();
 
-        table.add(new Label("New Username:", getSkin())).left().padBottom(5);
+        table.add(LabelFactory.createLabel("New Username:", getSkin(), "defaultFont", null)).left().padBottom(5);
         table.row();
-        table.add(usernameField)            
+        table.add(usernameFieldContainer)            
         .width(300)
         .height(60)
         .center()

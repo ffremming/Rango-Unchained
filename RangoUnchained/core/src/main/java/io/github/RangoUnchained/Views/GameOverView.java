@@ -1,8 +1,5 @@
 package io.github.RangoUnchained.Views;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import io.github.RangoUnchained.Controllers.GameController;
@@ -12,11 +9,12 @@ import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.HintUtil;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
 
 public class GameOverView extends BaseScreen {
 
-    int levelNumber;
-    int score;
+    private int levelNumber;
+    private int score;
     private Label scoreLabel;
 
     boolean completed;
@@ -54,22 +52,10 @@ public class GameOverView extends BaseScreen {
     }
 
     private void createUI() {
-        // Add background image
-        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png")); // Replace with your actual image path
-        Image backgroundImage = new Image(backgroundTexture);
-
-        // Make the image fill the screen
-        backgroundImage.setFillParent(true);
-
-        // Add to stage first so it's behind everything else
-        stage.addActor(backgroundImage);
-       
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
         String titleText = completed ? "Level Completed" : "Level Failed";
 
-        Label titleLabel = new Label(titleText, labelStyle);
-        scoreLabel = new Label("", getSkin());
+        Label titleLabel = LabelFactory.createLabel(titleText, getSkin(), "defaultFont", null);
+        scoreLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
 
         Table table = new Table();
         table.setFillParent(true);
@@ -82,7 +68,7 @@ public class GameOverView extends BaseScreen {
         table.add(scoreLabel).center().padBottom(10);
         table.row();
         // Hint label
-        Label hintLabel = new Label(HintUtil.getHint(), getSkin());
+        Label hintLabel = LabelFactory.createLabel(HintUtil.getHint(), getSkin(), "defaultFont", null);
         table.add(hintLabel).center().padBottom(50);
         table.row();
 

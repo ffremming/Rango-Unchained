@@ -22,7 +22,8 @@ public class RealtimeDBManager implements MultiplayerManager {
     // Store reference to dispose of the listener afterwards
     private ValueEventListener lobbyListener;
     private DatabaseReference lobbyRef;
-    private static final float INACTIVE_TIMEOUT = 60f; // In minutes
+    private static final long INACTIVE_TIMEOUT = 60; // In minutes
+    
     @Override
     public void createLobby(UserInfo host, Boolean isPublic, int maxPlayers, Callback<LobbyInfo> callback) {
         String lobbyId = generateLobbyCode();
@@ -67,23 +68,31 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     @Override
     public void leaveLobby(String lobbyId, UserInfo player, Callback<Void> callback) {
-        DatabaseReference lobbyRef = lobbiesRef.child(lobbyId);
+        DatabaseReference lobbyRef  = lobbiesRef.child(lobbyId);
+        DatabaseReference playerRef = lobbyRef.child("players").child(player.uid);
 
-        lobbyRef.child("players")
-            .child(player.uid)
-            .removeValue()
+        // Stop the queued on‑disconnect delete for this player
+        playerRef.onDisconnect().cancel();
+
+        // Remove the player immediately
+        playerRef.removeValue()
             .addOnSuccessListener(unused -> {
-                // Check if lobby is empty and delete it if so
+
+                // If the lobby is now empty, remove the lobby
                 lobbyRef.child("players").get().addOnSuccessListener(snapshot -> {
                     if (!snapshot.hasChildren()) {
                         lobbyRef.removeValue();
                     }
                 });
-                // Remove listeners for this player
+
+                // Clean up local listeners
                 if (this.lobbyRef != null && lobbyListener != null) {
                     this.lobbyRef.removeEventListener(lobbyListener);
+                }
+                if (publicLobbiesListener != null) {
                     lobbiesRef.removeEventListener(publicLobbiesListener);
                 }
+
                 callback.onSuccess(null);
             })
             .addOnFailureListener(callback::onError);
@@ -143,8 +152,6 @@ public class RealtimeDBManager implements MultiplayerManager {
                 }
 
                 if (lobby != null) {
-                    // Kick players who have been disconnected for too long
-                    shouldKickPlayer(lobby);
                     callback.onSuccess(lobby);
                 } else {
                     callback.onError(new Exception("Lobby data is null"));
@@ -189,7 +196,6 @@ public class RealtimeDBManager implements MultiplayerManager {
                 .addOnFailureListener(callback::onError);
         }).addOnFailureListener(callback::onError);
     }
-
 
     @Override
     public void setLobbyLevel(String lobbyId, int level, Callback<Void> callback) {
@@ -284,7 +290,11 @@ public class RealtimeDBManager implements MultiplayerManager {
 
     // Utility method to delete lobbies
     private boolean shouldDeleteLobby(LobbyInfo lobby, DatabaseReference ref) {
-        if (lobby == null) return true;
+        // Delete lobby if it doesn't exist
+        if (lobby == null) {
+            ref.removeValue();
+            return true;
+        }
 
         long now = System.currentTimeMillis();
 
@@ -295,11 +305,8 @@ public class RealtimeDBManager implements MultiplayerManager {
             return true;
         }
 
-        // Check if any players have disconnected and kick them
-        shouldKickPlayer(lobby);
-
         // Check if all players have disconnected
-        if (lobby.players.isEmpty()) {
+        if (lobby.players == null || lobby.players.isEmpty()) {
             ref.removeValue();
             return true;
         }
@@ -307,30 +314,12 @@ public class RealtimeDBManager implements MultiplayerManager {
         return false;
     }
 
-    public void shouldKickPlayer(LobbyInfo lobby) {
-        if (lobby != null && lobby.players != null && !lobby.players.isEmpty()) {
-            for (Map.Entry<String, PlayerInLobby> entry : lobby.players.entrySet()) {
-                PlayerInLobby player = entry.getValue();
-                String uid = entry.getKey();
-
-                if (Boolean.TRUE.equals(player.isDisconnected)) {
-                    lobbiesRef
-                        .child(lobby.lobbyId)
-                        .child("players")
-                        .child(uid)
-                        .removeValue();
-                }
-            }
-        }
-    }
-
     public void addDisconnectListener(String lobbyId, UserInfo player) {
         // Define a disconnectRef for this player
-        DatabaseReference playerStatus = lobbiesRef
+        DatabaseReference playerRef = lobbiesRef
             .child(lobbyId)
             .child("players")
-            .child(player.uid)
-            .child("isDisconnected");
+            .child(player.uid);
 
         DatabaseReference connectedRef =
             FirebaseDatabase.getInstance().getReference(".info/connected");
@@ -339,9 +328,8 @@ public class RealtimeDBManager implements MultiplayerManager {
             @Override public void onDataChange(DataSnapshot snap) {
                 Boolean connected = snap.getValue(Boolean.class);
                 if (Boolean.TRUE.equals(connected)) {
-                    // We are online (or just re‑connected)
-                    playerStatus.setValue(false);
-                    playerStatus.onDisconnect().setValue(true);
+                    // Delete player from lobby when disconnected
+                    playerRef.onDisconnect().removeValue();
                 }
             }
             @Override public void onCancelled(DatabaseError error) {}

@@ -4,7 +4,6 @@ public class PlayerInLobby {
     public String uid;
     public String displayName;
     public Boolean isReady;
-    public Boolean isDisconnected;
     public Integer finishScore;
     public Double finishTime;
 
@@ -19,7 +18,6 @@ public class PlayerInLobby {
         this.uid = userInfo.uid;
         this.displayName = userInfo.getDisplayName();
         this.isReady = false;
-        this.isDisconnected = false;
         this.finishScore = null;
         this.finishTime = null;
     }

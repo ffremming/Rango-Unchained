@@ -93,7 +93,7 @@
       "typeInfo": {
         "type": "Ball",
         "size":2,
-        "subType": "TumbleWeed"
+        "subType": "Tumbleweed"
       },
       "velocity": {
         "x": -2

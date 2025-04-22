@@ -1,12 +1,14 @@
 package io.github.RangoUnchained.Model.Factories;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.github.RangoUnchained.Controllers.AudioController;
 import io.github.RangoUnchained.Model.Components.AudioComponent;
 
 public class AudioLoader {
@@ -14,12 +16,25 @@ public class AudioLoader {
     private static AudioLoader audioLoader;
 
     private HashMap<AudioComponent.ActionType, List<Sound>> audioMap = new HashMap<>();
+    private HashMap<AudioController.MusicKey, Music> keyToMusic = new HashMap<>();
+
 
     public static AudioLoader getInstance(){
         if (audioLoader == null) {
             audioLoader = new AudioLoader();
         }
         return audioLoader;
+    }
+
+    public void initializeMusic(){
+        Music music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_1.mp3"));
+        keyToMusic.put(AudioController.MusicKey.GAMEPLAY, music);
+        music = Gdx.audio.newMusic(Gdx.files.internal("Backgroundmusic/backgroundmusic_3.mp3"));
+        keyToMusic.put(AudioController.MusicKey.DEFAULT, music);
+    }
+
+    public Music getMusic(AudioController.MusicKey key){
+        return keyToMusic.get(key);
     }
 
     private AudioLoader(){
@@ -56,7 +71,21 @@ public class AudioLoader {
         audioMap.put(AudioComponent.ActionType.BOUNCE, sounds);
     }
 
-    public void dispose(){
-        audioMap.forEach((actionType, sounds) -> sounds.forEach(Sound::dispose));
+    public void dispose() {
+        // dispose all sounds in audioMap
+        for (List<Sound> sounds : audioMap.values()) {
+            for (Sound sound : sounds) {
+                sound.dispose();
+            }
+        }
+        audioMap.clear();
+    }
+
+    public void disposeMusic() {
+        // dispose all music in keyToMusic
+        for (Music music : keyToMusic.values()) {
+            music.dispose();
+        }
+        keyToMusic.clear();
     }
 }

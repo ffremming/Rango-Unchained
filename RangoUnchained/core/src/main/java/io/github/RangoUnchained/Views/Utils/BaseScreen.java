@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
-import io.github.RangoUnchained.Controllers.MusicController;
+import io.github.RangoUnchained.Controllers.AudioController;
 
 public abstract class BaseScreen extends ScreenAdapter {
 
@@ -68,8 +68,8 @@ public abstract class BaseScreen extends ScreenAdapter {
         stage.draw();
     }
 
-    public MusicController.MusicKey getMusicKey(){
-        return MusicController.MusicKey.DEFAULT;
+    public AudioController.MusicKey getMusicKey(){
+        return AudioController.MusicKey.DEFAULT;
     }
 
 

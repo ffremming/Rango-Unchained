@@ -9,6 +9,9 @@ import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
+/**
+ * System responsible for updating entity movement based on input and speed.
+ */
 public class MovementSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
@@ -33,7 +36,7 @@ public class MovementSystem implements Systems {
 
         float moveSpeed = speedComponent.getCurrentSpeed();
 
-        // Get the current velocity (we'll preserve the y-component, for example)
+        // Get the current velocity
         Vector2 currentVelocity = body.getLinearVelocity();
         float newVelocityX = 0f;
 
@@ -47,7 +50,6 @@ public class MovementSystem implements Systems {
         // Update the body's velocity
         body.setLinearVelocity(newVelocityX, currentVelocity.y);
     }
-
 
     @Override
     public boolean filter(Entity entity) {

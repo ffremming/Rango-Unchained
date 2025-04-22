@@ -10,6 +10,9 @@ import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
+/**
+ * System that updates the sprite animation based on player input.
+ */
 public class AnimationSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
@@ -18,8 +21,6 @@ public class AnimationSystem implements Systems {
         filter.require(InputComponent.class);
         filter.require(AnimationComponent.class);
     }
-
-
 
     public void updateEntity(Entity entity, float delta) {
 
@@ -65,6 +66,4 @@ public class AnimationSystem implements Systems {
     public boolean filter(Entity entity) {
         return (filter.matches(entity));
     }
-
-
 }

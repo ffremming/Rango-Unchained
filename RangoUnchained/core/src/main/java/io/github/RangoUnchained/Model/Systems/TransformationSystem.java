@@ -16,12 +16,12 @@ import io.github.RangoUnchained.Model.Components.TransformationComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
-
-
+/**
+ * System that dynamically transforms (scales and repositions) entities over time.
+ */
 public class TransformationSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();
-
 
     public TransformationSystem() {
         filter
@@ -37,11 +37,9 @@ public class TransformationSystem implements Systems {
         BodyComponent bodyComp = (BodyComponent) entity.getComponent(BodyComponent.class);
         SpriteComponent spriteComp = (SpriteComponent) entity.getComponent(SpriteComponent.class);
 
-
         Sprite sprite = spriteComp.getSprite();
         Body body = bodyComp.getBody();
         Fixture oldFixture = body.getFixtureList().first();
-
 
         if (transComp.getDuration()>0){
 
@@ -56,21 +54,10 @@ public class TransformationSystem implements Systems {
             }
         }
         decrementDuration(transComp);
-
-        setSpritePos(body, sprite);
-    }
-
-    private void setSpritePos(Body body,Sprite sprite){
-
-
-
-        //sprite.setPosition(body.getPosition().x * Constants.PPM - ((sprite.getWidth())/2), body.getPosition().y * Constants.PPM  - sprite.getHeight());
-
     }
 
     private void decrementDuration(TransformationComponent transComp){
         transComp.decrementDuration();
-
 
         if (transComp.getDuration()<=0){
             if (transComp.getPause()>0){
@@ -90,8 +77,6 @@ public class TransformationSystem implements Systems {
             }
         }
     }
-
-
 
     private void scaleCircle(TransformationComponent transComp, Body body, Fixture oldFixture, Sprite sprite){
         Shape oldShape = (Shape) oldFixture.getShape();
@@ -115,7 +100,6 @@ public class TransformationSystem implements Systems {
             body.setTransform(body.getPosition().x + offsetX, body.getPosition().y, body.getAngle());
         }
 
-
         // Remove old fixture
         body.destroyFixture(oldFixture);
 
@@ -123,15 +107,12 @@ public class TransformationSystem implements Systems {
         Shape newShape = new CircleShape();
         newShape.setRadius(newRadius);
 
-
-
         // Create new fixture definition
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = newShape;
         fixtureDef.density = oldFixture.getDensity();
         fixtureDef.friction = oldFixture.getFriction();
         fixtureDef.restitution = oldFixture.getRestitution();
-
 
         sprite.setSize((float)(newRadius*1.7*2), (float)(newRadius*1.7*2));
 
@@ -205,18 +186,8 @@ public class TransformationSystem implements Systems {
         newShape.dispose(); // Prevent memory leak
     }
 
-
-
-
-
-
-
-
-
-
     @Override
     public boolean filter(Entity entity) {
         return (filter.matches(entity));
     }
-
 }

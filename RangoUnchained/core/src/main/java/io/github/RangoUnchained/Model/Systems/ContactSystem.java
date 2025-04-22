@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * System for managing collision events between entities.
+ */
 public class ContactSystem implements ContactListener, Systems {
 
     private ComponentFilter filter = new ComponentFilter();
-
 
     public static class CollisionEvent {
         public final Entity entityA;

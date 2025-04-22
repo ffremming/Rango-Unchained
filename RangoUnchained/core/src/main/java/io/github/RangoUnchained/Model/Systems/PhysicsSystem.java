@@ -16,6 +16,9 @@ import io.github.RangoUnchained.Model.Entities.FloorEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
+/**
+ * System responsible for syncing physics bodies with sprite positions
+ */
 public class PhysicsSystem implements Systems, ContactStrategy {
 
     private World world;
@@ -24,13 +27,10 @@ public class PhysicsSystem implements Systems, ContactStrategy {
     public PhysicsSystem() {
         world = new World(new Vector2(0, -10), true);
 
-
         filter
         .require(BodyComponent.class)
         .require(SpriteComponent.class);
-
     }
-
 
     public void setContactStrategies(){
         ContactSystem centralContactListener = LevelController.getInstance().getSystem(ContactSystem.class);
@@ -50,16 +50,10 @@ public class PhysicsSystem implements Systems, ContactStrategy {
         float screenX = ((body.getPosition().x * Constants.PPM) - sprite.getWidth() / 2f);
         float screenY = ((body.getPosition().y * Constants.PPM) - sprite.getHeight() / 2f);
 
-        //Gdx.app.log("spritePos",screenX+","+screenY);
-        //Gdx.app.log("pos", entity.getClass().getName()+body.getPosition().y+","+body.getPosition().x);
-
         sprite.setPosition(screenX, screenY);
     }
 
-
-
     private void handleBallFloorCollision(CollisionEvent collisionEvent) {
-//        Gdx.app.log("contact","ballfloor");
         BallEntity ball;
 
         if (collisionEvent.entityA instanceof BallEntity) {

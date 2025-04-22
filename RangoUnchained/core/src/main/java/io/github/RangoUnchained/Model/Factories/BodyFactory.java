@@ -31,20 +31,6 @@ public class BodyFactory {
         return bodyComponent;
     }
 
-    static FixtureDef createNoxBounceBoxFixture(float width,float height, short category, short mask){
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width / 2, height / 2);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0f;
-        // Set collision filtering:
-        fixtureDef.filter.categoryBits = category;
-        fixtureDef.filter.maskBits = mask;
-        return fixtureDef;
-    }
-
     static FixtureDef createBoxFixture(float width, float height, short category, short mask) {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width / 2, height / 2);

@@ -12,7 +12,7 @@ import javax.xml.datatype.Duration;
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
-import io.github.RangoUnchained.Model.Factories.BaseFactory;
+import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
@@ -207,8 +207,7 @@ public class GameLevel {
             Gdx.app.log("JSON_testing", "Name: " + data.name);
             Gdx.app.log("JSON_testing", "Position: (" + data.dimension.x + ", " + data.dimension.y + ")");
             Vector2 velocity = data.velocity == null ? new Vector2() : data.velocity;
-            //Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity, data.health, levelNumber);
-            Entity entity = BaseFactory.create(data,levelData);
+            Entity entity = EntityFactory.create(data,levelData);
             if (entity != null){
                 entities.add(entity);
             }

@@ -38,7 +38,7 @@ public class SpawnPowerup implements ContactStrategy{
         SpriteComponent spriteComponent = (SpriteComponent) ball.getComponent(SpriteComponent.class);
 
 
-        if (Math.random() < 0.9) { // 20% chance to spawn a powerup
+        if (Math.random() < 0.20) { // 20% chance to spawn a powerup
             String[] powerupTypes = {"Shield", "Speed", "Health"};
             String powerupName = powerupTypes[(int) (Math.random() * powerupTypes.length)];
 

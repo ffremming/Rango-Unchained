@@ -16,20 +16,6 @@ public class SpriteComponent implements Component {
     private final String path;
 
     /**
-     * Constructs a {@link SpriteComponent} from an image path.
-     *
-     * @param path path to the texture
-     */
-    public SpriteComponent(String path) {
-        texture = new Texture(Gdx.files.internal(path));
-
-        sprite = new Sprite(texture);
-        sprite.setColor(Color.WHITE);
-        sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight());
-        this.path = path;
-    }
-
-    /**
      * Constructs a {@link SpriteComponent} from an image path with a specified size.
      *
      * @param path   path to the texture

@@ -45,10 +45,10 @@ public class BallSplitting implements ContactStrategy{
 
         LevelController.getInstance().handleRemovalRequests(ball);
         LevelController.getInstance().getSystem(TutorialSystem.class).flagBallKilled();
-        BallComponent ballcomp = (BallComponent) ball.getComponent(BallComponent.class);
+        BallComponent ballComp = (BallComponent) ball.getComponent(BallComponent.class);
 
-        String spawnName = "Ball " + ballcomp.getTypeName();
-       
+        String spawnName = "Ball " + ballComp.getTypeName();
+
 
         int size = timesPopped == 0 ? 2:timesPopped == 1 ? 1:0;
         Vector2 newVelocity = new Vector2((0), (5));
@@ -57,27 +57,33 @@ public class BallSplitting implements ContactStrategy{
         if (size == 0){
             return;
         }
+        if (ballComp.getTypeName().equals("Bomb")){
+            spawnBombs(ballComp.getTypeName(), xPos, yPos, size);
+        }
+
+
+
 
         EntityData dataRight = new EntityData();
         dataRight.dimension = new Dimension();
         dataRight.dimension.x = xPos +50;
         dataRight.dimension.y = yPos;
         dataRight.typeInfo = new TypeInfo();
-        dataRight.typeInfo.type = "ball";
-        dataRight.typeInfo.subType = ballcomp.getTypeName();
+        dataRight.typeInfo.type = "Ball";
+        dataRight.typeInfo.subType = ballComp.getTypeName();
         dataRight.typeInfo.size = size;
         newVelocity.x = 2;
         dataRight.velocity = newVelocity;
         dataRight.name = spawnName;
 
-        
+
         EntityData dataLeft = new EntityData();
         dataLeft.dimension = new Dimension();
         dataLeft.dimension.x = xPos -20;
         dataLeft.dimension.y = yPos;
         dataLeft.typeInfo = new TypeInfo();
-        dataLeft.typeInfo.type = "ball";
-        dataLeft.typeInfo.subType = ballcomp.getTypeName();
+        dataLeft.typeInfo.type = "Ball";
+        dataLeft.typeInfo.subType = ballComp.getTypeName();
         dataLeft.typeInfo.size = size;
         newVelocity.x = -2;
         dataLeft.velocity = newVelocity;
@@ -85,6 +91,32 @@ public class BallSplitting implements ContactStrategy{
 
         LevelController.getInstance().handleSpawnRequests(dataLeft);
         LevelController.getInstance().handleSpawnRequests(dataRight);
-    
+
+    }
+
+    private void spawnBombs(String subType, float x, float y, int size) {
+        final float speed = 6f; // base speed for all new balls
+        String baseName = "Ball " + subType;
+
+        for (int i = 0; i < 8; i++) {
+            // angle = 0, 45, 90, ... 315 degrees
+            double angleRad = Math.toRadians(45 * i);
+            float vx = (float) (Math.cos(angleRad) * speed);
+            float vy = (float) (Math.sin(angleRad) * speed);
+
+            EntityData data = new EntityData();
+            data.name = baseName;
+            data.dimension = new Dimension();
+            data.dimension.x = x;
+            data.dimension.y = y;
+            data.velocity = new Vector2(vx, vy);
+
+            data.typeInfo = new TypeInfo();
+            data.typeInfo.type    = "ball";
+            data.typeInfo.subType = subType;
+            data.typeInfo.size    = size;
+
+            LevelController.getInstance().handleSpawnRequests(data);
+        }
     }
 }

@@ -44,7 +44,7 @@ public class CheckpointHandler {
                 entitiesDataCheckPoint.add(entityData);
             }
         }
-        
+
 
         // Add every ball and player entity
         for (Entity entity : entities) {
@@ -88,7 +88,7 @@ public class CheckpointHandler {
 
         BallComponent ballComp = (BallComponent) entity.getComponent(BallComponent.class);
         PowerUpComponent powerUpComp = (PowerUpComponent) entity.getComponent(PowerUpComponent.class);
-        
+
         // Set the position property
         EntityData.Dimension entityPosition = new EntityData.Dimension();
         entityPosition.x = sprite.getSprite().getX();
@@ -98,7 +98,7 @@ public class CheckpointHandler {
         //set type info
         entityData.typeInfo = new EntityData.TypeInfo();
         entityData.typeInfo.type = "Powerup";
-        entityData.typeInfo.subType = powerUpComp.getPowerUpType() == PowerUpComponent.SPEED ? "Speed" : powerUpComp.getPowerUpType() == PowerUpComponent.SHIELD ? "Shield" :"Heart";
+        entityData.typeInfo.subType = powerUpComp.getPowerUpType() == PowerUpComponent.SPEED ? "Speed" : powerUpComp.getPowerUpType() == PowerUpComponent.SHIELD ? "Shield" :"Health";
 
         // Set the velocity property
         entityData.velocity = body.getBody().getLinearVelocity();
@@ -139,7 +139,7 @@ public class CheckpointHandler {
 
         BallComponent ballComp = (BallComponent) entity.getComponent(BallComponent.class);
 
-        
+
         // Set the position property
         EntityData.Dimension entityPosition = new EntityData.Dimension();
         entityPosition.x = sprite.getSprite().getX();
@@ -187,7 +187,7 @@ public class CheckpointHandler {
          entityData.typeInfo = new EntityData.TypeInfo();
          entityData.typeInfo.type = "Player";
          entityData.typeInfo.subType = "Rango";
- 
+
 
         return entityData;
     }

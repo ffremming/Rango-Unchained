@@ -8,6 +8,7 @@ public class BallComponent implements Component{
     public static final int ARMEDILLOTYPE = 0;
     public static final int TUMBLEWEEDTYPE = 1;
     public static final int CACTUSTYPE = 2;
+    public static final int BOMB = 3;
 
     private final int TYPE;
 
@@ -28,6 +29,8 @@ public class BallComponent implements Component{
                 return "Tumbleweed";
             case CACTUSTYPE:
                 return "Cactus";
+            case BOMB:
+                return "Bomb";
             default:
                 return "Unknown";
         }

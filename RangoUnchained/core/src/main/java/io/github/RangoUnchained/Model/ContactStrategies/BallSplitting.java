@@ -112,7 +112,7 @@ public class BallSplitting implements ContactStrategy{
             data.velocity = new Vector2(vx, vy);
 
             data.typeInfo = new TypeInfo();
-            data.typeInfo.type    = "ball";
+            data.typeInfo.type    = "Ball";
             data.typeInfo.subType = subType;
             data.typeInfo.size    = size;
 

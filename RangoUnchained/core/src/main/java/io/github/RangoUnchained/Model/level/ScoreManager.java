@@ -14,7 +14,6 @@ public class ScoreManager implements ContactStrategy{
     private double score = 0;
     private final GameLevel level;
     public ScoreManager(GameLevel level){
-
         setContactStrategies();
         this.level = level;
     }
@@ -37,6 +36,4 @@ public class ScoreManager implements ContactStrategy{
         this::handleBallProjectileCollision, // For beginContact
         null);
     }
-
-
 }

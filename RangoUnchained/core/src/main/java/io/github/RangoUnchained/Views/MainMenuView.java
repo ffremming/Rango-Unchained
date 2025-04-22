@@ -2,16 +2,23 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.FontUtils;
 import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 import io.github.RangoUnchained.Views.Utils.SliderFactory;
 
 public class MainMenuView extends BaseScreen {
@@ -65,7 +72,7 @@ public class MainMenuView extends BaseScreen {
             Color.WHITE
     );
         
-        LabelFactory.createLabel("(Rango Unchained)", getSkin(), "titleFont", Color.BLACK, 1000, BUTTON_WIDTH, 30, table).center();
+        LabelFactory.createLabel("(Rango Unchained)", getSkin(), "titleFont", Color.BLACK, 10, table).center();
 
         // Display login state
         String userState = game.getIsLoggedIn() ? "Play" : "Play as guest";
@@ -82,7 +89,7 @@ public class MainMenuView extends BaseScreen {
             ButtonFactory.createDefaultButton("Multiplayer", () -> game.setView(new GameLobbyView()), table);
 
             // Display logged in user
-            LabelFactory.createLabel("Logged in as: " + game.getCurrentUser().getDisplayName(), getSkin(), "rioGrandeFont", Color.BLACK, 1000, BUTTON_WIDTH, 20, table).row();
+            LabelFactory.createLabel("Logged in as: " + game.getCurrentUser().getDisplayName(), getSkin(), "rioGrandeFont", Color.BLACK, 10, table).row();
 
             ButtonFactory.createDefaultButton("Change username", () -> game.setView(new CreateUsernameView()), table);
             ButtonFactory.createDefaultButton("Log Out", () -> {
@@ -99,50 +106,16 @@ public class MainMenuView extends BaseScreen {
         
         Table volumeSlider = SliderFactory.createVolumeSlider(game, getSkin()); 
         table.add(volumeSlider).width(BUTTON_WIDTH).row();;
-
-        // volumeLabel.setFontScale(1.3f);
-        // Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
-
-        // volumeSlider.setValue(game.getMusicVolume());
-        // volumeSlider.addListener(new ChangeListener() {
-        //     @Override
-        //     public void changed(ChangeEvent event, Actor actor) {
-        //         float newVolume = volumeSlider.getValue();
-        //         game.setMusicVolume(newVolume);
-        //     }
-        // });
-
-        // bottomTable.add(volumeLabel);
-        // bottomTable.add(volumeSlider);
-
-
-        Label SFXLabel = new Label("Volume sfx: ", getSkin());
-        SFXLabel.setFontScale(1.3f);
-        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
-
-        // SFXSlider.setValue(game.getSFXVolume());
-        // SFXSlider.addListener(new ChangeListener() {
-        //     @Override
-        //     public void changed(ChangeEvent event, Actor actor) {
-        //         float newVolume = SFXSlider.getValue();
-        //         game.setSFXVolume(newVolume);
-        //     }
-        // });
-
-        rightTable.row();
-        rightTable.add(SFXLabel).pad(20);
-        rightTable.add(SFXSlider);
+        Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
+        table.add(sfxSlider).width(BUTTON_WIDTH).pad(20);
 
         // Add table to stage
-
         // stage.addActor(table);
         // stage.addActor(rightTable);
 
 
          // 🔁 ScrollPane wraps your contentTable
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();           // Force layout pass

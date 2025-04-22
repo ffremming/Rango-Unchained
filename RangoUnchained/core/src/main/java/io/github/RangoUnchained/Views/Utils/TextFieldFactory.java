@@ -43,7 +43,7 @@ public class TextFieldFactory {
                 .width(width)
                 .height(height)
                 .center()
-                .padBottom(padding);
+                .padBottom(padding/2);
         return outerContainer;
     }
 

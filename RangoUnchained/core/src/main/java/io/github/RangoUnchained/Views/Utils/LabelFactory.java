@@ -17,7 +17,7 @@ public class LabelFactory {
     }
 
     // Label creation and styling inside a table
-    public static Table createLabel(String text, Skin skin, String fontName, Color color, float width, float height, float padding, Table table) {
+    public static Table createLabel(String text, Skin skin, String fontName, Color color, float padding, Table table) {
         Label label = createLabel(text, skin, fontName, color);
         table.add(label)
             .padBottom(padding);

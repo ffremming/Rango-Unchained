@@ -13,6 +13,7 @@ import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class CreateUserView extends BaseScreen {
@@ -42,7 +43,7 @@ public class CreateUserView extends BaseScreen {
         table.top().padTop(20);
         table.defaults().padLeft(20).center();
 
-        LabelFactory.createLabel("Create User", getSkin(), "titleFont", null, 0, 0, 20, table); 
+        LabelFactory.createLabel("Create User", getSkin(), "titleFont", null, 20, table); 
         table.row();
 
         table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
@@ -61,7 +62,7 @@ public class CreateUserView extends BaseScreen {
         );      
         table.add(emailFieldContainer).row();
         // Password field;
-        LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, 0, 0, 5, table).row();
+        LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, 5, table).row();
         
         passwordField =  new TextField("", getSkin(), "textFieldStyle-textField");
         passwordField.setPasswordMode(true);
@@ -95,10 +96,7 @@ public class CreateUserView extends BaseScreen {
         table.add(LabelFactory.createLabel("Already have a user?", getSkin(), "defaultFont", null));    
 
 
-                         // 🔁 ScrollPane wraps your contentTable
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();           // Force layout pass
@@ -109,7 +107,7 @@ public class CreateUserView extends BaseScreen {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.top().add(scrollPane).expand().fill().row();
-        ButtonFactory.createButton("Back to Login", 300, 60, getSkin(), game,
+        ButtonFactory.createButton("Back to Login", BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING ,getSkin(), game,
             () -> game.setView(new LoginView()), "customLoginStyle", mainTable);
 
         stage.addActor(mainTable);

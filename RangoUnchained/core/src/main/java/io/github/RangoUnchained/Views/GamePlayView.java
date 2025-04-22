@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -115,7 +116,8 @@ public class GamePlayView extends BaseScreen {
             getButtonByName("Pause").setVisible(true);
             stage.act(delta);
             stage.draw();
-        } else {
+        }
+         else {
             pauseMenu.act(delta);
             pauseMenu.draw();
             getButtonByName("Pause").setVisible(false);
@@ -158,9 +160,12 @@ public class GamePlayView extends BaseScreen {
         shootTable.setFillParent(true);
         shootTable.right().bottom().padBottom(30).padRight(50).toFront();
 
-        ButtonFactory.createDefaultButton("Pause", () -> pauseMenu.togglePause(), centralTable).row();
-        ButtonFactory.createButton("LICK EM!", BUTTON_WIDTH/2, 50, getSkin(), game, () -> controller.handleShoot(), "customLoginStyle", shootTable);
+        
+        TextButton pauseButton = ButtonFactory.createButton("Pause", getSkin(), game, () -> pauseMenu.togglePause(), "customLoginStyle");
+        centralTable.setName("Pause");
 
+        centralTable.add(pauseButton).center().width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING);
+        ButtonFactory.createButton("LICK EM!", BUTTON_WIDTH/2, 50, 0, getSkin(), game, () -> controller.handleShoot(), "customLoginStyle", shootTable);
         createJoystick();
         createScoreLabel();
         createTimeLabel();

@@ -48,15 +48,15 @@ public class PauseMenu extends Stage {
         table.setFillParent(true);
         table.center();
 
-        ButtonFactory.createButton("Back to game", 300, 60, GameController.getSkin(), game, this::togglePause, "customLoginStyle", table);
+        ButtonFactory.createDefaultButton("Back to game", this::togglePause, table);
         if (!isMultiplayer) {
-            ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart, "customLoginStyle", table);
+            ButtonFactory.createDefaultButton("Restart", this::restart, table);
             if (levelNumber > 0) {
-                ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater, "customLoginStyle", table);
+                ButtonFactory.createDefaultButton("Continue later", this::continueLater, table);
             }
         }
-        table.add(ButtonFactory.createButton("End game", GameController.getSkin(), game, this::endGame, "customLoginStyle")).center().padBottom(20);
-        table.row();
+        ButtonFactory.createDefaultButton("End game", this::endGame, table);
+        
 
         Table bottomTable = new Table();
         bottomTable.setFillParent(true);
@@ -64,24 +64,12 @@ public class PauseMenu extends Stage {
 
         Table volumeSlider = SliderFactory.createVolumeSlider(game, GameController.getSkin());
 
-        // Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
-        
         bottomTable.add(volumeSlider);
 
-        Label SFXLabel = new Label("Volume sfx: ", GameController.getSkin());
-        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
-        SFXSlider.setValue(game.getSFXVolume());
-        // SFXSlider.addListener(new ChangeListener() {
-        //     @Override
-        //     public void changed(ChangeEvent event, Actor actor) {
-        //         float newVolume = SFXSlider.getValue();
-        //         game.setSFXVolume(newVolume);
-        //     }
-        // });
-
-        bottomTable.row();
-        bottomTable.add(SFXLabel).pad(20);
-        bottomTable.add(SFXSlider);
+        // Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
+        // bottomTable.add(sfxSlider).pad(20);
+        addActor(table);
+        addActor(bottomTable);
 
     }
 

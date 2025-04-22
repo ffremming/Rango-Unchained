@@ -107,12 +107,19 @@ default-round-large
   orig: 20, 20
   offset: 0, 0
   index: -1
-default-scroll
+default-scroll-bar
   rotate: false
-  xy: 78, 29
-  size: 20, 20
+  xy: 1937, 1026
+  size: 76, 475
   split: 2, 2, 2, 2
   orig: 20, 20
+  offset: 0, 0
+  index: -1
+default-scroll-knob
+  rotate: false
+  xy: 1828, 1201
+  size: 87, 101
+  orig: 9, 18
   offset: 0, 0
   index: -1
 default-select
@@ -198,4 +205,3 @@ white
   orig: 3, 3
   offset: 0, 0
   index: -1
-

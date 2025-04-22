@@ -36,7 +36,7 @@ public class ScoreboardView extends BaseScreen {
         table.row();
 
         // Add a loading message while fetching scores
-        LabelFactory.createLabel("Loading scores...", getSkin(), "defaultFont", null, 300, 60, 10, table).center();
+        LabelFactory.createLabel("Loading scores...", getSkin(), "defaultFont", null, 300, table).center();
 
         stage.addActor(table);
 
@@ -53,16 +53,16 @@ public class ScoreboardView extends BaseScreen {
                 table.row();
 
                 if (scores.isEmpty()) {
-                    LabelFactory.createLabel("No Scores found.", getSkin(), "defaultFont", null, 300, 60, 10, table).center();
+                    LabelFactory.createLabel("No Scores found.", getSkin(), "defaultFont", null, 300, table).center();
                 } else {
                     for (int i = 0; i < scores.size(); i++) {
                         ScoreInfo entry = scores.get(i);
                         String scoreText = (i + 1) + ". " + entry.displayName + ": " + entry.score + " points";
-                        LabelFactory.createLabel(scoreText, getSkin(), "rioGrandeFont", Color.BLACK, 300, 60, 10, table).center();
+                        LabelFactory.createLabel(scoreText, getSkin(), "rioGrandeFont", Color.BLACK, 300, table).center();
                     }
                 }
 
-                ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
+                ButtonFactory.createButton("Back", BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING, getSkin(), game,
                         () -> game.setView(new MainMenuView()), "customLoginStyle", table);
             }
 
@@ -72,10 +72,9 @@ public class ScoreboardView extends BaseScreen {
                 table.add(titleLabel).center().padBottom(50);
                 table.row();
 
-                LabelFactory.createLabel("Error loading scores: " + e.getMessage(), getSkin(), "defaultFont", Color.RED, 300, 60, 10, table).center();
+                LabelFactory.createLabel("Error loading scores: " + e.getMessage(), getSkin(), "defaultFont", Color.RED, 300, table).center();
 
-                ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-                        () -> game.setView(new MainMenuView()), "customLoginStyle", table);
+                ButtonFactory.createDefaultButton("Back", () -> game.setView(new MainMenuView()), table);
             }
         });
 

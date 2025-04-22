@@ -70,4 +70,52 @@ public class SliderFactory {
         
         return sliderContainer;
     }
+
+    public static Table createSFXVolumeSlider(GameController game, Skin skin) {
+        // Container table
+        Table sliderContainer = new Table();
+    
+        // Get and customize slider style
+        Slider.SliderStyle originalStyle = skin.get("default-horizontal", Slider.SliderStyle.class);
+        Slider.SliderStyle rightSliderStyle = new Slider.SliderStyle();
+        rightSliderStyle.knob = originalStyle.knob;
+        rightSliderStyle.knobOver = originalStyle.knobOver;
+        rightSliderStyle.knobDown = originalStyle.knobDown;
+        rightSliderStyle.background = skin.newDrawable("white", 0, 0, 0, 0); // Transparent background
+    
+        if (rightSliderStyle.knob instanceof SpriteDrawable) {
+            SpriteDrawable originalKnob = (SpriteDrawable) rightSliderStyle.knob;
+            Sprite knobSprite = new Sprite(originalKnob.getSprite());
+            knobSprite.setSize(40, 40);
+            rightSliderStyle.knob = new SpriteDrawable(knobSprite);
+        }
+    
+        // Create a visible background
+        Table backgroundTable = new Table();
+        backgroundTable.setBackground(originalStyle.background);
+        backgroundTable.setHeight(60);
+    
+        // Create the slider
+        Slider sfxSlider = new Slider(0f, 1f, 0.01f, false, rightSliderStyle);
+        sfxSlider.setValue(game.getSFXVolume());
+        sfxSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float newVolume = sfxSlider.getValue();
+                game.setSFXVolume(newVolume);
+            }
+        });
+    
+        float totalWidth = 300;
+        float leftPortion = 0.25f;
+        float rightPortion = 1 - leftPortion - 0.03f;
+    
+        sliderContainer.add(backgroundTable).width(totalWidth).height(60);
+        sliderContainer.addActor(sfxSlider);
+        sfxSlider.setPosition(totalWidth * leftPortion, 0);
+        sfxSlider.setSize(totalWidth * rightPortion, 60);
+    
+        return sliderContainer;
+    }
+    
 }

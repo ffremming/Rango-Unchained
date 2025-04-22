@@ -26,6 +26,8 @@ public abstract class BaseScreen extends ScreenAdapter {
     protected OrthographicCamera camera;
     protected Image backgroundImage;
 
+    protected final float TITLE_PADDING = 20;
+    protected final float BUTTON_PADDING = 20;
     protected static final float WORLD_WIDTH = 1200;
     protected static final float WORLD_HEIGHT = 540;
     protected static final float BUTTON_WIDTH = 300;

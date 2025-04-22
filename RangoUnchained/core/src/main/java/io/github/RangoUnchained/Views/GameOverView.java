@@ -75,17 +75,17 @@ public class GameOverView extends BaseScreen {
 
 
         // Retry button (goes back to level selection)
-        ButtonFactory.createButton("Play again", 300, 60, getSkin(),  game, () -> game.setView(new SelectLevelView()), "customLoginStyle", table);
+        ButtonFactory.createDefaultButton("Play again", () -> game.setView(new SelectLevelView()), table);
 
          // Retry button (goes back to level selection)
          if (levelNumber < 5 && (completed || GameFileHandler.getInstance().getProgress() > levelNumber)) {
-            ButtonFactory.createButton("Next level", 300, 60, getSkin(),  game, () -> game.setView(new GamePlayView(levelNumber+1)), "customLoginStyle", table);
+            ButtonFactory.createDefaultButton("Next level", () -> game.setView(new GamePlayView(levelNumber+1)), table);
          }
 
-        ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(),  game, () -> game.setView(new ScoreboardView()), "customLoginStyle", table);
+        ButtonFactory.createDefaultButton("Scoreboard", () -> game.setView(new ScoreboardView()), table);
 
         // Back to main menu button
-        ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()), "customLoginStyle", table);
+        ButtonFactory.createDefaultButton("Main Menu", () -> game.setView(new MainMenuView()), table);
 
         stage.addActor(table);
     }

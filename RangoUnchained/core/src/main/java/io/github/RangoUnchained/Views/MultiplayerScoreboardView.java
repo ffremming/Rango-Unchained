@@ -68,17 +68,15 @@ public class MultiplayerScoreboardView extends BaseScreen {
             String time = String.format("%.1f s", p.finishTime);
             String timeText = "Time: " + (p.finishTime != null ? time + "s" : "N/A");
 
-            LabelFactory.createLabel(name, getSkin(), "rioGrandeFont", null, 1000, 300, 20, scoreboardTable);
-            LabelFactory.createLabel(scoreText + ", " + timeText, getSkin(), "rioGrandeFont", null, 1000, 300, 20, scoreboardTable);
+            LabelFactory.createLabel(name, getSkin(), "rioGrandeFont", null, 1000, scoreboardTable);
+            LabelFactory.createLabel(scoreText + ", " + timeText, getSkin(), "rioGrandeFont", null, 1000, scoreboardTable);
             rank++;
         }
 
         scoreboardTable.row().padTop(40);
-        ButtonFactory.createButton("Back to lobby", 300, 60, getSkin(), game,
-            () -> game.setView(new GameLobbyWaitingView(lobby)), "customLoginStyle", scoreboardTable);
+        ButtonFactory.createDefaultButton("Back to lobby", () -> game.setView(new GameLobbyWaitingView(lobby)), scoreboardTable);
 
-        ButtonFactory.createButton("Back to menu", 300, 60, getSkin(), game,
-            this::backToMenu, "customLoginStyle", scoreboardTable);
+        ButtonFactory.createDefaultButton("Back to menu", this::backToMenu, scoreboardTable);
     }
 
     private void addLobbyListener() {

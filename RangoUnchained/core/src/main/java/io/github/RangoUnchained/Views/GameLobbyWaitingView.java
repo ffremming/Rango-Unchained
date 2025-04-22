@@ -12,6 +12,7 @@ import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.Constants;
 import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class GameLobbyWaitingView extends BaseScreen {
@@ -51,7 +52,7 @@ public class GameLobbyWaitingView extends BaseScreen {
         table.top().padTop(50);
         table.defaults().padLeft(20).center();
 
-        LabelFactory.createLabel("Lobby ID: " + lobby.lobbyId, getSkin(), "defaultFont", null, BUTTON_WIDTH, BUTTON_HEIGHT, 10, table).row();
+        LabelFactory.createLabel("Lobby ID: " + lobby.lobbyId, getSkin(), "defaultFont", null, 10, table).row();
 
         playerCountLabel = LabelFactory.createLabel("Players in Lobby: ...", getSkin(), "defaultFont", null);
         table.add(playerCountLabel).padBottom(10).row();
@@ -85,7 +86,7 @@ public class GameLobbyWaitingView extends BaseScreen {
         "textfield",
         true,     // transparent background
         60,       // inner padding
-        300,      // width
+        BUTTON_WIDTH,      // width
         90,
         selectedLevel
         );      
@@ -93,10 +94,7 @@ public class GameLobbyWaitingView extends BaseScreen {
         table.add(selectedLevelContainer).row();
         // table.add(selectedLevel).width(100).padBottom(20).row();
 
-        // 🔁 ScrollPane wraps your contentTable
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();           // Force layout pass

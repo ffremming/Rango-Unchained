@@ -3,7 +3,6 @@ package io.github.RangoUnchained.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -15,6 +14,7 @@ import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class GameLobbyView extends BaseScreen {
@@ -71,7 +71,7 @@ public class GameLobbyView extends BaseScreen {
         publicCheckBox.getImage().setScale(0.2f); // Scale the checkbox image directly
         table.add(publicCheckBox).width(publicCheckBox.getImage().getWidth()).height(publicCheckBox.getImage().getHeight()).padBottom(20).row();
         // Create lobby button
-        ButtonFactory.createButton("Create Lobby", 300, 60, getSkin(), game, () -> {
+        ButtonFactory.createDefaultButton("Create Lobby", () -> {
             int maxPlayers;
             try {
                 maxPlayers = Integer.parseInt(maxPlayersField.getText().trim());
@@ -81,7 +81,7 @@ public class GameLobbyView extends BaseScreen {
             }
             boolean isPublic = publicCheckBox.isChecked();
             createLobby(currentUser, isPublic, maxPlayers);
-        }, "customLoginStyle", table).row();
+        }, table).row();
 
         Table rightTable = new Table();
         rightTable.top().padLeft(50);
@@ -103,8 +103,7 @@ public class GameLobbyView extends BaseScreen {
         );
 
         rightTable.add(codeFieldContainer).row();
-        ButtonFactory.createButton("Join Lobby", 300, 60, getSkin(), game,
-            () -> joinLobby(codeField.getText()), "customLoginStyle", rightTable);
+        ButtonFactory.createDefaultButton("Join Lobby", () -> joinLobby(codeField.getText()), rightTable);
 
         Table lobbiesTable = new Table(); 
         lobbiesTable.add(publicLabel);
@@ -122,10 +121,7 @@ public class GameLobbyView extends BaseScreen {
         rootTable.add(table).top();
         rootTable.add(rightTable).top();
 
-        // 🔁 ScrollPane wraps your contentTable
-        ScrollPane scrollPane = new ScrollPane(rootTable, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();           // Force layout pass
@@ -156,7 +152,7 @@ public class GameLobbyView extends BaseScreen {
 
                     for (LobbyInfo lobby : lobbies) {
                         String text = "Join Lobby " + lobby.lobbyId + " (" + lobby.players.size() + "/" + lobby.maxPlayers + ")";
-                        ButtonFactory.createButton(text, 300, 90, getSkin(), game,
+                        ButtonFactory.createButton(text, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING, getSkin(), game,
                             () -> joinLobby(lobby.lobbyId), "defaultStyle", table);
                     }
                 });

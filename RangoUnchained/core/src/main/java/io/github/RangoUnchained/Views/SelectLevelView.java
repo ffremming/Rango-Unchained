@@ -1,6 +1,7 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -11,6 +12,7 @@ import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.Constants;
 import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 
 public class SelectLevelView extends BaseScreen {
 
@@ -25,26 +27,15 @@ public class SelectLevelView extends BaseScreen {
     }
 
     private void createUI() {
-
-        // Table table = new Table();
-        // // table.setFillParent(true);
-        // table.top().padTop(50);
-        // table.defaults().pad(10).center(); // default alignment for children
-
         Table table = new Table();
         table.top().padTop(50);
-        table.defaults().padLeft(20).center();
+        table.defaults().center();
 
         // Force table to use one column and center it horizontally
         table.add().expandX(); // helps make the table take full width
 
-        // NEW: set table width to match parent when in ScrollPane
-        // table.padLeft(20);
-
         // Center align content
         table.center().row();
-        LabelFactory.createLabel("Select Level", getSkin(), "titleFont", null, 300, 60, 50, table);
-
 
         // Add level selection buttons
         for (int i = 0; i <= Constants.LEVELS_COUNT; i++) {
@@ -53,7 +44,7 @@ public class SelectLevelView extends BaseScreen {
             if (i== 0){
                 buttonText = "Tutorial";
             }
-            ButtonFactory.createButton(buttonText, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)), "customLoginStyle", table);
+            ButtonFactory.createDefaultButton(buttonText, () -> game.setView(new GamePlayView(level)), table);
 
             if (i == GameFileHandler.inProgresslevelnumber()){
                 table.row();
@@ -62,7 +53,7 @@ public class SelectLevelView extends BaseScreen {
                 customStyle.down = null;  // Optionally remove the down state drawable
                 customStyle.over = null;  // Optionally remove the over state drawable
 
-                TextButton continueButton = new TextButton("(continue)", customStyle);
+                TextButton continueButton = ButtonFactory.createButton("continue", getSkin(), game, null, "customLoginStyle");
                 continueButton.getStyle().fontColor = getSkin().getColor("white");
                 table.add(continueButton)
                 .width(300)
@@ -72,30 +63,23 @@ public class SelectLevelView extends BaseScreen {
             } else {
                 table.row();
             }
-
-
             table.row();
         }
-
-        // Back button to ScreenController Menu
-
-         // 🔁 ScrollPane wraps your contentTable
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
-            scrollPane.layout();           // Force layout pass
-            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.layout();
+            scrollPane.setScrollY(0);
             scrollPane.updateVisualScroll();
         });
-        // 📦 Main table that fills the screen
+
+        // Main table setup
         Table mainTable = new Table();
         mainTable.setFillParent(true);
+        LabelFactory.createLabel("Select Level", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
         mainTable.top().add(scrollPane).expand().fill().row();
-        ButtonFactory.createDefaultButton("Back", () -> game.setView(new MainMenuView()), mainTable);
-
-
+        mainTable.add(ButtonFactory.createButton("Back", getSkin(), game, () -> game.setView(new MainMenuView()),
+            "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).padTop(20).row();
         stage.addActor(mainTable);
     }
 }

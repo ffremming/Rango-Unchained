@@ -35,19 +35,19 @@ public class ButtonFactory {
         });
         return button;
     }
-    public static Table createButton(String text, float width, float height, Skin skin, GameController game, Runnable onClickAction, String styleName, Table table) {
+    public static Table createButton(String text, float width, float height, float padding, Skin skin, GameController game, Runnable onClickAction, String styleName, Table table) {
         TextButton button = createButton(text, skin, game, onClickAction, styleName);
         table.add(button)            
         .width(width)
         .height(height)
         .center()
-        .padBottom(20);
+        .padBottom(padding);
         table.row();
         return table;
     }
 
     public static Table createDefaultButton(String text, Runnable onClickAction, Table table){
-        return createButton(text, 300, 60, GameController.getSkin(), GameController.getInstance(), onClickAction, "customLoginStyle", table);
+        return createButton(text, 300, 60, 20, GameController.getSkin(), GameController.getInstance(), onClickAction, "customLoginStyle", table);
     }
     
 }

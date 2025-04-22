@@ -14,6 +14,7 @@ import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class LoginView extends BaseScreen {
@@ -47,7 +48,7 @@ public class LoginView extends BaseScreen {
         table.defaults().padLeft(20).center();
 
 
-        LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK, BUTTON_WIDTH, 60, 20, table);
+        LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK, 20, table);
         
         table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
         
@@ -56,9 +57,9 @@ public class LoginView extends BaseScreen {
         emailFieldContainer = TextFieldFactory.createTextField(getSkin(), "", "textFieldStyle-textField", "textfield", true, 60, BUTTON_WIDTH, 90, emailField);
 
         table.add(emailFieldContainer).row();
- // Password field
-LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, BUTTON_WIDTH, 60, 5, table);
-table.row();
+        // Password field
+        LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, 5, table);
+        table.row();
 
         passwordFieldContainer = TextFieldFactory.createTextField(
             getSkin(),
@@ -84,8 +85,7 @@ table.row();
 
        // Switch scene to create user
 
-        ButtonFactory.createButton("Create User", BUTTON_WIDTH, 60, getSkin(), game,
-        () -> game.setView(new CreateUserView()), "customLoginStyle", table);
+        ButtonFactory.createDefaultButton("Create User",() -> game.setView(new CreateUserView()), table);
 
 
 
@@ -97,10 +97,7 @@ table.row();
         table.add(errorLabel).width(BUTTON_WIDTH).padBottom(10);
         table.row();
 
-        // 🔁 ScrollPane wraps your contentTable
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling, allow vertical
+       ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();           // Force layout pass
@@ -112,7 +109,7 @@ table.row();
         mainTable.setFillParent(true);
         mainTable.top().add(scrollPane).expand().fill().row();
         ButtonFactory.createDefaultButton("Back to meny",
-        () -> game.setView(new MainMenuView()), mainTable);
+        () -> game.setView(new MainMenuView()), mainTable).padTop(20);
  
 
 

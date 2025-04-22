@@ -45,8 +45,7 @@ public class CreateUsernameView extends BaseScreen {
         table.setFillParent(true);
         table.top().padTop(50);
 
-        ButtonFactory.createButton("back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()), "customLoginStyle", table);
+        ButtonFactory.createDefaultButton("back", () -> game.setView(new MainMenuView()), table);
         table.add(titleLabel)           
         .width(300)
         .height(60)

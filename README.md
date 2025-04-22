@@ -51,7 +51,7 @@ When using HTTPS, you'll be prompted to enter your GitLab credentials.
 ## How to Play
 
 You can run the game directly through Android Studio or by using the command line.
-We highly recomend using a connected device, since the gameplay is not suitable for cumputer usage.
+We highly recomend using a connected device, since the gameplay is not suitable for computer usage.
 
 ### Option 1: Command Line
 

@@ -2,6 +2,7 @@ package io.github.RangoUnchained.Model.Systems;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.math.Vector2;
 
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.TutorialComponent;
@@ -15,6 +16,9 @@ import io.github.RangoUnchained.Model.Tutorial.NoteStrategy;
 import io.github.RangoUnchained.Model.Tutorial.PowerupStep;
 import io.github.RangoUnchained.Model.Tutorial.ShootStrategy;
 import io.github.RangoUnchained.Model.Tutorial.TutorialManager;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimension;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.TypeInfo;
 
 /**
  * ECS system responsible for updating the tutorial.
@@ -25,6 +29,7 @@ public class TutorialSystem implements Systems {
     private final ComponentFilter filter = new ComponentFilter();
     private final TutorialManager tutorialManager;
 
+   
     /**
      * Constructs the TutorialSystem and initializes the TutorialManager with the tutorial steps.
      */
@@ -33,16 +38,38 @@ public class TutorialSystem implements Systems {
         filter.require(TutorialComponent.class);
         filter.require(InputComponent.class);
 
+        EntityData data = new EntityData();
+    
+        data.dimension = new Dimension();
+        data.dimension.x = 300;
+        data.dimension.y = 300;
+        data.typeInfo = new TypeInfo();
+        data.typeInfo.type = "ball";
+        data.typeInfo.subType = "TumbleWeed";
+        data.typeInfo.size = 2;
+        data.velocity = new Vector2(2,2);
+    
+        EntityData data2 = new EntityData();
+        data2.dimension = new Dimension();
+        data2.dimension.x = 300;
+        data2.dimension.y = 300;
+        data2.typeInfo = new TypeInfo();
+        data2.typeInfo.type = "ball";
+        data2.typeInfo.subType = "Armedillo";
+        data2.typeInfo.size = 2;
+        data2.velocity = new Vector2(2,2);
+    
+
         // Initialize the TutorialManager with a sequence of tutorial strategies.
         tutorialManager = new TutorialManager(Arrays.asList(
             new MoveLeftStrategy(),
             new MoveRightStrategy(),
             new ShootStrategy(),
 
-            new KillEnemyStrategy("Ball: Armedillo Medium",1, "shoot the armedillo to split it",15),
+            new KillEnemyStrategy(data,1, "shoot the armedillo to split it",15),
             new KillCountStep(2, 15,"when the armedillo splits, shoot the small balls"),
             new NoteStrategy(2,"if enemies hit you, you lose a heart"),
-            new KillEnemyStrategy("Ball: Tumbleweed Big",2, "there are different types of enemies",15),
+            new KillEnemyStrategy(data2,2, "there are different types of enemies",15),
             new NoteStrategy(5,"smaller enemies bounce lower!"),
             new PowerupStep("SpeedPowerUp", "pick up the speed powerup to move faster and avoid enemies", 7),
             new NoteStrategy(2,"active powerups are shown on the top right"),

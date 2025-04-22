@@ -18,16 +18,7 @@ public class SpawnQueue {
         return temp;
     }
 
-    public void addSpawnRequest(float xPos, float yPos, int width, int width2, String name, Vector2 velocity, World world) {
-        //method for adding new entities using factory - TODO should be generalised
-        
-            GameLevel.LevelData.EntityData data = new EntityData();
-            data.name = name;
-            data.dimension = new Dimension();
-            data.dimension.x = xPos;
-            data.dimension.y = yPos;
-            data.velocity = velocity;
-
-            spawningEntities.add(data);
+    public void addSpawnRequest(EntityData data, World world) {
+        spawningEntities.add(data);
     }
 }

@@ -9,6 +9,9 @@ import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimension;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.TypeInfo;
 
 public class SpawnPowerup implements ContactStrategy{
 
@@ -35,8 +38,8 @@ public class SpawnPowerup implements ContactStrategy{
         SpriteComponent spriteComponent = (SpriteComponent) ball.getComponent(SpriteComponent.class);
 
 
-        if (Math.random() < 0.2) { // 20% chance to spawn a powerup
-            String[] powerupTypes = {"ShieldPowerUp", "SpeedPowerUp", "HealthUpPowerUp"};
+        if (Math.random() < 0.9) { // 20% chance to spawn a powerup
+            String[] powerupTypes = {"Shield", "Speed", "Health"};
             String powerupName = powerupTypes[(int) (Math.random() * powerupTypes.length)];
 
             float powerupX = spriteComponent.getSprite().getX() + spriteComponent.getSprite().getWidth() / 2;
@@ -44,9 +47,20 @@ public class SpawnPowerup implements ContactStrategy{
             float randomVelocityX = (float) (Math.random() * 8 - 4); // Random X velocity between -4 and 4
             float randomVelocityY = (float) (Math.random() * 3 + 3); // Random Y velocity between 3 and 8
 
-            LevelController.getInstance().handleSpawnRequests(
-            powerupX, powerupY + 50, 64, 64, powerupName, new Vector2(randomVelocityX, randomVelocityY)
-            );
+           Vector2 velocity = new Vector2(randomVelocityX, randomVelocityY);
+
+            EntityData data = new EntityData();
+            data.velocity = velocity;
+            data.typeInfo = new TypeInfo();
+            data.typeInfo.type = "Powerup";
+            data.typeInfo.subType = powerupName;
+            data.dimension = new Dimension();
+            data.dimension.x = powerupX;
+            data.dimension.y = powerupY +50;
+            data.name = "Powerup";
+
+            LevelController.getInstance().handleSpawnRequests(data);
+
         }
     }
 }

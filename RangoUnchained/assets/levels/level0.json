@@ -23,7 +23,7 @@
 			"subType" : "Rango"
 		  }
 	  },
-	  
+
 	  {
 		  "name": "ObsticleLeft",
 		  "dimension": {
@@ -68,6 +68,6 @@
 			"subType": "Floor"
 		  }
 	  }
-      
-  ]
+
+    ]
   }

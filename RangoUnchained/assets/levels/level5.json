@@ -1,73 +1,103 @@
 {
-	"metaData": {
-	  "levelnr": 5
-	},
-	"entitiesData": [
-	  {
-		  "name": "Background",
-		  "dimension": {},
-		  "typeInfo": {
-			"type":"Background",
-			"subType" : "Desert"
-		  }
-	  },
-	  {
-		  "name": "Player-Rango",
-		  "dimension": {
-			  "x": 100,
-			  "y": 150
-		  },
-		  "typeInfo":{
-			"type" : "Player",
+  "metaData": {
+    "levelnr": 5
+  },
+  "entitiesData": [
+    {
+      "name": "Background",
+      "dimension": {},
+      "typeInfo": {
+        "type":"Background",
+        "subType" : "Desert"
+      }
+    },
+    {
+      "name": "Player-Rango",
+      "dimension": {
+        "x": 100,
+        "y": 150
+      },
+      "typeInfo":{
+        "type" : "Player",
 
-			"subType" : "Rango"
-		  }
-	  },
-	  
-	  {
-		  "name": "ObsticleLeft",
-		  "dimension": {
-			  "x": 17,
-			  "y": 400
-		  },
-		  "typeInfo": {
-			"type": "Obsticle",
-			"subType": "Left"
-		  }
-	  },
-	  {
-		  "name": "ObsticleRight",
-		  "dimension": {
-			  "x": 1500,
-			  "y": 480
-		  },
-		  "typeInfo": {
-			"type": "Obsticle",
-			"subType": "Right"
-		  }
-	  },
-	  {
-		  "name": "ObsticleRoof",
-		  "dimension": {
-			  "x": 750,
-			  "y": 900
-		  },
-		  "typeInfo": {
-			"type": "Obsticle",
-			"subType": "Roof"
-		  }
-	  },
-	  {
-		  "name": "ObsticleFloor",
-		  "dimension": {
-			  "x": 750,
-			  "y": 32
-		  },
-		  "typeInfo": {
-			"type": "Obsticle",
-			"subType": "Floor"
-		  }
-	  }
-      
+        "subType" : "Rango"
+      }
+    },
+
+    {
+      "name": "ObsticleLeft",
+      "dimension": {
+        "x": 17,
+        "y": 400
+      },
+      "typeInfo": {
+        "type": "Obsticle",
+        "subType": "Left"
+      }
+    },
+    {
+      "name": "ObsticleRight",
+      "dimension": {
+        "x": 1500,
+        "y": 480
+      },
+      "typeInfo": {
+        "type": "Obsticle",
+        "subType": "Right"
+      }
+    },
+    {
+      "name": "ObsticleRoof",
+      "dimension": {
+        "x": 750,
+        "y": 900
+      },
+      "typeInfo": {
+        "type": "Obsticle",
+        "subType": "Roof"
+      }
+    },
+    {
+      "name": "ObsticleFloor",
+      "dimension": {
+        "x": 750,
+        "y": 32
+      },
+      "typeInfo": {
+        "type": "Obsticle",
+        "subType": "Floor"
+      }
+    },
+
+    {
+      "name": "ball1",
+      "dimension": {
+        "x": 500,
+        "y": 500
+      },
+      "typeInfo": {
+        "type": "Ball",
+        "size":3,
+        "subType": "Bomb"
+      },
+      "velocity": {
+        "x": -2
+      }
+    },
+    {
+      "name": "ball2",
+      "dimension": {
+        "x": 1000,
+        "y": 500
+      },
+      "typeInfo": {
+        "type": "Ball",
+        "size":2,
+        "subType": "TumbleWeed"
+      },
+      "velocity": {
+        "x": -2
+      }
+    }
   ]
-  }
+}

@@ -43,8 +43,8 @@ public class TutorialSystem implements Systems {
         data.dimension.x = 300;
         data.dimension.y = 300;
         data.typeInfo = new TypeInfo();
-        data.typeInfo.type = "ball";
-        data.typeInfo.subType = "TumbleWeed";
+        data.typeInfo.type = "Ball";
+        data.typeInfo.subType = "Tumbleweed";
         data.typeInfo.size = 2;
         data.velocity = new Vector2(2,2);
 
@@ -53,7 +53,7 @@ public class TutorialSystem implements Systems {
         data2.dimension.x = 300;
         data2.dimension.y = 300;
         data2.typeInfo = new TypeInfo();
-        data2.typeInfo.type = "ball";
+        data2.typeInfo.type = "Ball";
         data2.typeInfo.subType = "Armedillo";
         data2.typeInfo.size = 2;
         data2.velocity = new Vector2(2,2);

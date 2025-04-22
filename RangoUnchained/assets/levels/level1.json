@@ -23,7 +23,7 @@
 			"subType" : "Rango"
 		  }
 	  },
-	  
+
 	  {
 		  "name": "ObsticleLeft",
 		  "dimension": {
@@ -77,8 +77,8 @@
 		},
 		"typeInfo": {
 		  "type": "Ball",
-		  "size":2,
-		  "subType": "TumbleWeed"
+		  "size":3,
+		  "subType": "Bomb"
 		},
 		"velocity": {
 			"x": -2

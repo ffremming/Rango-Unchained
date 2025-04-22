@@ -81,9 +81,9 @@ public class BallFactory {
     private static Component createSpriteComponent(EntityData entityData){
         String spritePath;
 
-       
+
         spritePath = entityData.typeInfo.type + "/" + entityData.typeInfo.subType + ".png";
-        
+
 
         int size = entityData.typeInfo.size;
         float radius = size == 3  ? BIGBALLRADIUS : size == 2  ? MEDIUMBALLRADIUS : SMALLBALLRADIUS;
@@ -99,16 +99,16 @@ public class BallFactory {
 
     private static Component createBallComponent(EntityData entityData){
 
-        int ballType = entityData.typeInfo.subType.toLowerCase().equals("armedillo") ? BallComponent.ARMEDILLOTYPE :
-        entityData.typeInfo.subType.toLowerCase().equals("cactus") ? BallComponent.CACTUSTYPE:
-        entityData.typeInfo.subType.toLowerCase().equals("tumbleweed") ? BallComponent.TUMBLEWEEDTYPE: -1;
-
+        int ballType = entityData.typeInfo.subType.equals("Armedillo") ? BallComponent.ARMEDILLOTYPE :
+        entityData.typeInfo.subType.equals("Cactus") ? BallComponent.CACTUSTYPE:
+        entityData.typeInfo.subType.equals("Tumbleweed") ? BallComponent.TUMBLEWEEDTYPE:
+        entityData.typeInfo.subType.equals("Bomb") ? BallComponent.BOMB: -1;
         return new BallComponent(ballType);
     }
 
     private static Component createContactComponent(EntityData entityData){
         ContactComponent contactComponent = new ContactComponent();
-        contactComponent.setContactLock(60);
+        contactComponent.setContactLock(80);
         return contactComponent;
     }
 

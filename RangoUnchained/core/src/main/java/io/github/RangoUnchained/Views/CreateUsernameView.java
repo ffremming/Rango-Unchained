@@ -45,7 +45,7 @@ public class CreateUsernameView extends BaseScreen {
         usernameFieldContainer = TextFieldFactory.createTextField(getSkin(), "", "textFieldStyle-textField", "textfield", true, 60, 300, 90, usernameField);
             
         table.add(titleLabel)           
-        .width(300)
+        .expandX()
         .height(60)
         .center()
         .padBottom(20);

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
@@ -94,7 +93,7 @@ public class InputSystem implements Systems {
                               EntityData data = new EntityData();
                 data.dimension = new Dimension();
                 data.dimension.x = body.getPosition().x*Constants.PPM;
-                data.dimension.y = body.getPosition().y*Constants.PPM + sprite.getHeight()/2+16;
+                data.dimension.y = body.getPosition().y*Constants.PPM + sprite.getHeight()-22;
                 data.name = "Projectile";
                 data.typeInfo = new TypeInfo();
                 data.typeInfo.type = "Projectile";

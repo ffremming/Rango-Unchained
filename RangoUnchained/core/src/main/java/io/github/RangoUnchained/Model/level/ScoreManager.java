@@ -11,21 +11,21 @@ import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
 
 public class ScoreManager implements ContactStrategy{
 
-    int score = 0;
-    public ScoreManager(){
+    private double score = 0;
+    private final GameLevel level;
+    public ScoreManager(GameLevel level){
         setContactStrategies();
+        this.level = level;
     }
 
     public void setScore(int score){this.score = score;}
 
-    public void addScore(int score){this.score += score;}
+    public void addScore(double score){this.score += score;}
 
-    public int getScore(){return score;}
+    public int getScore(){return (int) Math.round(score);}
 
     private void handleBallProjectileCollision(CollisionEvent contact){
-        //TODO do we want different scores for different balls?
-        Gdx.app.log("contact",""+score);
-        addScore(1);
+        addScore((1 / level.getTimer().getTime()) * 100);
     }
 
     @Override
@@ -36,6 +36,4 @@ public class ScoreManager implements ContactStrategy{
         this::handleBallProjectileCollision, // For beginContact
         null);
     }
-
-
 }

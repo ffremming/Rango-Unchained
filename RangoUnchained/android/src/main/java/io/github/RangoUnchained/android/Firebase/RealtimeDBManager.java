@@ -214,16 +214,32 @@ public class RealtimeDBManager implements MultiplayerManager {
     public void startGame(String lobbyId, int level, Callback<Void> callback) {
         DatabaseReference ref = lobbiesRef.child(lobbyId);
 
-        // Update the lobby status and level
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("status", "running");
-        updates.put("level", level);
-        updates.put("timeInState", System.currentTimeMillis());
+        // Update lobby status and level
+        Map<String, Object> lobbyUpdates = new HashMap<>();
+        lobbyUpdates.put("status", "running");
+        lobbyUpdates.put("level", level);
+        lobbyUpdates.put("timeInState", System.currentTimeMillis());
 
-        ref.updateChildren(updates)
-            .addOnSuccessListener(unused -> callback.onSuccess(null))
+        ref.updateChildren(lobbyUpdates)
+            .addOnSuccessListener(unused -> {
+                // Reset each player's score and finish time
+                ref.child("players").get().addOnSuccessListener(snapshot -> {
+                    Map<String, Object> playerUpdates = new HashMap<>();
+
+                    for (DataSnapshot playerSnapshot : snapshot.getChildren()) {
+                        String uid = playerSnapshot.getKey();
+                        playerUpdates.put(uid + "/finishScore", null);
+                        playerUpdates.put(uid + "/finishTime", null);
+                    }
+
+                    ref.child("players").updateChildren(playerUpdates)
+                        .addOnSuccessListener(done -> callback.onSuccess(null))
+                        .addOnFailureListener(callback::onError);
+                }).addOnFailureListener(callback::onError);
+            })
             .addOnFailureListener(callback::onError);
     }
+
 
     @Override
     public void setPlayerFinishData(String lobbyId, String uid, int score, double finishTime, Callback<Void> callback) {

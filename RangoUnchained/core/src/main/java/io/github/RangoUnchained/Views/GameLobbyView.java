@@ -57,7 +57,7 @@ public class GameLobbyView extends BaseScreen {
             100,      // width
             90,
             maxPlayersField
-        );       
+        );
         table.add(maxLabel).row();
         table.add(maxPlayersFieldContainer).row();
         // Alternative simpler approach
@@ -65,7 +65,7 @@ public class GameLobbyView extends BaseScreen {
         CheckBox.CheckBoxStyle style = new CheckBox.CheckBoxStyle(publicCheckBox.getStyle());
         style.font = getSkin().getFont("defaultFont"); // Use a font name that exists in your skin
         style.fontColor = Color.BLACK; // Set the font color
-        
+
         // Apply the modified style if needed
         publicCheckBox.setChecked(true);
         publicCheckBox.getImage().setScale(0.2f); // Scale the checkbox image directly
@@ -79,6 +79,12 @@ public class GameLobbyView extends BaseScreen {
                 // If the input is not a valid number, default to 4
                 maxPlayers = 4;
             }
+
+            if (maxPlayers < 1 || maxPlayers > 4) {
+                // TODO: FIKS FONTEN HER
+               // showError("Lobby cannot have more than 4 players.");
+                return;
+            }
             boolean isPublic = publicCheckBox.isChecked();
             createLobby(currentUser, isPublic, maxPlayers);
         }, table).row();
@@ -87,7 +93,7 @@ public class GameLobbyView extends BaseScreen {
         rightTable.top().padLeft(50);
 
         // Manual join by code
-        rightTable.add( LabelFactory.createLabel("Or join by code:", getSkin(), "defaultFont", null)).row(); 
+        rightTable.add( LabelFactory.createLabel("Or join by code:", getSkin(), "defaultFont", null)).row();
         TextField codeField = new TextField("", getSkin(), "textFieldStyle-textField");
         codeField.setMessageText("Lobby Code");
         Table codeFieldContainer = TextFieldFactory.createTextField(
@@ -105,7 +111,7 @@ public class GameLobbyView extends BaseScreen {
         rightTable.add(codeFieldContainer).row();
         ButtonFactory.createDefaultButton("Join Lobby", () -> joinLobby(codeField.getText()), rightTable);
 
-        Table lobbiesTable = new Table(); 
+        Table lobbiesTable = new Table();
         lobbiesTable.add(publicLabel);
         rightTable.add(lobbiesTable).padBottom(20).row();
 
@@ -124,11 +130,11 @@ public class GameLobbyView extends BaseScreen {
 ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
 
         Gdx.app.postRunnable(() -> {
-            scrollPane.layout();           // Force layout pass
-            scrollPane.setScrollY(0);      // Set scroll to the top
-            scrollPane.updateVisualScroll(); 
-        });        
-        // 📦 Main table that fills the screen
+            scrollPane.layout();
+            scrollPane.setScrollY(0);
+            scrollPane.updateVisualScroll();
+        });
+        // Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.add(LabelFactory.createLabel("Multiplayer", getSkin(), "titleFont", Color.BLACK)).width(300).height(90).row();;
@@ -172,6 +178,14 @@ ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
         game.setView(new MainMenuView());
         dbManager.removePublicLobbiesListener();
     }
+// TODO: FIKS FONTEN HER
+//    private void showError(String message) {
+//        Dialog dialog = new Dialog("Invalid Input", getSkin());
+//        Label messageLabel = new Label(message, getSkin().get("customLoginStyle", Label.LabelStyle.class));
+//        dialog.getContentTable().add(messageLabel);
+//        dialog.button("OK");
+//        dialog.show(stage);
+//    }
 
     private void createLobby(UserInfo user, boolean isPublic, int maxPlayers) {
         dbManager.createLobby(user, isPublic, maxPlayers, new MultiplayerManager.Callback<LobbyInfo>() {

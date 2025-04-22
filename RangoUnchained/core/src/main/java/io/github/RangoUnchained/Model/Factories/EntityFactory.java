@@ -5,7 +5,7 @@ import io.github.RangoUnchained.Model.level.GameLevel.LevelData;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
 public class EntityFactory {
-    
+
     //categories
     public static final short CATEGORY_PLAYER     = 0x0001;
     public static final short CATEGORY_BALL       = 0x0002;
@@ -21,19 +21,19 @@ public class EntityFactory {
     public static final short MASK_POWERUP    = CATEGORY_PLAYER | CATEGORY_OBSTACLE; // New mask for the new category
 
     public static Entity create(EntityData entityData,LevelData levelData){
-        
-        switch (entityData.typeInfo.type.toLowerCase()){
-            case("ball"): 
+
+        switch (entityData.typeInfo.type){
+            case("Ball"):
                 return BallFactory.create(entityData);
-            case("player"):
+            case("Player"):
                 return PlayerFactory.create(entityData, levelData);
-            case("powerup"):
+            case("Powerup"):
                 return PowerupFactory.create(entityData);
-            case("projectile"):
+            case("Projectile"):
                 return ProjectileFactory.create(entityData);
-            case("obsticle"):
+            case("Obsticle"):
                 return ObsticleFactory.create(entityData);
-            case("background"):
+            case("Background"):
                 return UtilFactory.create(entityData);
             default:
                 return null;

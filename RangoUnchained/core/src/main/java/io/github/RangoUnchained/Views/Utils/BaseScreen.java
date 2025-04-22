@@ -68,7 +68,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     }
 
     private void setupBackground() {
-        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Background.png"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("Background/Desert.png"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);

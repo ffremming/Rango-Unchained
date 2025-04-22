@@ -121,7 +121,7 @@ public class GameLobbyView extends BaseScreen {
         rootTable.add(table).top();
         rootTable.add(rightTable).top();
 
-ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
+ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();           // Force layout pass
@@ -153,7 +153,7 @@ ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
                     for (LobbyInfo lobby : lobbies) {
                         String text = "Join Lobby " + lobby.lobbyId + " (" + lobby.players.size() + "/" + lobby.maxPlayers + ")";
                         ButtonFactory.createButton(text, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING, getSkin(), game,
-                            () -> joinLobby(lobby.lobbyId), "defaultStyle", table);
+                            () -> joinLobby(lobby.lobbyId), "textFieldStyle", table);
                     }
                 });
             }

@@ -68,8 +68,8 @@ public class MultiplayerScoreboardView extends BaseScreen {
             String time = String.format("%.1f s", p.finishTime);
             String timeText = "Time: " + (p.finishTime != null ? time + "s" : "N/A");
 
-            LabelFactory.createLabel(name, getSkin(), "rioGrandeFont", null, 1000, scoreboardTable);
-            LabelFactory.createLabel(scoreText + ", " + timeText, getSkin(), "rioGrandeFont", null, 1000, scoreboardTable);
+            LabelFactory.createLabel(name, getSkin(), "rioGrandeFont", null, 10, scoreboardTable);
+            LabelFactory.createLabel(scoreText + ", " + timeText, getSkin(), "rioGrandeFont", null, 10, scoreboardTable);
             rank++;
         }
 

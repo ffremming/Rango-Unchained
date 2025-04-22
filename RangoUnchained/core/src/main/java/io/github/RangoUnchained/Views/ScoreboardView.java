@@ -77,6 +77,7 @@ public class ScoreboardView extends BaseScreen {
                 ButtonFactory.createDefaultButton("Back", () -> game.setView(new MainMenuView()), table);
             }
         });
+        
 
     }
 }

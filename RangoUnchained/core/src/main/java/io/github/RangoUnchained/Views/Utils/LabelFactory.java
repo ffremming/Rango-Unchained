@@ -20,7 +20,8 @@ public class LabelFactory {
     public static Table createLabel(String text, Skin skin, String fontName, Color color, float padding, Table table) {
         Label label = createLabel(text, skin, fontName, color);
         table.add(label)
-            .padBottom(padding);
+            .padBottom(padding)
+            .padTop(padding);
         table.row();
         return table;
     }

@@ -28,7 +28,7 @@ public class SelectLevelView extends BaseScreen {
 
     private void createUI() {
         Table table = new Table();
-        table.top().padTop(50);
+        table.top().padTop(20);
         table.defaults().center();
 
         // Force table to use one column and center it horizontally
@@ -44,7 +44,6 @@ public class SelectLevelView extends BaseScreen {
             if (i== 0){
                 buttonText = "Tutorial";
             }
-            ButtonFactory.createDefaultButton(buttonText, () -> game.setView(new GamePlayView(level)), table);
 
             if (i == GameFileHandler.inProgresslevelnumber()){
                 table.row();
@@ -52,17 +51,14 @@ public class SelectLevelView extends BaseScreen {
                 customStyle.up = null;    // Remove the up state drawable
                 customStyle.down = null;  // Optionally remove the down state drawable
                 customStyle.over = null;  // Optionally remove the over state drawable
+                
+                LabelFactory.createLabel("(Continue)", getSkin(), "defaultFont", Color.BLACK, 0, table);
 
-                TextButton continueButton = ButtonFactory.createButton("continue", getSkin(), game, null, "customLoginStyle");
-                continueButton.getStyle().fontColor = getSkin().getColor("white");
-                table.add(continueButton)
-                .width(300)
-                .height(60)
-                .center()
-                .padBottom(20);
             } else {
                 table.row();
             }
+            ButtonFactory.createDefaultButton(buttonText, () -> game.setView(new GamePlayView(level)), table);
+
             table.row();
         }
         ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);

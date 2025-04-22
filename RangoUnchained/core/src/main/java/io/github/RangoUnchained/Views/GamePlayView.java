@@ -46,9 +46,7 @@ public class GamePlayView extends BaseScreen {
     private boolean hasSentFinishData;
     private boolean shouldInitialize = true;
     private boolean initialized = false;
-    private Table leftTable;
     private Table centralTable;
-    private Table righTable;
     private Table shootTable;
 
 
@@ -164,7 +162,7 @@ public class GamePlayView extends BaseScreen {
         TextButton pauseButton = ButtonFactory.createButton("Pause", getSkin(), game, () -> pauseMenu.togglePause(), "customLoginStyle");
         centralTable.setName("Pause");
 
-        centralTable.add(pauseButton).center().width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING);
+        centralTable.add(pauseButton).center().width(160).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).row();
         ButtonFactory.createButton("LICK EM!", BUTTON_WIDTH/2, 50, 0, getSkin(), game, () -> controller.handleShoot(), "customLoginStyle", shootTable);
         createJoystick();
         createScoreLabel();

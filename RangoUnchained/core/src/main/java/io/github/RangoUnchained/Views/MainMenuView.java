@@ -60,7 +60,14 @@ public class MainMenuView extends BaseScreen {
             "fonts/Default.ttf",
             30,
             Color.WHITE
-    );
+        );
+        FontUtils.addFontAndTextButtonStyleToSkin(getSkin(),
+            "errorFont",
+            "errorStyle",
+            "fonts/Default.ttf",
+            25,
+            Color.RED
+        );
     if (game.getIsLoggedIn())
         LabelFactory.createLabel("Hi, " + game.getCurrentUser().getDisplayName(), getSkin(), "defaultFont", Color.BLACK, 10, table).row();
 
@@ -95,7 +102,11 @@ public class MainMenuView extends BaseScreen {
 
 
         ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
-
+        if (game.getIsLoggedIn()) {
+            scrollPane.setFadeScrollBars(false);
+        } else {
+            scrollPane.setFadeScrollBars(true);
+        }
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();          
             scrollPane.setScrollY(0);      
@@ -106,7 +117,7 @@ public class MainMenuView extends BaseScreen {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         LabelFactory.createLabel("(Rango Unchained)", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
-        mainTable.top().add(scrollPane).expand().fill().row();
+        mainTable.top().add(scrollPane).expandY().width(WORLD_WIDTH - 400).fill().row();
         mainTable.add(volumeTable);
         stage.addActor(mainTable);
     }

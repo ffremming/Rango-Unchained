@@ -30,7 +30,7 @@ public class SelectLevelView extends BaseScreen {
         Table table = new Table();
         table.top().padTop(20);
         table.defaults().center();
-        table.add().expandX(); // helps make the table take full width
+        table.add().expandX(); 
         table.center().row();
 
         // Add level selection buttons
@@ -69,7 +69,7 @@ public class SelectLevelView extends BaseScreen {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         LabelFactory.createLabel("Select Level", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
-        mainTable.top().add(scrollPane).expand().fill().row();
+        mainTable.top().add(scrollPane).expandY().width(WORLD_WIDTH - 400).fill().row();
         mainTable.add(ButtonFactory.createButton("Back", getSkin(), game, () -> game.setView(new MainMenuView()),
             "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).padTop(20).row();
         stage.addActor(mainTable);

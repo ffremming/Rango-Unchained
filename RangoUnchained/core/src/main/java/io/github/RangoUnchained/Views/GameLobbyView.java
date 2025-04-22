@@ -20,6 +20,7 @@ import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 public class GameLobbyView extends BaseScreen {
     private final MultiplayerManager dbManager;
     private final UserInfo currentUser;
+    private Label errorLabel;
 
     public GameLobbyView() {
         super(GameController.getInstance());
@@ -62,14 +63,14 @@ public class GameLobbyView extends BaseScreen {
         table.add(maxPlayersFieldContainer).row();
         // Alternative simpler approach
         CheckBox publicCheckBox = new CheckBox("Public Lobby", getSkin());
-        CheckBox.CheckBoxStyle style = new CheckBox.CheckBoxStyle(publicCheckBox.getStyle());
-        style.font = getSkin().getFont("defaultFont"); // Use a font name that exists in your skin
-        style.fontColor = Color.BLACK; // Set the font color
 
         // Apply the modified style if needed
         publicCheckBox.setChecked(true);
         publicCheckBox.getImage().setScale(0.2f); // Scale the checkbox image directly
-        table.add(publicCheckBox).width(publicCheckBox.getImage().getWidth()).height(publicCheckBox.getImage().getHeight()).padBottom(20).row();
+        Table checkTable = new Table();
+        checkTable.add(publicCheckBox).width(publicCheckBox.getImage().getWidth()).height(publicCheckBox.getImage().getHeight());
+        checkTable.add(LabelFactory.createLabel("Public Lobby", getSkin(), "defaultFont", null)).padLeft(10).padBottom(20);
+        table.add(checkTable).row();
         // Create lobby button
         ButtonFactory.createDefaultButton("Create Lobby", () -> {
             int maxPlayers;
@@ -81,13 +82,15 @@ public class GameLobbyView extends BaseScreen {
             }
 
             if (maxPlayers < 1 || maxPlayers > 4) {
-                // TODO: FIKS FONTEN HER
-               // showError("Lobby cannot have more than 4 players.");
+                showError("Lobby cannot have more than 4 players.");
                 return;
             }
             boolean isPublic = publicCheckBox.isChecked();
             createLobby(currentUser, isPublic, maxPlayers);
         }, table).row();
+
+        errorLabel = LabelFactory.createLabel("", getSkin(), "errorFont", null);
+        errorLabel.setWrap(true);
 
         Table rightTable = new Table();
         rightTable.top().padLeft(50);
@@ -101,9 +104,9 @@ public class GameLobbyView extends BaseScreen {
             "",
             "textFieldStyle-textField",
             "textfield",
-            true,     // transparent background
-            60,       // inner padding
-            200,      // width
+            true,     
+            60,      
+            200,      
             90,
             codeField
         );
@@ -127,7 +130,7 @@ public class GameLobbyView extends BaseScreen {
         rootTable.add(table).top();
         rootTable.add(rightTable).top();
 
-ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
+        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
 
         Gdx.app.postRunnable(() -> {
             scrollPane.layout();
@@ -137,8 +140,9 @@ ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
         // Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.add(LabelFactory.createLabel("Multiplayer", getSkin(), "titleFont", Color.BLACK)).width(300).height(90).row();;
-        mainTable.top().add(scrollPane).expand().fill().center().row();
+        mainTable.add(LabelFactory.createLabel("Multiplayer", getSkin(), "titleFont", Color.BLACK)).row();
+        mainTable.add(errorLabel).center().width(BUTTON_WIDTH).row();
+        mainTable.top().add(scrollPane).expandY().width(WORLD_WIDTH - 400).fill().row();
         mainTable.add(ButtonFactory.createButton("Back", getSkin(), game,
         this::backToMenu, "customLoginStyle")).width(300).height(60).center().padTop(20).padBottom(15);
         stage.addActor(mainTable);
@@ -168,7 +172,7 @@ ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
             public void onError(Exception e) {
                 Gdx.app.postRunnable(() -> {
                     table.clear();
-                    table.add(LabelFactory.createLabel("Error loading lobbies: " + e.getMessage(), getSkin(), "defaultFont", null));
+                    table.add(LabelFactory.createLabel("Error loading lobbies: " + e.getMessage(), getSkin(), "errorFont", null));
                 });
             }
         });
@@ -178,15 +182,9 @@ ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(rootTable);
         game.setView(new MainMenuView());
         dbManager.removePublicLobbiesListener();
     }
-// TODO: FIKS FONTEN HER
-//    private void showError(String message) {
-//        Dialog dialog = new Dialog("Invalid Input", getSkin());
-//        Label messageLabel = new Label(message, getSkin().get("customLoginStyle", Label.LabelStyle.class));
-//        dialog.getContentTable().add(messageLabel);
-//        dialog.button("OK");
-//        dialog.show(stage);
-//    }
-
+    private void showError(String message) {
+        errorLabel.setText(message);
+    }
     private void createLobby(UserInfo user, boolean isPublic, int maxPlayers) {
         dbManager.createLobby(user, isPublic, maxPlayers, new MultiplayerManager.Callback<LobbyInfo>() {
             @Override

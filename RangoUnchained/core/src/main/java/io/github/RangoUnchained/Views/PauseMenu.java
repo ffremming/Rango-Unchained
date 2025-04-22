@@ -1,10 +1,7 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -66,8 +63,8 @@ public class PauseMenu extends Stage {
 
         bottomTable.add(volumeSlider);
 
-        // Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
-        // bottomTable.add(sfxSlider).pad(20);
+        Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
+        bottomTable.add(sfxSlider).width(300).pad(20);
         addActor(table);
         addActor(bottomTable);
 

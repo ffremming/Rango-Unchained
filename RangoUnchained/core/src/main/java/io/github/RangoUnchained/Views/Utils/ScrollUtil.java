@@ -21,7 +21,7 @@ public class ScrollUtil {
 
         // Solid white knob
         Pixmap knobPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        knobPixmap.setColor(Color.WHITE);
+        knobPixmap.setColor(Color.BROWN);
         knobPixmap.fill();
         Texture knobTexture = new Texture(knobPixmap);
         Drawable knobDrawable = new TextureRegionDrawable(new TextureRegion(knobTexture));

@@ -3,6 +3,9 @@ package io.github.RangoUnchained.Model.Tutorial;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.RangoUnchained.Controllers.LevelController;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimension;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.TypeInfo;
 
 public class PowerupStep implements TutorialStepStrategy{
 
@@ -19,7 +22,18 @@ public class PowerupStep implements TutorialStepStrategy{
 
     @Override
     public void onEnter() {
-       LevelController.getInstance().handleSpawnRequests(300, 300, 0, 0, powerupType, new Vector2(1,7));
+        EntityData data3 = new EntityData();
+        data3.dimension = new Dimension();
+        data3.dimension.x = 300;
+        data3.dimension.y = 300;
+        data3.name = "SpeedPowerUp";
+        data3.typeInfo = new TypeInfo();
+        data3.typeInfo.type = "powerup";
+        data3.typeInfo.subType = "speed";
+        data3.typeInfo.size = 2;
+        data3.velocity = new Vector2(2,2);
+
+       LevelController.getInstance().handleSpawnRequests(data3);
     }
 
     @Override

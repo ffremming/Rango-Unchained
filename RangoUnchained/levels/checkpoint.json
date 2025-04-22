@@ -1,0 +1,72 @@
+{
+"metaData": {
+	"progress": 1,
+	"time": 5.999718304723501
+},
+"entitiesData": [
+	{
+		"name": "Background",
+		"dimension": {},
+		"typeInfo": {
+			"type": "Background",
+			"subType": "Desert"
+		}
+	},
+	{
+		"name": "ObsticleLeft",
+		"dimension": {
+			"x": 17,
+			"y": 400
+		},
+		"typeInfo": {
+			"type": "Obsticle",
+			"subType": "Left"
+		}
+	},
+	{
+		"name": "ObsticleRight",
+		"dimension": {
+			"x": 1500,
+			"y": 480
+		},
+		"typeInfo": {
+			"type": "Obsticle",
+			"subType": "Right"
+		}
+	},
+	{
+		"name": "ObsticleRoof",
+		"dimension": {
+			"x": 750,
+			"y": 900
+		},
+		"typeInfo": {
+			"type": "Obsticle",
+			"subType": "Roof"
+		}
+	},
+	{
+		"name": "ObsticleFloor",
+		"dimension": {
+			"x": 750,
+			"y": 32
+		},
+		"typeInfo": {
+			"type": "Obsticle",
+			"subType": "Floor"
+		}
+	},
+	{
+		"name": "Player-Player",
+		"dimension": {
+			"x": 427.11224,
+			"y": 150
+		},
+		"health": 8,
+		"typeInfo": {
+			"type": "Player",
+			"subType": "Rango"
+		}
+	}
+]
+}

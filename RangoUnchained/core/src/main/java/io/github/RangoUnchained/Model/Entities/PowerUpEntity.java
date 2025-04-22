@@ -20,4 +20,8 @@ public class PowerUpEntity extends Entity {
         addComponent(new ContactComponent());
         addComponent(new SpeedComponent(5f));
     }
+
+    public PowerUpEntity() {
+        //TODO Auto-generated constructor stub
+    }
 }

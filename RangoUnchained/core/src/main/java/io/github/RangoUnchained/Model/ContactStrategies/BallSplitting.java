@@ -11,6 +11,9 @@ import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Systems.ContactSystem;
 import io.github.RangoUnchained.Model.Systems.ContactSystem.CollisionEvent;
 import io.github.RangoUnchained.Model.Systems.TutorialSystem;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimension;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.TypeInfo;
 
 public class BallSplitting implements ContactStrategy{
 
@@ -39,32 +42,49 @@ public class BallSplitting implements ContactStrategy{
         float xPos = spriteComponent.getSprite().getX();
         float yPos = spriteComponent.getSprite().getY()+50;
         int timesPopped = statComponent.getTimesPopped();
-       
-        Vector2 newVelocity = new Vector2((0), (5));
 
         LevelController.getInstance().handleRemovalRequests(ball);
         LevelController.getInstance().getSystem(TutorialSystem.class).flagBallKilled();
         BallComponent ballcomp = (BallComponent) ball.getComponent(BallComponent.class);
 
         String spawnName = "Ball " + ballcomp.getTypeName();
+       
 
-        if (timesPopped == 0) {
-            newVelocity.x = -3;
-            
-            spawnName += " Medium";
-            LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 10, 10,
-            spawnName, newVelocity);
-            LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 10, 10,
-            spawnName, newVelocity);
+        int size = timesPopped == 0 ? 2:timesPopped == 1 ? 1:0;
+        Vector2 newVelocity = new Vector2((0), (5));
 
-        } else if (timesPopped == 1) {
-            newVelocity.x = 3;
-            spawnName += " Small";
-            LevelController.getInstance().handleSpawnRequests(xPos+50, yPos, 5, 5,
-            spawnName, newVelocity);
-                LevelController.getInstance().handleSpawnRequests(xPos-20, yPos, 5, 5,
-                spawnName, newVelocity);
+
+        if (size == 0){
+            return;
         }
-    }
+
+        EntityData dataRight = new EntityData();
+        dataRight.dimension = new Dimension();
+        dataRight.dimension.x = xPos +50;
+        dataRight.dimension.y = yPos;
+        dataRight.typeInfo = new TypeInfo();
+        dataRight.typeInfo.type = "ball";
+        dataRight.typeInfo.subType = ballcomp.getTypeName();
+        dataRight.typeInfo.size = size;
+        newVelocity.x = 2;
+        dataRight.velocity = newVelocity;
+        dataRight.name = spawnName;
+
+        
+        EntityData dataLeft = new EntityData();
+        dataLeft.dimension = new Dimension();
+        dataLeft.dimension.x = xPos -20;
+        dataLeft.dimension.y = yPos;
+        dataLeft.typeInfo = new TypeInfo();
+        dataLeft.typeInfo.type = "ball";
+        dataLeft.typeInfo.subType = ballcomp.getTypeName();
+        dataLeft.typeInfo.size = size;
+        newVelocity.x = -2;
+        dataLeft.velocity = newVelocity;
+        dataLeft.name = spawnName;
+
+        LevelController.getInstance().handleSpawnRequests(dataLeft);
+        LevelController.getInstance().handleSpawnRequests(dataRight);
     
+    }
 }

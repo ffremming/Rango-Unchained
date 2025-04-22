@@ -30,4 +30,8 @@ public class PlayerEntity extends Entity{
         addComponent(new PowerUpComponent(-1));
     }
 
+    public PlayerEntity() {
+        //TODO Auto-generated constructor stub
+    }
+
 }

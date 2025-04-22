@@ -7,9 +7,12 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 
+import javax.xml.datatype.Duration;
+
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.Factories.EntityFactory;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
@@ -138,16 +141,25 @@ public class GameLevel {
          */
         public static class EntityData {
             public String name;
-            public Position position;
+            public Dimension dimension;
             public int health;
             public Vector2 velocity;
+            public TypeInfo typeInfo;
 
             /**
              * Represents a 2D position with x and y coordinates.
              */
-            public static class Position {
+            public static class Dimension {
                 public float x;
                 public float y;
+                public float width;
+                public float height;
+            }
+
+            public static class TypeInfo {
+                public String type;
+                public String subType;
+                public int size;
             }
         }
 
@@ -188,11 +200,14 @@ public class GameLevel {
     }
 
     public void spawn(ArrayList<EntityData> spawningEntities, int levelNumber) {
+        LevelData levelData = new LevelData();
+        levelData.metaData = new LevelData.MetaData();
+        levelData.metaData.levelnr = levelNumber;
         for (EntityData data: spawningEntities){
             Gdx.app.log("JSON_testing", "Name: " + data.name);
-            Gdx.app.log("JSON_testing", "Position: (" + data.position.x + ", " + data.position.y + ")");
+            Gdx.app.log("JSON_testing", "Position: (" + data.dimension.x + ", " + data.dimension.y + ")");
             Vector2 velocity = data.velocity == null ? new Vector2() : data.velocity;
-            Entity entity = EntityFactory.createEntity(data.position.x, data.position.y, data.name, LevelController.getInstance().getWorld(),velocity, data.health, levelNumber);
+            Entity entity = EntityFactory.create(data,levelData);
             if (entity != null){
                 entities.add(entity);
             }

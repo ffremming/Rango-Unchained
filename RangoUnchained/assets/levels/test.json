@@ -1,0 +1,178 @@
+{
+	"metaData": {
+	  "levelnr": 1
+	},
+	"entitiesData": [
+	  {
+		  "name": "Background",
+		  "dimension": {},
+		  "typeInfo": {
+			"type":"Background",
+			"subType" : "Desert"
+		  }
+	  },
+	  {
+		  "name": "Player-Rango",
+		  "dimension": {
+			  "x": 100,
+			  "y": 150
+		  },
+		  "typeInfo":{
+			"type" : "Player",
+
+			"subType" : "Rango"
+		  }
+	  },
+	  {
+		  "name": "Ball: Tumbleweed Small",
+		  "dimension": {
+			  "x": 800,
+			  "y": 400
+		  },
+		  "velocity": {
+			  "x": -2
+		  },
+		  "typeInfo":{
+			"type" : "Ball",
+			"size" : 1,
+			"subType" : "Armedillo"
+		  }
+	  },
+	  {
+		  "name": "Ball: Tumbleweed Medium",
+		  "dimension": {
+			  "x": 200,
+			  "y": 400
+		  },
+		  "velocity": {
+			  "x": 2
+		  },
+		  "typeInfo":{
+			"type" : "Ball",
+			"size" : 2,
+			"subType" : "TumbleWeed"
+		  }
+	  },
+	  {
+		  "name": "Ball: Tumbleweed Medium",
+		  "dimension": {
+			  "x": 400,
+			  "y": 400
+		  },
+		  "velocity": {
+			  "x": -2
+		  },
+		  "typeInfo":{
+			"type" : "Ball",
+			"size" : 2,
+			"subType" : "Cactus"
+		  }
+	  },
+	  {
+		  "name": "ObsticleLeft",
+		  "dimension": {
+			  "x": 17,
+			  "y": 400
+		  },
+		  "typeInfo": {
+			"type": "Obsticle",
+			"subType": "Left"
+		  }
+	  },
+	  {
+		  "name": "ObsticleRight",
+		  "dimension": {
+			  "x": 1500,
+			  "y": 480
+		  },
+		  "typeInfo": {
+			"type": "Obsticle",
+			"subType": "Right"
+		  }
+	  },
+	  {
+		  "name": "ObsticleRoof",
+		  "dimension": {
+			  "x": 750,
+			  "y": 900
+		  },
+		  "typeInfo": {
+			"type": "Obsticle",
+			"subType": "Roof"
+		  }
+	  },
+	  {
+		  "name": "ObsticleFloor",
+		  "dimension": {
+			  "x": 750,
+			  "y": 32
+		  },
+		  "typeInfo": {
+			"type": "Obsticle",
+			"subType": "Floor"
+		  }
+	  },
+      {
+        "name": "powerup",
+        "dimension": {
+            "x": 800,
+            "y": 400
+        },
+        "typeInfo": {
+          "type": "Powerup",
+          "subType": "Speed"
+        },
+
+        "velocity" :{
+            "x":-2,
+            "y":0
+        }
+    },
+    {
+        "name": "powerup",
+        "dimension": {
+            "x": 200,
+            "y": 400
+        },
+        "typeInfo": {
+          "type": "Powerup",
+          "subType": "Health"
+        },
+
+        "velocity" :{
+            "x":-2,
+            "y":0
+        }
+    },
+    {
+        "name": "tongue",
+        "dimension": {
+            "x": 1000,
+            "y": 500
+        },
+        "typeInfo": {
+          "type": "Projectile",
+          "subType": "Tongue"
+        },
+
+        "velocity" :{
+            "x":-2,
+            "y":0
+        }
+        
+    },
+    {
+        "name": "Obsticle",
+        "dimension": {
+            "x": 700,
+            "y": 500,
+            "width": 300,
+            "height": 500
+        },
+        "typeInfo": {
+          "type": "Obsticle",
+          "subType": "Stone"
+        }
+    }
+  ]
+  }

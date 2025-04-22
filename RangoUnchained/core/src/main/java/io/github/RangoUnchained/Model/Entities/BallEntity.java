@@ -23,4 +23,8 @@ public class BallEntity extends Entity{
         addComponent(bounceComp);
         addComponent(ballComp);
     }
+
+    public BallEntity() {
+        //TODO Auto-generated constructor stub
+    }
 }

@@ -14,6 +14,9 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.InputComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimension;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.TypeInfo;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class InputSystem implements Systems {
@@ -88,7 +91,17 @@ public class InputSystem implements Systems {
             if(filter.matches(entity)){
                 Sprite sprite = spriteComp.getSprite();
                 Body body = ((BodyComponent) entity.getComponent(BodyComponent.class)).getBody();
-                LevelController.getInstance().handleSpawnRequests(body.getPosition().x*Constants.PPM , body.getPosition().y*Constants.PPM +sprite.getHeight()/2+16 ,0,0,"Projectile",new Vector2(0,0));
+                              EntityData data = new EntityData();
+                data.dimension = new Dimension();
+                data.dimension.x = body.getPosition().x*Constants.PPM;
+                data.dimension.y = body.getPosition().y*Constants.PPM + sprite.getHeight()/2+16;
+                data.name = "Projectile";
+                data.typeInfo = new TypeInfo();
+                data.typeInfo.type = "Projectile";
+                data.typeInfo.subType = "Tongue";
+
+                LevelController.getInstance().handleSpawnRequests(data);
+
             }
             filter.ignore(BodyComponent.class);
         }

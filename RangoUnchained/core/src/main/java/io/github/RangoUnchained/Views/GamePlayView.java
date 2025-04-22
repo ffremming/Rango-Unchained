@@ -236,12 +236,6 @@ public class GamePlayView extends BaseScreen {
                 } else if (powerup == PowerUpComponent.SHIELD) {
                 powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Shield.png")));
                 powerups.add(powerupImage).size(size, size).padRight(5);
-                } else if (powerup == PowerUpComponent.BALLSIZE) {
-                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Speed.png")));
-                powerups.add(powerupImage).size(size, size).padRight(5);
-                } else if (powerup == PowerUpComponent.BALLBOUNCE) {
-                powerupImage = new Image(new Texture(Gdx.files.internal("Powerup/Speed.png")));
-                powerups.add(powerupImage).size(size, size).padRight(5);
                 }
         }
         stage.addActor(powerups);

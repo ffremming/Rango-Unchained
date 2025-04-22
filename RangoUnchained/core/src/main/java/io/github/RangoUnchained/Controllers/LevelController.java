@@ -22,6 +22,7 @@ import io.github.RangoUnchained.Model.level.SpawnQueue;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Model.level.GameLevel;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
 public class LevelController {
 
@@ -61,8 +62,8 @@ public class LevelController {
        removalQueue.addRemovalRequest(entity);
     }
 
-    public void handleSpawnRequests(float xPos ,float yPos,int width, int height, String name, Vector2 velocity) {
-        spawnQueue.addSpawnRequest(xPos, yPos, width, width, name, velocity, getWorld());
+    public void handleSpawnRequests(EntityData entityData) {
+        spawnQueue.addSpawnRequest(entityData, getWorld());
     }
 
 

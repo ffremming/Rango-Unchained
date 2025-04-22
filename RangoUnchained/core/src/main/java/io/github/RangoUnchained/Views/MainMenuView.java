@@ -2,7 +2,9 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -90,6 +92,7 @@ public class MainMenuView extends BaseScreen {
             }, table);
         }
 
+
         Table rightTable = new Table();
         rightTable.setFillParent(true);
         rightTable.bottom().padBottom(20);
@@ -97,7 +100,41 @@ public class MainMenuView extends BaseScreen {
         Table volumeSlider = SliderFactory.createVolumeSlider(game, getSkin()); 
         table.add(volumeSlider).width(BUTTON_WIDTH).row();;
 
+        // volumeLabel.setFontScale(1.3f);
+        // Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
+
+        // volumeSlider.setValue(game.getMusicVolume());
+        // volumeSlider.addListener(new ChangeListener() {
+        //     @Override
+        //     public void changed(ChangeEvent event, Actor actor) {
+        //         float newVolume = volumeSlider.getValue();
+        //         game.setMusicVolume(newVolume);
+        //     }
+        // });
+
+        // bottomTable.add(volumeLabel);
+        // bottomTable.add(volumeSlider);
+
+
+        Label SFXLabel = new Label("Volume sfx: ", getSkin());
+        SFXLabel.setFontScale(1.3f);
+        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, getSkin());
+
+        // SFXSlider.setValue(game.getSFXVolume());
+        // SFXSlider.addListener(new ChangeListener() {
+        //     @Override
+        //     public void changed(ChangeEvent event, Actor actor) {
+        //         float newVolume = SFXSlider.getValue();
+        //         game.setSFXVolume(newVolume);
+        //     }
+        // });
+
+        rightTable.row();
+        rightTable.add(SFXLabel).pad(20);
+        rightTable.add(SFXSlider);
+
         // Add table to stage
+
         // stage.addActor(table);
         // stage.addActor(rightTable);
 
@@ -121,3 +158,4 @@ public class MainMenuView extends BaseScreen {
         stage.addActor(mainTable);
     }
 }
+

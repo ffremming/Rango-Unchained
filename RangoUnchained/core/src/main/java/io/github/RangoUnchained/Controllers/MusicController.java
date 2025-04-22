@@ -48,7 +48,7 @@ public class MusicController {
         if (activeSong != null && activeSong.equals(newSong) || newSong == null) {
             return;
         } if (activeSong != null) {
-            activeSong.dispose();
+            activeSong.stop();
         }
         activeSong = newSong;
         playMusic();
@@ -67,5 +67,13 @@ public class MusicController {
         activeSong.play();
         activeSong.setVolume(currentVolume);
         activeSong.setLooping(true);
+    }
+
+    public void dispose(){
+        if (activeSong != null){
+            activeSong.dispose();
+        }
+        keyToMusic.forEach((musicKey, music) -> music.dispose());
+        keyToMusic.clear();
     }
 }

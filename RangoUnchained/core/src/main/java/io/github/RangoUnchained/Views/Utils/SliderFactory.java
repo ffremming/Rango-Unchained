@@ -43,12 +43,12 @@ public class SliderFactory {
         
         // Create the actual slider for just the right portion
         Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, rightSliderStyle);
-        volumeSlider.setValue(game.getVolume());
+        volumeSlider.setValue(game.getMusicVolume());
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float newVolume = volumeSlider.getValue();
-                game.setVolume(newVolume);
+                game.setMusicVolume(newVolume);
             }
         });
         

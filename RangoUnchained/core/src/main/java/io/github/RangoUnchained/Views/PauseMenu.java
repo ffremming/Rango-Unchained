@@ -1,7 +1,10 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -52,18 +55,34 @@ public class PauseMenu extends Stage {
                 ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater, "customLoginStyle", table);
             }
         }
-        ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame, "customLoginStyle", table);
-        
+        table.add(ButtonFactory.createButton("End game", GameController.getSkin(), game, this::endGame, "customLoginStyle")).center().padBottom(20);
+        table.row();
 
         Table bottomTable = new Table();
         bottomTable.setFillParent(true);
         bottomTable.bottom().padBottom(20);
 
         Table volumeSlider = SliderFactory.createVolumeSlider(game, GameController.getSkin());
+
+        // Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
+        
         bottomTable.add(volumeSlider);
 
-        addActor(table);
-        addActor(bottomTable);
+        Label SFXLabel = new Label("Volume sfx: ", GameController.getSkin());
+        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
+        SFXSlider.setValue(game.getSFXVolume());
+        // SFXSlider.addListener(new ChangeListener() {
+        //     @Override
+        //     public void changed(ChangeEvent event, Actor actor) {
+        //         float newVolume = SFXSlider.getValue();
+        //         game.setSFXVolume(newVolume);
+        //     }
+        // });
+
+        bottomTable.row();
+        bottomTable.add(SFXLabel).pad(20);
+        bottomTable.add(SFXSlider);
+
     }
 
     public void togglePause() {

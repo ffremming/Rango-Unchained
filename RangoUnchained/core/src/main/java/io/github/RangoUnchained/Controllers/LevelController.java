@@ -11,13 +11,14 @@ import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategies;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Systems.AudioSystem;
 import io.github.RangoUnchained.Model.Systems.HealthSystem;
 import io.github.RangoUnchained.Model.Systems.InputSystem;
 import io.github.RangoUnchained.Model.Systems.PhysicsSystem;
 import io.github.RangoUnchained.Model.Systems.PowerUpSystem;
+import io.github.RangoUnchained.Model.Systems.Systems;
 import io.github.RangoUnchained.Model.level.RemovalQueue;
 import io.github.RangoUnchained.Model.level.SpawnQueue;
-import io.github.RangoUnchained.Model.Systems.Systems;
 import io.github.RangoUnchained.Model.Systems.SystemManager;
 import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Model.level.GameLevel;
@@ -85,6 +86,7 @@ public class LevelController {
         getSystem(PhysicsSystem.class).setContactStrategies();
         getSystem(HealthSystem.class).setContactStrategies();
         getSystem(PowerUpSystem.class).setContactStrategies();
+        getSystem(AudioSystem.class).setContactStrategies();
 
         level.initializeCheckpoint();
     }
@@ -147,6 +149,8 @@ public class LevelController {
     public World getWorld() {
         return systemManager.getWorld();
     }
+
+    public AudioSystem getAudioSystem(){return systemManager != null ? systemManager.getSystem(AudioSystem.class) : null;}
 
     public <T extends Systems> T getSystem(Class<T> systemClass) {
         if (!isActive || systemManager == null) return null;

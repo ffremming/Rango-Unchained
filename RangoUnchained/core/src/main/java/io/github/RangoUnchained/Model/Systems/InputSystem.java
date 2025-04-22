@@ -18,6 +18,9 @@ import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimen
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.TypeInfo;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
+/**
+ * System responsible for processing player input from keyboard or touchpad.
+ */
 public class InputSystem implements Systems {
 
     private Touchpad touchpad;

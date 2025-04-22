@@ -2,21 +2,26 @@ package io.github.RangoUnchained.Model.Components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/**
+ * Component representing a sprite for an entity.
+ */
 public class SpriteComponent implements Component {
 
-    private Sprite sprite;
+    private final Sprite sprite;
     private Texture texture;
-    private String path;
+    private final String path;
 
+    /**
+     * Constructs a {@link SpriteComponent} from an image path.
+     *
+     * @param path path to the texture
+     */
     public SpriteComponent(String path) {
         texture = new Texture(Gdx.files.internal(path));
-
-
 
         sprite = new Sprite(texture);
         sprite.setColor(Color.WHITE);
@@ -24,6 +29,13 @@ public class SpriteComponent implements Component {
         this.path = path;
     }
 
+    /**
+     * Constructs a {@link SpriteComponent} from an image path with a specified size.
+     *
+     * @param path   path to the texture
+     * @param width  width of the sprite
+     * @param height height of the sprite
+     */
     public SpriteComponent(String path, float width, float height) {
         this.path = path;
         System.out.println(path);
@@ -38,7 +50,14 @@ public class SpriteComponent implements Component {
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
     }
 
-    // SpriteComponents for entities with animation
+    /**
+     * Constructs a {@link SpriteComponent} from a texture region.
+     *
+     * @param region texture region to use
+     * @param width  width of the sprite
+     * @param height height of the sprite
+     * @param path   original asset path
+     */
     public SpriteComponent(TextureRegion region, float width, float height, String path) {
 
         sprite = new Sprite(region);
@@ -48,16 +67,8 @@ public class SpriteComponent implements Component {
         this.path = path;
     }
 
-    public Sprite getSprite(float degree) {
-        return sprite;
-    }
-
     public Sprite getSprite(){
         return sprite;
-    }
-
-    public Texture getTexture() {
-        return texture;
     }
 
     public String getPath() {

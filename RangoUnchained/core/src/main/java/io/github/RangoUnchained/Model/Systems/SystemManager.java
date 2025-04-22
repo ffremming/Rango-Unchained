@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
-
 public class SystemManager {
 
     /**all systems */

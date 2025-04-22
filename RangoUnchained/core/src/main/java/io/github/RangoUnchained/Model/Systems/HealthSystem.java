@@ -55,16 +55,9 @@ public class HealthSystem implements Systems, ContactStrategy{
         }
         HealthComponent healthComponent =  ((HealthComponent)player.getComponent(HealthComponent.class));
 
-        if (healthComponent.isShieldActive()) {
-            //healthComponent.setShieldActive(false);
-        } else {
+        if (!healthComponent.isShieldActive()) {
             healthComponent.decreaseHealth();
             LevelController.getInstance().getSystem(TutorialSystem.class).flagPlayerHit();
         }
     }
-
-
-
-
-
 }

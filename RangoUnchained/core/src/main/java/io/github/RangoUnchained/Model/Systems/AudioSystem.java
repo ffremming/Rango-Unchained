@@ -20,23 +20,20 @@ import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.ProjectileEntity;
 import io.github.RangoUnchained.Model.Factories.AudioLoader;
 
+/**
+ * System responsible for playing sound effects based on input and collision events.
+ */
 public class AudioSystem implements Systems, ContactStrategy {
-
 
     private static final long COLLISION_SOUND_COOLDOWN_MS = 175;
     private static final int MAX_CONCURRENT_SOUNDS = 5;
     private static final float SOUND_EXPIRE_TIME = 1f;
-
     private static final float VOLUME_POP = 20f;
     private static final float VOLUME_MOVE = 3f;
     private static final float VOLUME_SHOOT = 2.4f;
-
     private static final float DELAY_WALKING = 1f;
     private static final float DELAY_SHOOTING = 1f;
-
     private static float globalVolumeMultiplier;
-
-
     private final ComponentFilter filter = new ComponentFilter();
     private final Random random = new Random();
     private final AudioLoader audioLoader;
@@ -81,12 +78,16 @@ public class AudioSystem implements Systems, ContactStrategy {
         }
     }
 
+    /**
+     * Constructs the AudioSystem with an initial volume multiplier.
+     *
+     * @param volume the global volume multiplier
+     */
     public AudioSystem(float volume){
         filter.require(AudioComponent.class);
         audioLoader = AudioLoader.getInstance();
         globalVolumeMultiplier = volume;
     }
-
 
     private void playSound(AudioComponent.ActionType soundKey, float volume) {
 
@@ -162,25 +163,24 @@ public class AudioSystem implements Systems, ContactStrategy {
         AudioComponent audio = (AudioComponent) entity.getComponent(AudioComponent.class);
         InputComponent input = (InputComponent) entity.getComponent(InputComponent.class);
 
-
-        if( entity instanceof PlayerEntity){
+        if( entity instanceof PlayerEntity) {
             if((input.isRight() || input.isLeft()) && !audio.hasWalkingAudio.get()){
                 playSound(AudioComponent.ActionType.MOVE, VOLUME_MOVE);
                 delaySound(audio.hasWalkingAudio, DELAY_WALKING);
             }
+
             if (input.isShoot() && !audio.hasShootingAudio.get()){
                 playSound(AudioComponent.ActionType.SHOOT, VOLUME_SHOOT);
                 delaySound(audio.hasShootingAudio, DELAY_SHOOTING);
             }
-
         }
-
     }
 
     public void setVolume(float multiplier) {
         if (multiplier < 0f) {
             multiplier = 0f;
         }
+
         globalVolumeMultiplier = multiplier;
         // Update the volume of all currently active sounds.
         for (PlayingSound ps : activeSounds) {

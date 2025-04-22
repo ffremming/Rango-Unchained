@@ -11,7 +11,7 @@ import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Views.Utils.Constants;
 
 public class BodyFactory {
-    
+
     // Universal Body Creation Method
     static BodyComponent createBody(World world, float x, float y, BodyDef.BodyType type, FixtureDef fixtureDef,boolean fixedRotation) {
         BodyDef bodyDef = new BodyDef();
@@ -19,7 +19,7 @@ public class BodyFactory {
         bodyDef.position.set(x/Constants.PPM, y/Constants.PPM);
         bodyDef.fixedRotation = fixedRotation;
 
-        BodyComponent bodyComponent = new BodyComponent(bodyDef);
+        BodyComponent bodyComponent = new BodyComponent();
         Body body = world.createBody(bodyDef);
 
         if (body == null) {

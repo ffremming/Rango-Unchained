@@ -45,7 +45,6 @@ public class ProjectileFactory {
         ,true,
         5
         );
-        transComp.setAutoReverse(true);
         transComp.setAlwaysReverse(false);
         return transComp;
     }
@@ -61,12 +60,12 @@ public class ProjectileFactory {
         float width = (float)(WIDTH/ Constants.PPM);
         float height = (float)(HEIGHT/ Constants.PPM);
         Gdx.app.log("BodyComponent", "Width: " + width + ", Height: " + height);
-      
+
 
         BodyComponent body = BodyFactory.createBody(LevelController.getInstance().getWorld(),
         entityData.dimension.x,
         entityData.dimension.y,
-        BodyDef.BodyType.KinematicBody, 
+        BodyDef.BodyType.KinematicBody,
         BodyFactory.createBoxFixture(width, height, EntityFactory.CATEGORY_PROJECTILE, EntityFactory.MASK_PROJECTILE), true);
         body.getBody().setUserData(projectile);
         return body;

@@ -6,12 +6,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Component representing an entity's animation state.
+ */
 public class AnimationComponent implements Component {
 
-    public Map<PlayerState, Animation<TextureRegion>> animations = new HashMap<>();
+    private final Map<PlayerState, Animation<TextureRegion>> animations = new HashMap<>();
 
-    public PlayerState playerState = PlayerState.IDLE;
-    public float framenumber;
+    private PlayerState playerState = PlayerState.IDLE;
+    private float framenumber;
+
+    /**
+     * Adds an animation for a given player state.
+     *
+     * @param playerState the state to associate the animation with
+     * @param animation   the animation to add
+     */
     public void putAnimation(PlayerState playerState, Animation<TextureRegion> animation) {
         this.animations.put(playerState, animation);
     }

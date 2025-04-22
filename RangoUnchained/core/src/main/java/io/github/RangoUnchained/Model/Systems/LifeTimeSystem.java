@@ -4,6 +4,9 @@ import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.LifeTimeComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 
+/**
+ * System that handles entity removal after their lifetime expires.
+ */
 public class LifeTimeSystem implements Systems {
 
     private ComponentFilter filter = new ComponentFilter();

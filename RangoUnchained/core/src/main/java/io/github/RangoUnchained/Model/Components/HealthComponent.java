@@ -1,5 +1,8 @@
 package io.github.RangoUnchained.Model.Components;
 
+/**
+ * Component representing an entity's health and shield state.
+ */
 public class HealthComponent implements Component{
     private boolean shieldActive = false;
     private int health = 1;

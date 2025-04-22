@@ -1,8 +1,11 @@
 package io.github.RangoUnchained.Model.Components;
 
+/**
+ * Component representing how much an entity bounces.
+ */
 public class BounceComponent implements Component {
-    
-    public int type;
+
+    private int type;
 
     public final static int SUPER = 12;
     public final static int HIGH = 9;
@@ -10,14 +13,21 @@ public class BounceComponent implements Component {
     public final static int LOW = 6;
     public final static int NOBOUNCE = 5;
 
-    public BounceComponent(int type){
+    /**
+     * Constructs a {@link BounceComponent} with the specified bounce type.
+     * Invalid values default to {@code MEDIUM}.
+     *
+     * @param type the bounce type
+     */
+    public BounceComponent(int type) {
         setType(type);
     }
 
     public void setType(int type){
-        this.type = type;
-        if (type<NOBOUNCE||type>SUPER){
-            type = MEDIUM;
+        if (type < NOBOUNCE || type > SUPER) {
+            this.type = MEDIUM;
+        } else {
+            this.type = type;
         }
     }
 

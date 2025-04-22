@@ -7,7 +7,6 @@ import java.util.Map;
 
 import io.github.RangoUnchained.Controllers.LevelController;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
-import io.github.RangoUnchained.Model.Components.SpeedComponent;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
 import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
@@ -17,15 +16,20 @@ import io.github.RangoUnchained.Model.PowerUps.ShieldPowerUp;
 import io.github.RangoUnchained.Model.PowerUps.SpeedUpPowerUp;
 import io.github.RangoUnchained.Model.ContactStrategies.ContactStrategy;
 
+/**
+ * System that manages power-up effects and expiration.
+ */
 public class PowerUpSystem implements Systems, ContactStrategy {
     private ComponentFilter filter = new ComponentFilter();
     private Map<Integer, PowerUpStrategy> powerUpStrategies = new HashMap<>();
 
-
+    /**
+     * Constructs the {@link PowerUpSystem} and registers available power-up strategies.
+     */
     public PowerUpSystem() {
         filter.require(PowerUpComponent.class);
 
-        // Put all strategies TODO
+        // Put all strategies
         powerUpStrategies.put(0, new SpeedUpPowerUp());
         powerUpStrategies.put(1, new ShieldPowerUp());
         powerUpStrategies.put(2,new HealthUpPowerUp());
@@ -38,32 +42,20 @@ public class PowerUpSystem implements Systems, ContactStrategy {
             PowerUpComponent playerUp = (PowerUpComponent) entity.getComponent(PowerUpComponent.class);
             updatePowerUps(playerUp.getActivePowerUps(),entity);
         }
-
-        SpeedComponent speed = (SpeedComponent) entity.getComponent(SpeedComponent.class);
-        /**
-        if (speed.getSpeedBoostTimer() > 0) {
-            float delta = Gdx.graphics.getDeltaTime();
-            speed.speedBoostTimer -= delta;
-
-            if (speed.getSpeedBoostTimer() <= 0) {
-                speed.setCurrentSpeed(speed.getBaseSpeed());
-                speed.setSpeedBoostTimer(0);
-            }
-        }*/
     }
 
     public void updatePowerUps(Map<Integer, Float> powerups, Entity entity) {
         powerups.entrySet().removeIf(entry -> {
-            int powerUpType = entry.getKey(); // Get the key (power-up type)
+            int powerUpType = entry.getKey();
             float remainingTime = entry.getValue() - Gdx.graphics.getDeltaTime();
             if (remainingTime <= 0) {
                 PowerUpStrategy strategy = powerUpStrategies.get(powerUpType);
                 if (strategy != null) {
-                    strategy.remove(entity); // Assuming a remove method exists in PowerUpStrategy
+                    strategy.remove(entity);
                 }
-                return true; // Remove expired power-up
+                return true;
             } else {
-                entry.setValue(remainingTime); // Update remaining time
+                entry.setValue(remainingTime);
                 return false;
             }
         });
@@ -71,7 +63,6 @@ public class PowerUpSystem implements Systems, ContactStrategy {
 
     private void kill(Entity entity) {
         LevelController.getInstance().handleRemovalRequests(entity);
-        //some other logic TODO
     }
 
     @Override
@@ -83,7 +74,7 @@ public class PowerUpSystem implements Systems, ContactStrategy {
             null);
     }
 
-    /**contact strategy between playerEntity and Ballentity */
+    /**contact strategy between playerEntity and PowerUpEntity */
     private void applyPowerUp(ContactSystem.CollisionEvent collisionEvent) {
         PlayerEntity player;
         Entity powerUpEntity;
@@ -110,7 +101,6 @@ public class PowerUpSystem implements Systems, ContactStrategy {
             strategy.apply(player);
         }
     }
-
 
     @Override
     public boolean filter(Entity entity) {

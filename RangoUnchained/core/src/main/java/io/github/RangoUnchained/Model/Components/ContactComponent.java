@@ -1,19 +1,23 @@
 package io.github.RangoUnchained.Model.Components;
 
+/**
+ * Component used to manage temporary contact lock for an entity.
+ */
 public class ContactComponent implements Component{
-    
-    int contactLock;
 
-    public void setContactLock(int duration){
+    private int contactLock;
+
+    public void setContactLock(int duration) {
         contactLock = duration;
     }
 
     public void decrementContactLock(){
-        if (contactLock>0){contactLock --;}
+        if (contactLock > 0) {
+            contactLock--;
+        }
     }
 
     public boolean isContactLocked(){
-        return contactLock>0;
+        return contactLock > 0;
     }
-
 }

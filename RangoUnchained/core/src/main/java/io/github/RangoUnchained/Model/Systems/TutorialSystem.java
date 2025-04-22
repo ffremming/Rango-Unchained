@@ -29,7 +29,6 @@ public class TutorialSystem implements Systems {
     private final ComponentFilter filter = new ComponentFilter();
     private final TutorialManager tutorialManager;
 
-   
     /**
      * Constructs the TutorialSystem and initializes the TutorialManager with the tutorial steps.
      */
@@ -39,7 +38,7 @@ public class TutorialSystem implements Systems {
         filter.require(InputComponent.class);
 
         EntityData data = new EntityData();
-    
+
         data.dimension = new Dimension();
         data.dimension.x = 300;
         data.dimension.y = 300;
@@ -48,7 +47,7 @@ public class TutorialSystem implements Systems {
         data.typeInfo.subType = "TumbleWeed";
         data.typeInfo.size = 2;
         data.velocity = new Vector2(2,2);
-    
+
         EntityData data2 = new EntityData();
         data2.dimension = new Dimension();
         data2.dimension.x = 300;
@@ -58,7 +57,7 @@ public class TutorialSystem implements Systems {
         data2.typeInfo.subType = "Armedillo";
         data2.typeInfo.size = 2;
         data2.velocity = new Vector2(2,2);
-    
+
 
         // Initialize the TutorialManager with a sequence of tutorial strategies.
         tutorialManager = new TutorialManager(Arrays.asList(

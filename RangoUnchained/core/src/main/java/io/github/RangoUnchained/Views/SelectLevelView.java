@@ -30,11 +30,7 @@ public class SelectLevelView extends BaseScreen {
         Table table = new Table();
         table.top().padTop(20);
         table.defaults().center();
-
-        // Force table to use one column and center it horizontally
         table.add().expandX(); // helps make the table take full width
-
-        // Center align content
         table.center().row();
 
         // Add level selection buttons

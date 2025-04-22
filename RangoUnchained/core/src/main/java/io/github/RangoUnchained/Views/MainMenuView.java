@@ -2,16 +2,8 @@ package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
@@ -36,12 +28,10 @@ public class MainMenuView extends BaseScreen {
     private void createUI() {
         
         Table table = new Table();
-        // table.setFillParent(true);
         table.top().padTop(20);
-        table.defaults().padLeft(20).center();
-
-        // table.add().expandX(); // helps make the table take full width
-
+        table.defaults().center();
+        table.add().expandX(); // helps make the table take full width
+        table.center().row();
 
         FontUtils.addFontAndTextButtonStyleToSkin(getSkin(),
             "rioGrandeFont",
@@ -71,12 +61,17 @@ public class MainMenuView extends BaseScreen {
             30,
             Color.WHITE
     );
-        
-        LabelFactory.createLabel("(Rango Unchained)", getSkin(), "titleFont", Color.BLACK, 10, table).center();
+    if (game.getIsLoggedIn())
+        LabelFactory.createLabel("Hi, " + game.getCurrentUser().getDisplayName(), getSkin(), "defaultFont", Color.BLACK, 10, table).row();
 
         // Display login state
         String userState = game.getIsLoggedIn() ? "Play" : "Play as guest";
 
+        Table volumeTable = new Table();
+        Table volumeSlider = SliderFactory.createVolumeSlider(game, getSkin()); 
+        volumeTable.add(volumeSlider).width(BUTTON_WIDTH).pad(20);
+        Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
+        volumeTable.add(sfxSlider).width(BUTTON_WIDTH).pad(20);
         // Add buttons
         if (!game.getIsLoggedIn()){
             ButtonFactory.createDefaultButton("Log In", () -> game.setView(new LoginView()), table);
@@ -88,46 +83,31 @@ public class MainMenuView extends BaseScreen {
         if (game.getIsLoggedIn()) {
             ButtonFactory.createDefaultButton("Multiplayer", () -> game.setView(new GameLobbyView()), table);
 
-            // Display logged in user
-            LabelFactory.createLabel("Logged in as: " + game.getCurrentUser().getDisplayName(), getSkin(), "rioGrandeFont", Color.BLACK, 10, table).row();
-
             ButtonFactory.createDefaultButton("Change username", () -> game.setView(new CreateUsernameView()), table);
-            ButtonFactory.createDefaultButton("Log Out", () -> {
+            
+            volumeTable.add(ButtonFactory.createButton("Log Out", getSkin(), game, () -> {
                 game.getFirebaseManager().signOut();
                 game.setIsLoggedIn(false);
                 game.setView(new MainMenuView());
-            }, table);
+            }, "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(BUTTON_PADDING);
         }
 
 
-        Table rightTable = new Table();
-        rightTable.setFillParent(true);
-        rightTable.bottom().padBottom(20);
-        
-        Table volumeSlider = SliderFactory.createVolumeSlider(game, getSkin()); 
-        table.add(volumeSlider).width(BUTTON_WIDTH).row();;
-        Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
-        table.add(sfxSlider).width(BUTTON_WIDTH).pad(20);
 
-        // Add table to stage
-        // stage.addActor(table);
-        // stage.addActor(rightTable);
-
-
-         // 🔁 ScrollPane wraps your contentTable
         ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
-            scrollPane.layout();           // Force layout pass
-            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.layout();          
+            scrollPane.setScrollY(0);      
             scrollPane.updateVisualScroll();
         });
-        // 📦 Main table that fills the screen
+
+        // Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
+        LabelFactory.createLabel("(Rango Unchained)", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
         mainTable.top().add(scrollPane).expand().fill().row();
-
-
+        mainTable.add(volumeTable);
         stage.addActor(mainTable);
     }
 }

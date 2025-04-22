@@ -36,19 +36,17 @@ public class LoginView extends BaseScreen {
     }
 
     private void createUI() {
-
-        // Create UI elements
-        passwordField =  new TextField("", getSkin(), "textFieldStyle-textField");
-        passwordField.setPasswordMode(true);
-        passwordField.setPasswordCharacter('-');
-
         // Create a table to align UI-elements
         Table table = new Table();
         table.top().padTop(20);
-        table.defaults().padLeft(20).center();
+        table.defaults().center();
+        table.add().expandX(); // helps make the table take full width
+        table.center().row();
 
-
-        LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK, 20, table);
+        // Create UI elements
+        passwordField = new TextField("", getSkin(), "textFieldStyle-textField");
+        passwordField.setPasswordMode(true);
+        passwordField.setPasswordCharacter('-');
         
         table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
         
@@ -84,10 +82,7 @@ public class LoginView extends BaseScreen {
         table.add(noUserLabel).center().padBottom(10).row();
 
        // Switch scene to create user
-
         ButtonFactory.createDefaultButton("Create User",() -> game.setView(new CreateUserView()), table);
-
-
 
         // Error label
         errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
@@ -100,16 +95,17 @@ public class LoginView extends BaseScreen {
        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
-            scrollPane.layout();           // Force layout pass
-            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.layout();           
+            scrollPane.setScrollY(0);      
             scrollPane.updateVisualScroll();
         });
-        // 📦 Main table that fills the screen
+        // Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
+        LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
         mainTable.top().add(scrollPane).expand().fill().row();
-        ButtonFactory.createDefaultButton("Back to meny",
-        () -> game.setView(new MainMenuView()), mainTable).padTop(20);
+        mainTable.add(ButtonFactory.createButton("Back to meny", getSkin(), game, () -> game.setView(new MainMenuView()),
+            "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).padTop(20).row();
  
 
 

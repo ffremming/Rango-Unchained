@@ -23,7 +23,7 @@
 			"subType" : "Rango"
 		  }
 	  },
-	  
+
 	  {
 		  "name": "ObsticleLeft",
 		  "dimension": {
@@ -68,7 +68,7 @@
 			"subType": "Floor"
 		  }
 	  },
-      
+
 
 
 
@@ -101,7 +101,20 @@
 		"velocity": {
 			"x": -2
 		}
-	}
+	},
+      {
+        "name": "Obstacle",
+        "dimension": {
+          "x": 800,
+          "y": 400,
+          "width": 80,
+          "height": 180
+        },
+        "typeInfo": {
+          "type": "Obsticle",
+          "subType": "Stone"
+        }
+      }
 
 
 

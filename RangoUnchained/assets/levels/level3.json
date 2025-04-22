@@ -23,7 +23,7 @@
 			"subType" : "Rango"
 		  }
 	  },
-	  
+
 	  {
 		  "name": "ObsticleLeft",
 		  "dimension": {
@@ -102,7 +102,61 @@
       "velocity": {
         "x": -2
       }
-    }
-      
+    },
+      {
+        "name": "Obstacle",
+        "dimension": {
+          "x": 1200,
+          "y": 400,
+          "width": 260,
+          "height": 180
+        },
+        "typeInfo": {
+          "type": "Obsticle",
+          "subType": "Stone"
+        }
+      },
+
+      {
+        "name": "Obstacle",
+        "dimension": {
+          "x": 400,
+          "y": 400,
+          "width": 80,
+          "height": 180
+        },
+        "typeInfo": {
+          "type": "Obsticle",
+          "subType": "Stone"
+        }
+      },
+      {
+        "name": "Obstacle",
+        "dimension": {
+          "x": 800,
+          "y": 600,
+          "width": 160,
+          "height": 300
+        },
+        "typeInfo": {
+          "type": "Obsticle",
+          "subType": "Stone"
+        }
+      },
+      {
+        "name": "ball3",
+        "dimension": {
+          "x": 1000,
+          "y": 500
+        },
+        "typeInfo": {
+          "type": "Ball",
+          "size": 3,
+          "subType": "Armedillo"
+        },
+        "velocity": {
+          "x": -2
+        }
+      }
   ]
   }

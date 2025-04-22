@@ -68,24 +68,8 @@
         "subType": "Floor"
       }
     },
-
     {
       "name": "ball1",
-      "dimension": {
-        "x": 500,
-        "y": 500
-      },
-      "typeInfo": {
-        "type": "Ball",
-        "size":3,
-        "subType": "Bomb"
-      },
-      "velocity": {
-        "x": -2
-      }
-    },
-    {
-      "name": "ball2",
       "dimension": {
         "x": 1000,
         "y": 500
@@ -93,7 +77,7 @@
       "typeInfo": {
         "type": "Ball",
         "size":2,
-        "subType": "Tumbleweed"
+        "subType": "Bomb"
       },
       "velocity": {
         "x": -2

@@ -21,7 +21,7 @@ public class GameLevel {
     private ArrayList<Entity> entities = new ArrayList<>();
     private LevelData.MetaData metaData;
     private ArrayList<LevelData.EntityData> entitiesData;
-    public ScoreManager scoreManager = new ScoreManager();
+    public ScoreManager scoreManager = new ScoreManager(this);
     public Timer timer = new Timer();
     public int levelNumber;
 

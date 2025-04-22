@@ -52,24 +52,30 @@ public class MultiplayerScoreboardView extends BaseScreen {
         List<PlayerInLobby> players = new ArrayList<>(lobby.players.values());
 
         players.sort((a, b) -> {
-            int aScore = a.finishScore != null ? a.finishScore : 0;
-            int bScore = b.finishScore != null ? b.finishScore : 0;
-            int scoreCompare = Integer.compare(bScore, aScore);
-            if (scoreCompare != 0) return scoreCompare;
-            double aTime = a.finishTime != null ? a.finishTime : Long.MAX_VALUE;
-            double bTime = b.finishTime != null ? b.finishTime : Long.MAX_VALUE;
-            return Double.compare(aTime, bTime);
+            double aScore = a.finishScore != null ? a.finishScore : 0;
+            double bScore = b.finishScore != null ? b.finishScore : 0;
+            if (aScore == bScore) {
+                return 0;
+            }
+            return aScore < bScore ? 1 : -1;
         });
 
         int rank = 1;
         for (PlayerInLobby p : players) {
             String name = rank + ". " + p.displayName;
-            String scoreText = "Score: " + (p.finishScore != null ? p.finishScore : "N/A");
-            String time = String.format("%.1f s", p.finishTime);
-            String timeText = "Time: " + (p.finishTime != null ? time + "s" : "N/A");
+            String scoreText;
+
+            if (p.finishScore == null || p.finishTime == null) {
+                // Player hasn't finished yet
+                scoreText = p.displayName + " is still playing...";
+            } else {
+                // Player has finished, format normally
+                String time = String.format("%.1f", p.finishTime);
+                scoreText = "Score: " + p.finishScore + ", Time: " + time + " s";
+            }
 
             LabelFactory.createLabel(name, getSkin(), "rioGrandeFont", null, 10, scoreboardTable);
-            LabelFactory.createLabel(scoreText + ", " + timeText, getSkin(), "rioGrandeFont", null, 10, scoreboardTable);
+            LabelFactory.createLabel(scoreText, getSkin(), "rioGrandeFont", null, 10, scoreboardTable);
             rank++;
         }
 

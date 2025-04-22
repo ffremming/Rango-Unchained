@@ -22,7 +22,7 @@ Before you can build and run the project, ensure you have the following tools in
    git --version
 
 
-#### Java JDK 17 (Download from Oracle's website)
+#### Java JDK 21 (Download from Oracle's website)
 
 
 #### Gradle 8.12.1

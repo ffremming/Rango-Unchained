@@ -11,7 +11,6 @@ import io.github.RangoUnchained.Model.Factories.AudioLoader;
 import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.MultiplayerManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
-import io.github.RangoUnchained.Model.Systems.AudioSystem;
 import io.github.RangoUnchained.Views.MainMenuView;
 
 public class GameController extends Game {
@@ -25,7 +24,6 @@ public class GameController extends Game {
     private Screen currentView;
     private Boolean isLoggedIn = false;
     private UserInfo currentUserInfo;
-    private float sfxVolume = 0.5f;
 
     private GameController() {
     }
@@ -57,7 +55,7 @@ public class GameController extends Game {
         if (currentView != null){
             currentView.dispose();
         }
-        MusicController.getInstance().changeMusic(view);
+        AudioController.getInstance().changeMusic(view);
         currentView = view;
         setScreen(currentView);
     }
@@ -99,18 +97,15 @@ public class GameController extends Game {
         return currentUserInfo;
     }
 
-    public float getMusicVolume() {return MusicController.getInstance().getVolume();}
+    public float getMusicVolume() {return AudioController.getInstance().getVolume();}
 
-    public void setMusicVolume(float volume) {MusicController.getInstance().changeVolume(volume);}
+    public void setMusicVolume(float volume) {
+        AudioController.getInstance().changeVolume(volume);}
 
-    public float getSFXVolume() {return sfxVolume;}
+    public float getSFXVolume() {return AudioController.getInstance().getSFXVolume();}
 
     public void setSFXVolume(float volume) {
-        sfxVolume = volume;
-        AudioSystem audioSystem = LevelController.getInstance().getAudioSystem();
-        if (audioSystem != null){
-            audioSystem.setVolume(sfxVolume);
-        }
+        AudioController.getInstance().changeSFXVolume(volume);
     }
 
     @Override
@@ -123,7 +118,7 @@ public class GameController extends Game {
             currentView.dispose();
         }
         AudioLoader.getInstance().dispose();
-        MusicController.getInstance().dispose();
+        AudioController.getInstance().dispose();
     }
 }
 

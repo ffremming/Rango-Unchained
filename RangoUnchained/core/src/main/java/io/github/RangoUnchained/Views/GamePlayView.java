@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.RangoUnchained.Controllers.GameController;
 import io.github.RangoUnchained.Controllers.LevelController;
-import io.github.RangoUnchained.Controllers.MusicController;
+import io.github.RangoUnchained.Controllers.AudioController;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
@@ -77,8 +77,8 @@ public class GamePlayView extends BaseScreen {
     }
 
     @Override
-    public MusicController.MusicKey getMusicKey() {
-        return MusicController.MusicKey.GAMEPLAY;
+    public AudioController.MusicKey getMusicKey() {
+        return AudioController.MusicKey.GAMEPLAY;
     }
 
 

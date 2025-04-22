@@ -1,7 +1,9 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -11,6 +13,9 @@ import io.github.RangoUnchained.Model.Firebase.Utils.LobbyInfo;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
+import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class GameLobbyView extends BaseScreen {
     private final MultiplayerManager dbManager;
@@ -29,29 +34,44 @@ public class GameLobbyView extends BaseScreen {
     }
 
     private void createUI() {
-        Label titleLabel = new Label("Create a new Lobby", getSkin());
-        Label publicLabel = new Label("Public Lobbies", getSkin());
+        Label titleLabel = LabelFactory.createLabel("Create a new Lobby", getSkin(), "defaultFont", null);
+        Label publicLabel =  LabelFactory.createLabel("Public lobbies", getSkin(), "defaultFont", null);
 
 
-        // Create left table for lobby creation and joining
-        Table leftTable = new Table();
-        leftTable.top().padRight(50);
+        // Create a table to align UI-elements
+        Table table = new Table();
 
-        leftTable.add(titleLabel).center().padBottom(20).row();
+        table.add(titleLabel).center().padBottom(20).row();
 
         // Input for maxPlayers
-        Label maxLabel = new Label("Max Players:", getSkin());
-        TextField maxPlayersField = new TextField("4", getSkin());
-        leftTable.add(maxLabel).padBottom(5).row();
-        leftTable.add(maxPlayersField).width(100).padBottom(20).row();
-
-        // Public/Private checkbox
-        CheckBox publicCheckBox = new CheckBox(" Public Lobby", getSkin());
+        Label maxLabel =  LabelFactory.createLabel("Max players:", getSkin(), "defaultFont", null);
+        TextField maxPlayersField = new TextField("", getSkin(), "textFieldStyle-textField");
+        maxPlayersField.setMessageText("4");
+        Table maxPlayersFieldContainer = TextFieldFactory.createTextField(
+            getSkin(),
+            "",
+            "textFieldStyle-textField",
+            "textfield",
+            true,     // transparent background
+            60,       // inner padding
+            100,      // width
+            90,
+            maxPlayersField
+        );       
+        table.add(maxLabel).row();
+        table.add(maxPlayersFieldContainer).row();
+        // Alternative simpler approach
+        CheckBox publicCheckBox = new CheckBox("Public Lobby", getSkin());
+        CheckBox.CheckBoxStyle style = new CheckBox.CheckBoxStyle(publicCheckBox.getStyle());
+        style.font = getSkin().getFont("defaultFont"); // Use a font name that exists in your skin
+        style.fontColor = Color.BLACK; // Set the font color
+        
+        // Apply the modified style if needed
         publicCheckBox.setChecked(true);
-        leftTable.add(publicCheckBox).padBottom(20).row();
-
+        publicCheckBox.getImage().setScale(0.2f); // Scale the checkbox image directly
+        table.add(publicCheckBox).width(publicCheckBox.getImage().getWidth()).height(publicCheckBox.getImage().getHeight()).padBottom(20).row();
         // Create lobby button
-        leftTable.add(ButtonFactory.createButton("Create Lobby", 300, 60, getSkin(), game, () -> {
+        ButtonFactory.createDefaultButton("Create Lobby", () -> {
             int maxPlayers;
             try {
                 maxPlayers = Integer.parseInt(maxPlayersField.getText().trim());
@@ -61,38 +81,61 @@ public class GameLobbyView extends BaseScreen {
             }
             boolean isPublic = publicCheckBox.isChecked();
             createLobby(currentUser, isPublic, maxPlayers);
-        })).center().padBottom(30).row();
+        }, table).row();
 
-        // Manual join by code
-        leftTable.add(new Label("Or join by code:", getSkin())).center().padBottom(10).row();
-        Label joinLabel = new Label("Enter Lobby Code:", getSkin());
-        TextField codeField = new TextField("", getSkin());
-        leftTable.add(joinLabel).padBottom(5).row();
-        leftTable.add(codeField).width(200).padBottom(10).row();
-        leftTable.add(ButtonFactory.createButton("Join Lobby", 300, 60, getSkin(), game,
-            () -> joinLobby(codeField.getText()))).padBottom(40).row();
-
-        // Create right table for displaying public lobbies
         Table rightTable = new Table();
         rightTable.top().padLeft(50);
-        rightTable.add(publicLabel).padBottom(20).row();
+
+        // Manual join by code
+        rightTable.add( LabelFactory.createLabel("Or join by code:", getSkin(), "defaultFont", null)).row(); 
+        TextField codeField = new TextField("", getSkin(), "textFieldStyle-textField");
+        codeField.setMessageText("Lobby Code");
+        Table codeFieldContainer = TextFieldFactory.createTextField(
+            getSkin(),
+            "",
+            "textFieldStyle-textField",
+            "textfield",
+            true,     // transparent background
+            60,       // inner padding
+            200,      // width
+            90,
+            codeField
+        );
+
+        rightTable.add(codeFieldContainer).row();
+        ButtonFactory.createDefaultButton("Join Lobby", () -> joinLobby(codeField.getText()), rightTable);
+
+        Table lobbiesTable = new Table(); 
+        lobbiesTable.add(publicLabel);
+        rightTable.add(lobbiesTable).padBottom(20).row();
 
         // Fetch and display public lobbies
-        displayLobbies(rightTable);
+        displayLobbies(lobbiesTable);
 
         // Add both tables to the root table
         Table rootTable = new Table();
-        rootTable.setFillParent(true);
+        rootTable.top().padTop(20);
+        rootTable.defaults().padLeft(20).center();
         rootTable.center();
-        rootTable.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            this::backToMenu)).left().padTop(20).padBottom(15);
-        rootTable.add(new Label("Multiplayer", getSkin())).left().padBottom(10);
-        rootTable.row();
 
-        rootTable.add(leftTable).top();
+        rootTable.add(table).top();
         rootTable.add(rightTable).top();
 
-        stage.addActor(rootTable);
+ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
+
+        Gdx.app.postRunnable(() -> {
+            scrollPane.layout();           // Force layout pass
+            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.updateVisualScroll(); 
+        });        
+        // 📦 Main table that fills the screen
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.add(LabelFactory.createLabel("Multiplayer", getSkin(), "titleFont", Color.BLACK)).width(300).height(90).row();;
+        mainTable.top().add(scrollPane).expand().fill().center().row();
+        mainTable.add(ButtonFactory.createButton("Back", getSkin(), game,
+        this::backToMenu, "customLoginStyle")).width(300).height(60).center().padTop(20).padBottom(15);
+        stage.addActor(mainTable);
     }
 
     private void displayLobbies(Table table) {
@@ -109,8 +152,8 @@ public class GameLobbyView extends BaseScreen {
 
                     for (LobbyInfo lobby : lobbies) {
                         String text = "Join Lobby " + lobby.lobbyId + " (" + lobby.players.size() + "/" + lobby.maxPlayers + ")";
-                        table.add(ButtonFactory.createButton(text, 300, 50, getSkin(), game,
-                            () -> joinLobby(lobby.lobbyId))).padBottom(10).row();
+                        ButtonFactory.createButton(text, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING, getSkin(), game,
+                            () -> joinLobby(lobby.lobbyId), "defaultStyle", table);
                     }
                 });
             }
@@ -119,7 +162,7 @@ public class GameLobbyView extends BaseScreen {
             public void onError(Exception e) {
                 Gdx.app.postRunnable(() -> {
                     table.clear();
-                    table.add(new Label("Error loading lobbies: " + e.getMessage(), getSkin())).padBottom(10).row();
+                    table.add(LabelFactory.createLabel("Error loading lobbies: " + e.getMessage(), getSkin(), "defaultFont", null));
                 });
             }
         });

@@ -1,7 +1,9 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
@@ -10,10 +12,15 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
+import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class CreateUserView extends BaseScreen {
 
     private TextField emailField;
+    private Table emailFieldContainer;
+    private Table passwordFieldContainer;
     private TextField passwordField;
     private Label errorLabel;
 
@@ -29,40 +36,56 @@ public class CreateUserView extends BaseScreen {
 
     private void createUI() {
         // Create UI elements
-        Label titleLabel = new Label("Create User", getSkin());
-        emailField = new TextField("", getSkin());
-        passwordField = new TextField("", getSkin());
-        passwordField.setPasswordMode(true);
-        passwordField.setPasswordCharacter('*');
+
 
         // Create a table to align UI-elements
         Table table = new Table();
-        table.setFillParent(true);
-        table.top().padTop(50);
+        table.top().padTop(20);
+        table.defaults().padLeft(20).center();
 
-        // Back to main button
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()))).left();
-        table.row();
-        table.add(titleLabel).center().padBottom(20);
+        LabelFactory.createLabel("Create User", getSkin(), "titleFont", null, 20, table); 
         table.row();
 
-        // Email field
-        table.add(new Label("Email", getSkin())).left().padBottom(5);
-        table.row();
-        table.add(emailField).width(300).padBottom(15);
-        table.row();
+        table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
+        emailField =  new TextField("", getSkin(), "textFieldStyle-textField");
 
-        // Password field
-        table.add(new Label("Password", getSkin())).left().padBottom(5);
+        emailFieldContainer = TextFieldFactory.createTextField(            
+        getSkin(),
+        "",
+        "textFieldStyle-textField",
+        "textfield",
+        true,     // transparent background
+        60,       // inner padding
+        300,      // width
+        90,
+        emailField
+        );      
+        table.add(emailFieldContainer).row();
+        // Password field;
+        LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, 5, table).row();
+        
+        passwordField =  new TextField("", getSkin(), "textFieldStyle-textField");
+        passwordField.setPasswordMode(true);
+        passwordField.setPasswordCharacter('-');
+        passwordFieldContainer =  TextFieldFactory.createTextField(            
+            getSkin(),
+            "",
+            "textFieldStyle-textField",
+            "textfield",
+            true,     // transparent background
+            60,       // inner padding
+            300,      // width
+            90,
+            passwordField
+            );       
+        table.add(passwordFieldContainer);
+        
         table.row();
-        table.add(passwordField).width(300).padBottom(10);
-        table.row();
-        table.add(createSignUpButton()).center().padBottom(20);
+        table.add(createSignUpButton()).width(300).height(60).center().padBottom(20);
         table.row();
 
         // Error label
-        errorLabel = new Label("", getSkin());
+        errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
         errorLabel.setColor(1, 0, 0, 1);
         errorLabel.setWrap(true);
         errorLabel.setWidth(300);
@@ -70,12 +93,24 @@ public class CreateUserView extends BaseScreen {
         table.row();
 
         // Switch scene to login
-        table.add(new Label("Already have a user?", getSkin())).center().padBottom(10);
-        table.row();
-        table.add(ButtonFactory.createButton("Back to Login", 300, 60, getSkin(), game,
-            () -> game.setView(new LoginView()))).center().padBottom(20);
+        table.add(LabelFactory.createLabel("Already have a user?", getSkin(), "defaultFont", null));    
 
-        stage.addActor(table);
+
+        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
+
+        Gdx.app.postRunnable(() -> {
+            scrollPane.layout();           // Force layout pass
+            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.updateVisualScroll();
+        });
+        // 📦 Main table that fills the screen
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.top().add(scrollPane).expand().fill().row();
+        ButtonFactory.createButton("Back to Login", BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING ,getSkin(), game,
+            () -> game.setView(new LoginView()), "customLoginStyle", mainTable);
+
+        stage.addActor(mainTable);
     }
 
     private void displayError(Exception e) {
@@ -83,7 +118,7 @@ public class CreateUserView extends BaseScreen {
     }
 
     private Button createSignUpButton() {
-        return ButtonFactory.createButton("Sign Up", 300, 60, getSkin(), game, () -> {
+        return ButtonFactory.createButton("Sign Up",  getSkin(), game, () -> {
             String email = emailField.getText().trim();
             String password = passwordField.getText();
 
@@ -114,6 +149,6 @@ public class CreateUserView extends BaseScreen {
                     displayError(e);
                 }
             });
-        });
+        }, "customLoginStyle");
     }
 }

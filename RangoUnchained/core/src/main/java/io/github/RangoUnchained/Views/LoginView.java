@@ -1,7 +1,10 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
@@ -10,10 +13,15 @@ import io.github.RangoUnchained.Model.Firebase.FirebaseManager;
 import io.github.RangoUnchained.Model.Firebase.Utils.UserInfo;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
+import io.github.RangoUnchained.Views.Utils.TextFieldFactory;
 
 public class LoginView extends BaseScreen {
 
+    private Table emailFieldContainer;
     private TextField emailField;
+    private Table passwordFieldContainer;
     private TextField passwordField;
     private Label errorLabel;
 
@@ -28,54 +36,85 @@ public class LoginView extends BaseScreen {
     }
 
     private void createUI() {
+
         // Create UI elements
-        Label titleLabel = new Label("Log In", getSkin());
-        emailField = new TextField("", getSkin());
-        passwordField = new TextField("", getSkin());
+        passwordField =  new TextField("", getSkin(), "textFieldStyle-textField");
         passwordField.setPasswordMode(true);
-        passwordField.setPasswordCharacter('*');
+        passwordField.setPasswordCharacter('-');
 
         // Create a table to align UI-elements
         Table table = new Table();
-        table.setFillParent(true);
-        table.top().padTop(50);
+        table.top().padTop(20);
+        table.defaults().padLeft(20).center();
 
-        // Back to main button
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game,
-            () -> game.setView(new MainMenuView()))).left();
-        table.row();
-        table.add(titleLabel).center().padBottom(20);
-        table.row();
 
-        // Email field
-        table.add(new Label("Email", getSkin())).left().padBottom(5);
-        table.row();
-        table.add(emailField).width(300).padBottom(15);
-        table.row();
+        LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK, 20, table);
+        
+        table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
+        
+        TextField textField = new TextField("", getSkin(), "textFieldStyle-textField");
+        this.emailField = textField; // Save reference to the actual TextField
+        emailFieldContainer = TextFieldFactory.createTextField(getSkin(), "", "textFieldStyle-textField", "textfield", true, 60, BUTTON_WIDTH, 90, emailField);
 
+        table.add(emailFieldContainer).row();
         // Password field
-        table.add(new Label("Password", getSkin())).left().padBottom(5);
+        LabelFactory.createLabel("Password", getSkin(), "defaultFont", null, 5, table);
         table.row();
-        table.add(passwordField).width(300).padBottom(10);
+
+        passwordFieldContainer = TextFieldFactory.createTextField(
+            getSkin(),
+            "123@123",
+            "textFieldStyle-textField",
+            "textfield",
+            true,     // transparent background
+            60,       // inner padding
+            BUTTON_WIDTH,      // width
+            90,        // height
+            passwordField
+        );
+        table.add(passwordFieldContainer);
         table.row();
-        table.add(createLoginButton()).center().padBottom(20);
-        table.row();
+
+        table.add(createLoginButton())
+        .width(BUTTON_WIDTH)
+        .height(60)
+        .center()
+        .padBottom(20).row();
+        Label noUserLabel = LabelFactory.createLabel("Don't have a user?", getSkin(), "defaultFont", null);
+        table.add(noUserLabel).center().padBottom(10).row();
+
+       // Switch scene to create user
+
+        ButtonFactory.createDefaultButton("Create User",() -> game.setView(new CreateUserView()), table);
+
+
 
         // Error label
-        errorLabel = new Label("", getSkin());
+        errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
         errorLabel.setColor(1, 0, 0, 1);
         errorLabel.setWrap(true);
-        errorLabel.setWidth(300);
-        table.add(errorLabel).width(300).padBottom(10);
+        errorLabel.setWidth(BUTTON_WIDTH);
+        table.add(errorLabel).width(BUTTON_WIDTH).padBottom(10);
         table.row();
 
-        // Switch scene to login
-        table.row();
-        table.add(new Label("Don't have a user?", getSkin())).center().padBottom(10);
-        table.row();
-        table.add(ButtonFactory.createButton("Create User", 300, 60, getSkin(), game,
-            () -> game.setView(new CreateUserView()))).center().padBottom(20);
-        stage.addActor(table);
+       ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
+
+        Gdx.app.postRunnable(() -> {
+            scrollPane.layout();           // Force layout pass
+            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.updateVisualScroll();
+        });
+        // 📦 Main table that fills the screen
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.top().add(scrollPane).expand().fill().row();
+        ButtonFactory.createDefaultButton("Back to meny",
+        () -> game.setView(new MainMenuView()), mainTable).padTop(20);
+ 
+
+
+        stage.addActor(mainTable);
+
     }
 
     private void displayError(Exception e) {
@@ -83,7 +122,7 @@ public class LoginView extends BaseScreen {
     }
 
     private Button createLoginButton() {
-        return ButtonFactory.createButton("Log In", 300, 60, getSkin(), game, () -> {
+        return ButtonFactory.createButton("Log In", getSkin(), game, () -> {
             String email = emailField.getText().trim();
             String password = passwordField.getText();
 
@@ -109,7 +148,7 @@ public class LoginView extends BaseScreen {
                     displayError(e);
                 }
             });
-        });
+        }, "customLoginStyle");
     }
 
 }

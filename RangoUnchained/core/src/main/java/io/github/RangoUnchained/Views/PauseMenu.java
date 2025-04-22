@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.RangoUnchained.Controllers.GameController;
@@ -17,6 +16,7 @@ import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.Constants;
+import io.github.RangoUnchained.Views.Utils.SliderFactory;
 
 public class PauseMenu extends Stage {
     private boolean isPaused = false;
@@ -48,62 +48,29 @@ public class PauseMenu extends Stage {
         table.setFillParent(true);
         table.center();
 
-        table.add(ButtonFactory.createButton("Back to game", 300, 60, GameController.getSkin(), game, this::togglePause)).center().padBottom(20);
-        table.row();
+        ButtonFactory.createDefaultButton("Back to game", this::togglePause, table);
         if (!isMultiplayer) {
-            table.add(ButtonFactory.createButton("Restart", 300, 60, GameController.getSkin(), game, this::restart)).center().padBottom(20);
-            table.row();
+            ButtonFactory.createDefaultButton("Restart", this::restart, table);
             if (levelNumber > 0) {
-                table.add(ButtonFactory.createButton("Continue later", 300, 60, GameController.getSkin(), game, this::continueLater)).center().padBottom(20);
-                table.row();
+                ButtonFactory.createDefaultButton("Continue later", this::continueLater, table);
             }
         }
-        table.add(ButtonFactory.createButton("End game", 300, 60, GameController.getSkin(), game, this::endGame)).center().padBottom(20);
-        table.row();
+        ButtonFactory.createDefaultButton("End game", this::endGame, table);
+        
 
-        Table bottomTable = createSlidersUI();
-        addActor(table);
-        addActor(bottomTable);
-    }
-
-    private Table createSlidersUI (){
         Table bottomTable = new Table();
         bottomTable.setFillParent(true);
         bottomTable.bottom().padBottom(20);
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = GameController.getFont();
+        Table volumeSlider = SliderFactory.createVolumeSlider(game, GameController.getSkin());
 
-        Label volumeLabel = new Label("Volume: ", labelStyle);
-        Slider volumeSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
-        volumeSlider.setValue(game.getMusicVolume());
-        volumeSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                float newVolume = volumeSlider.getValue();
-                game.setMusicVolume(newVolume);
-            }
-        });
-
-        bottomTable.add(volumeLabel);
         bottomTable.add(volumeSlider);
 
-        Label SFXLabel = new Label("Volume sfx: ", labelStyle);
-        Slider SFXSlider = new Slider(0f, 1f, 0.01f, false, GameController.getSkin());
-        SFXSlider.setValue(game.getSFXVolume());
-        SFXSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                float newVolume = SFXSlider.getValue();
-                game.setSFXVolume(newVolume);
-            }
-        });
+        // Table sfxSlider = SliderFactory.createSFXVolumeSlider(game, GameController.getSkin());
+        // bottomTable.add(sfxSlider).pad(20);
+        addActor(table);
+        addActor(bottomTable);
 
-        bottomTable.row();
-        bottomTable.add(SFXLabel).pad(20);
-        bottomTable.add(SFXSlider);
-
-        return bottomTable;
     }
 
     public void togglePause() {

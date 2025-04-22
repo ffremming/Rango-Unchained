@@ -1,6 +1,8 @@
 package io.github.RangoUnchained.Views;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
@@ -9,6 +11,8 @@ import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.Constants;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
+import io.github.RangoUnchained.Views.Utils.ScrollUtil;
 
 public class SelectLevelView extends BaseScreen {
 
@@ -23,15 +27,15 @@ public class SelectLevelView extends BaseScreen {
     }
 
     private void createUI() {
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-        Label titleLabel = new Label("Select Level", labelStyle);
-
         Table table = new Table();
-        table.setFillParent(true);
-        table.top().padTop(50);
-        table.add(titleLabel).center().padBottom(50);
-        table.row();
+        table.top().padTop(20);
+        table.defaults().center();
+
+        // Force table to use one column and center it horizontally
+        table.add().expandX(); // helps make the table take full width
+
+        // Center align content
+        table.center().row();
 
         // Add level selection buttons
         for (int i = 0; i <= Constants.LEVELS_COUNT; i++) {
@@ -40,7 +44,6 @@ public class SelectLevelView extends BaseScreen {
             if (i== 0){
                 buttonText = "Tutorial";
             }
-            table.add(ButtonFactory.createButton(buttonText, 300, 60, getSkin(), game, () -> game.setView(new GamePlayView(level)))).center().padTop(20);
 
             if (i == GameFileHandler.inProgresslevelnumber()){
                 table.row();
@@ -48,21 +51,31 @@ public class SelectLevelView extends BaseScreen {
                 customStyle.up = null;    // Remove the up state drawable
                 customStyle.down = null;  // Optionally remove the down state drawable
                 customStyle.over = null;  // Optionally remove the over state drawable
+                
+                LabelFactory.createLabel("(Continue)", getSkin(), "defaultFont", Color.BLACK, 0, table);
 
-                TextButton continueButton = new TextButton("(continue)", customStyle);
-                continueButton.getStyle().fontColor = getSkin().getColor("white");
-                table.add(continueButton).center().padBottom(0);
             } else {
                 table.row();
             }
-
+            ButtonFactory.createDefaultButton(buttonText, () -> game.setView(new GamePlayView(level)), table);
 
             table.row();
         }
+        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
-        // Back button to ScreenController Menu
-        table.add(ButtonFactory.createButton("Back", 300, 60, getSkin(), game, () -> game.setView(new MainMenuView()))).center().padTop(20);
+        Gdx.app.postRunnable(() -> {
+            scrollPane.layout();
+            scrollPane.setScrollY(0);
+            scrollPane.updateVisualScroll();
+        });
 
-        stage.addActor(table);
+        // Main table setup
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        LabelFactory.createLabel("Select Level", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
+        mainTable.top().add(scrollPane).expand().fill().row();
+        mainTable.add(ButtonFactory.createButton("Back", getSkin(), game, () -> game.setView(new MainMenuView()),
+            "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).padTop(20).row();
+        stage.addActor(mainTable);
     }
 }

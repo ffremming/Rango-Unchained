@@ -9,11 +9,12 @@ import io.github.RangoUnchained.Model.level.GameFileHandler;
 import io.github.RangoUnchained.Views.Utils.BaseScreen;
 import io.github.RangoUnchained.Views.Utils.ButtonFactory;
 import io.github.RangoUnchained.Views.Utils.HintUtil;
+import io.github.RangoUnchained.Views.Utils.LabelFactory;
 
 public class GameOverView extends BaseScreen {
 
-    int levelNumber;
-    int score;
+    private int levelNumber;
+    private int score;
     private Label scoreLabel;
 
     boolean completed;
@@ -51,12 +52,10 @@ public class GameOverView extends BaseScreen {
     }
 
     private void createUI() {
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
         String titleText = completed ? "Level Completed" : "Level Failed";
 
-        Label titleLabel = new Label(titleText, labelStyle);
-        scoreLabel = new Label("", getSkin());
+        Label titleLabel = LabelFactory.createLabel(titleText, getSkin(), "defaultFont", null);
+        scoreLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
 
         Table table = new Table();
         table.setFillParent(true);
@@ -69,27 +68,24 @@ public class GameOverView extends BaseScreen {
         table.add(scoreLabel).center().padBottom(10);
         table.row();
         // Hint label
-        Label hintLabel = new Label(HintUtil.getHint(), getSkin());
+        Label hintLabel = LabelFactory.createLabel(HintUtil.getHint(), getSkin(), "defaultFont", null);
         table.add(hintLabel).center().padBottom(50);
         table.row();
 
 
 
         // Retry button (goes back to level selection)
-        table.add(ButtonFactory.createButton("Play again", 300, 60, getSkin(),  game, () -> game.setView(new SelectLevelView()))).center().padBottom(20);
-        table.row();
+        ButtonFactory.createDefaultButton("Play again", () -> game.setView(new SelectLevelView()), table);
 
          // Retry button (goes back to level selection)
          if (levelNumber < 5 && (completed || GameFileHandler.getInstance().getProgress() > levelNumber)) {
-             table.add(ButtonFactory.createButton("Next level", 300, 60, getSkin(),  game, () -> game.setView(new GamePlayView(levelNumber+1)))).center().padBottom(20);
-             table.row();
+            ButtonFactory.createDefaultButton("Next level", () -> game.setView(new GamePlayView(levelNumber+1)), table);
          }
 
-         table.add(ButtonFactory.createButton("Scoreboard", 300, 60, getSkin(),  game, () -> game.setView(new ScoreboardView()))).center().padBottom(20);
-         table.row();
+        ButtonFactory.createDefaultButton("Scoreboard", () -> game.setView(new ScoreboardView()), table);
 
         // Back to main menu button
-        table.add(ButtonFactory.createButton("Main Menu", 300, 60, getSkin(), game,() -> game.setView(new MainMenuView()))).center();
+        ButtonFactory.createDefaultButton("Main Menu", () -> game.setView(new MainMenuView()), table);
 
         stage.addActor(table);
     }

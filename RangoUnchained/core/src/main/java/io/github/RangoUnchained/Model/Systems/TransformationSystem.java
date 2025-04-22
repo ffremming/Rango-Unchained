@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
@@ -43,14 +41,8 @@ public class TransformationSystem implements Systems {
 
         if (transComp.getDuration()>0){
 
-            switch(transComp.getType()){
-                case (TransformationComponent.RECTANGLE):
+            if (transComp.getType() == TransformationComponent.RECTANGLE) {
                 scaleRectangle(transComp, body, oldFixture, sprite);
-                break;
-
-                case (TransformationComponent.CIRCLE):
-                scaleCircle(transComp, body, oldFixture, sprite);
-                break;
             }
         }
         decrementDuration(transComp);
@@ -76,49 +68,6 @@ public class TransformationSystem implements Systems {
                 }
             }
         }
-    }
-
-    private void scaleCircle(TransformationComponent transComp, Body body, Fixture oldFixture, Sprite sprite){
-        Shape oldShape = (Shape) oldFixture.getShape();
-        float newRadius = (float)(oldShape.getRadius() *transComp.getTransformationRadiusStep());
-
-        // Handle scaling direction
-        int direction = transComp.getDirection();
-        float offsetX = 0, offsetY = 0;
-
-        if (direction == TransformationComponent.UP) {
-            offsetY = newRadius - oldShape.getRadius();
-            body.setTransform(body.getPosition().x, body.getPosition().y + offsetY, body.getAngle());
-        } else if (direction == TransformationComponent.DOWN) {
-            offsetY = newRadius - oldShape.getRadius();
-            body.setTransform(body.getPosition().x, body.getPosition().y - offsetY, body.getAngle());
-        } else if (direction == TransformationComponent.LEFT) {
-            offsetX = newRadius - oldShape.getRadius();
-            body.setTransform(body.getPosition().x - offsetX, body.getPosition().y, body.getAngle());
-        } else if (direction == TransformationComponent.RIGHT) {
-            offsetX = newRadius - oldShape.getRadius();
-            body.setTransform(body.getPosition().x + offsetX, body.getPosition().y, body.getAngle());
-        }
-
-        // Remove old fixture
-        body.destroyFixture(oldFixture);
-
-        // Create a new circle shape
-        Shape newShape = new CircleShape();
-        newShape.setRadius(newRadius);
-
-        // Create new fixture definition
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = newShape;
-        fixtureDef.density = oldFixture.getDensity();
-        fixtureDef.friction = oldFixture.getFriction();
-        fixtureDef.restitution = oldFixture.getRestitution();
-
-        sprite.setSize((float)(newRadius*1.7*2), (float)(newRadius*1.7*2));
-
-        // Attach the new fixture to the same body
-        body.createFixture(fixtureDef);
-        newShape.dispose(); // Prevent memory leak
     }
 
     private void scaleRectangle(TransformationComponent transComp, Body body, Fixture oldFixture, Sprite sprite) {

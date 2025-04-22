@@ -16,7 +16,7 @@ public class SliderFactory {
         Table sliderContainer = new Table();
         
         // Get the default slider style
-        Slider.SliderStyle originalStyle = skin.get("default-horizontal", Slider.SliderStyle.class);
+        Slider.SliderStyle originalStyle = skin.get("music-horizontal", Slider.SliderStyle.class);
         
         // Create a copy of the style for the right slider with modifications
         Slider.SliderStyle rightSliderStyle = new Slider.SliderStyle();

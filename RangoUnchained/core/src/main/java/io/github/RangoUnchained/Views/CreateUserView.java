@@ -1,6 +1,7 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -35,16 +36,11 @@ public class CreateUserView extends BaseScreen {
     }
 
     private void createUI() {
-        // Create UI elements
-
-
-        // Create a table to align UI-elements
         Table table = new Table();
         table.top().padTop(20);
-        table.defaults().padLeft(20).center();
-
-        LabelFactory.createLabel("Create User", getSkin(), "titleFont", null, 20, table); 
-        table.row();
+        table.defaults().center();
+        table.add().expandX(); 
+        table.center().row();
 
         table.add(LabelFactory.createLabel("Email", getSkin(), "defaultFont", null)).row();
         emailField =  new TextField("", getSkin(), "textFieldStyle-textField");
@@ -86,14 +82,10 @@ public class CreateUserView extends BaseScreen {
 
         // Error label
         errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
-        errorLabel.setColor(1, 0, 0, 1);
         errorLabel.setWrap(true);
-        errorLabel.setWidth(300);
-        table.add(errorLabel).width(300).padBottom(10);
-        table.row();
 
         // Switch scene to login
-        table.add(LabelFactory.createLabel("Already have a user?", getSkin(), "defaultFont", null));    
+        table.add(LabelFactory.createLabel("Already have a user?", getSkin(), "errorFont", null));    
 
 
         ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
@@ -106,7 +98,9 @@ public class CreateUserView extends BaseScreen {
         // 📦 Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.top().add(scrollPane).expand().fill().row();
+        mainTable.add(LabelFactory.createLabel("Create User", getSkin(), "titleFont", Color.BLACK)).padTop(BUTTON_PADDING).row();
+        mainTable.add(errorLabel).center().width(BUTTON_WIDTH).row();
+        mainTable.top().add(scrollPane).expandY().width(WORLD_WIDTH - 400).fill().row();
         ButtonFactory.createButton("Back to Login", BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING ,getSkin(), game,
             () -> game.setView(new LoginView()), "customLoginStyle", mainTable);
 

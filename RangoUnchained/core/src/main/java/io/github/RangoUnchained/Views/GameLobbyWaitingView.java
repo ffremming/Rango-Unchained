@@ -1,6 +1,7 @@
 package io.github.RangoUnchained.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Timer;
 
@@ -48,11 +49,12 @@ public class GameLobbyWaitingView extends BaseScreen {
     }
 
     public void createUI() {
+        // Create a table to align UI-elements
         Table table = new Table();
-        table.top().padTop(50);
-        table.defaults().padLeft(20).center();
-
-        LabelFactory.createLabel("Lobby ID: " + lobby.lobbyId, getSkin(), "defaultFont", null, 10, table).row();
+        table.top().padTop(20);
+        table.defaults().center();
+        table.add().expandX(); // helps make the table take full width
+        table.center().row();
 
         playerCountLabel = LabelFactory.createLabel("Players in Lobby: ...", getSkin(), "defaultFont", null);
         table.add(playerCountLabel).padBottom(10).row();
@@ -73,40 +75,39 @@ public class GameLobbyWaitingView extends BaseScreen {
 
         table.add(startGameButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(10).row();
 
-        TextButton leaveButton = ButtonFactory.createButton("Leave Lobby", getSkin(), game,
-            this::leaveLobby, "customLoginStyle");
+
         Label levelLabel = LabelFactory.createLabel("Selected Level:", getSkin(), "defaultFont", null);
         selectedLevel = new TextField("1", getSkin(), "textFieldStyle-textField");
-        table.add(leaveButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(10).row();
 
         Table selectedLevelContainer = TextFieldFactory.createTextField(            
         getSkin(),
         "",
         "textFieldStyle-textField",
         "textfield",
-        true,     // transparent background
-        60,       // inner padding
-        BUTTON_WIDTH,      // width
+        true,     
+        60,       
+        BUTTON_WIDTH,      
         90,
         selectedLevel
         );      
         table.add(levelLabel).padBottom(5).row();
         table.add(selectedLevelContainer).row();
-        // table.add(selectedLevel).width(100).padBottom(20).row();
 
 ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
         Gdx.app.postRunnable(() -> {
-            scrollPane.layout();           // Force layout pass
-            scrollPane.setScrollY(0);      // Set scroll to the top
+            scrollPane.layout();         
+            scrollPane.setScrollY(0);      
             scrollPane.updateVisualScroll();
         });
         // 📦 Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.top().add(scrollPane).expand().fill().row();
+        mainTable.add(LabelFactory.createLabel("Lobby ID: " + lobby.lobbyId, getSkin(), "titleFont", Color.BLACK)).padTop(BUTTON_PADDING).row();
+        mainTable.top().add(scrollPane).expandY().width(WORLD_WIDTH - 200).fill().row();
+        mainTable.add(ButtonFactory.createButton("Leave Lobby", getSkin(), game, this::leaveLobby,
+            "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).padTop(20).row();
  
-
         stage.addActor(mainTable);
         levelListener();
     }

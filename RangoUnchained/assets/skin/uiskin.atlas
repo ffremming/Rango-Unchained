@@ -146,6 +146,14 @@ default-slider
   orig: 8, 8
   offset: 0, 0
   index: -1
+music-slider
+  rotate: false
+  xy: 1114, 1298
+  size: 703, 174
+  split: 2, 2, 2, 2
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
 default-slider-knob
   rotate: false
   xy: 1821, 1104

@@ -85,12 +85,8 @@ public class LoginView extends BaseScreen {
         ButtonFactory.createDefaultButton("Create User",() -> game.setView(new CreateUserView()), table);
 
         // Error label
-        errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
-        errorLabel.setColor(1, 0, 0, 1);
+        errorLabel = LabelFactory.createLabel("", getSkin(), "errorFont", null);
         errorLabel.setWrap(true);
-        errorLabel.setWidth(BUTTON_WIDTH);
-        table.add(errorLabel).width(BUTTON_WIDTH).padBottom(10);
-        table.row();
 
        ScrollPane scrollPane = ScrollUtil.createStyledScrollPane(table);
 
@@ -102,8 +98,9 @@ public class LoginView extends BaseScreen {
         // Main table that fills the screen
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK, TITLE_PADDING, mainTable);
-        mainTable.top().add(scrollPane).expand().fill().row();
+        mainTable.add(LabelFactory.createLabel("Log In", getSkin(), "titleFont", Color.BLACK)).padTop(BUTTON_PADDING).row();
+        mainTable.add(errorLabel).center().width(BUTTON_WIDTH).row();
+        mainTable.top().add(scrollPane).expandY().width(WORLD_WIDTH - 400).fill().row();
         mainTable.add(ButtonFactory.createButton("Back to meny", getSkin(), game, () -> game.setView(new MainMenuView()),
             "customLoginStyle")).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(BUTTON_PADDING).padTop(20).row();
  

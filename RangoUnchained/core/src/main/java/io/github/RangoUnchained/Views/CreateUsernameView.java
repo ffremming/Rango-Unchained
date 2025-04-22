@@ -1,5 +1,6 @@
 package io.github.RangoUnchained.Views;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -30,36 +31,37 @@ public class CreateUsernameView extends BaseScreen {
     }
 
     private void createUI() {
+        Table table = new Table();
+        table.setFillParent(true); // Make the table fill the entire stage
+        table.top().padTop(20);
+        table.defaults().center();
+        table.add().expandX(); // helps make the table take full width
+        table.center().row();
+
         //Create the TextField first
         TextField textField = new TextField("", getSkin(), "textFieldStyle-textField");
         this.usernameField = textField; // Save reference to the actual TextField
-        Label titleLabel = LabelFactory.createLabel("Create a New Username", getSkin(), "defaultFont", null);
+        Label titleLabel = LabelFactory.createLabel("Create a New Username", getSkin(), "titleFont", Color.BLACK);
         usernameFieldContainer = TextFieldFactory.createTextField(getSkin(), "", "textFieldStyle-textField", "textfield", true, 60, 300, 90, usernameField);
-        
-        errorLabel = LabelFactory.createLabel("", getSkin(), "defaultFont", null);
-        errorLabel.setColor(1, 0, 0, 1);
-        errorLabel.setWrap(true);
-        errorLabel.setWidth(300);
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.top().padTop(50);
-
-        ButtonFactory.createDefaultButton("back", () -> game.setView(new MainMenuView()), table);
+            
         table.add(titleLabel)           
         .width(300)
         .height(60)
         .center()
         .padBottom(20);
         table.row();
+        errorLabel = LabelFactory.createLabel("", getSkin(), "errorFont", null);
+        errorLabel.setWrap(true);
+        errorLabel.setWidth(500);
 
-        table.add(LabelFactory.createLabel("New Username:", getSkin(), "defaultFont", null)).left().padBottom(5);
+        table.add(LabelFactory.createLabel("New Username:", getSkin(), "defaultFont", null)).center().padBottom(5);
         table.row();
         table.add(usernameFieldContainer)            
         .width(300)
         .height(60)
         .center()
-        .padBottom(20);
+        .padBottom(20)
+        .padTop(20);
         table.row();
 
         table.add(createConfirmButton())            
@@ -69,12 +71,12 @@ public class CreateUsernameView extends BaseScreen {
         .padBottom(20);
         table.row();
         table.add(errorLabel)            
-        .width(300)
-        .height(60)
+        .width(500)
         .center()
         .padBottom(20);
         table.row();
-
+        ButtonFactory.createDefaultButton("back", () -> game.setView(new MainMenuView()), table);
+        table.row();
         stage.addActor(table);
     }
 

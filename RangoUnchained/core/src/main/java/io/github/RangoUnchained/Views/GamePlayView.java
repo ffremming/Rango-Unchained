@@ -141,7 +141,7 @@ public class GamePlayView extends BaseScreen {
 
             float angle = comp==null?0:comp.getBody().getAngle();
 
-            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite(angle);
+            Sprite sprite = ((SpriteComponent) e.getComponent(SpriteComponent.class)).getSprite();
             sprite.setRotation(angle * MathUtils.radiansToDegrees);
             sprite.draw(batch);
         }

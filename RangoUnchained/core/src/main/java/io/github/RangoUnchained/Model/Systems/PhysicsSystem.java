@@ -73,7 +73,7 @@ public class PhysicsSystem implements Systems, ContactStrategy {
 
         Vector2 currentVelocity = ballBody.getLinearVelocity();
 
-        final float  STANDARDYVELOCITY = (float)((BounceComponent) ball.getComponent(BounceComponent.class)).type;
+        final float  STANDARDYVELOCITY = (float)((BounceComponent) ball.getComponent(BounceComponent.class)).getType();
         final float  STANDARDXVELOCITY = 5;
 
         final float YTRESHOLD = -10;

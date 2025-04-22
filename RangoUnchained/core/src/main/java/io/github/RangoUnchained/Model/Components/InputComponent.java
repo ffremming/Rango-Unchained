@@ -1,59 +1,31 @@
 package io.github.RangoUnchained.Model.Components;
 
+/**
+ * Component representing input state and input lock for an entity.
+ */
 public class InputComponent implements Component {
     private int inputLock = 0;
-    private boolean left;
-    private  boolean right;
-    private boolean shoot;
+    private boolean left, right, shoot;
 
-   /* public InputState inputState = InputState.IDLE;*/
-
-    public InputComponent() {
-    }
-
-
-
-    public void setTimer(int duration){
+    /**
+     * Sets a lock duration that prevents input handling.
+     *
+     * @param duration the lock duration
+     */
+    public void setTimer(int duration) {
         inputLock = duration;
     }
 
     public boolean isLocked(){
-        return inputLock>0;
+        return inputLock > 0;
     }
 
     public void decrementInputLock(){
-        if (inputLock>0){
+        if (inputLock> 0 ) {
             inputLock--;
         }
     }
 
-   /* public InputState getInputState() {
-        return inputState;
-    }*/
-
-   /* public void setInputState(String state) {
-        switch (state) {
-            case "LEFT":
-                inputState = InputState.LEFT;
-                break;
-            case "RIGHT":
-                inputState = InputState.RIGHT;
-                break;
-            case "SHOOTING":
-                inputState = InputState.SHOOTING;
-                break;
-            case "IDLE":
-                inputState = InputState.IDLE;
-                break;
-        }
-    }*/
-
-  /*  public enum InputState {
-        LEFT,
-        RIGHT,
-        SHOOTING,
-        IDLE
-    }*/
     public void setLeft(boolean left) {
         this.left = left;
     }
@@ -75,5 +47,4 @@ public class InputComponent implements Component {
         public boolean isLeft() {
             return left;
         }
-
 }

@@ -1,29 +1,27 @@
 package io.github.RangoUnchained.Model.Components;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Component representing power-up state for an entity.
+ */
 public class PowerUpComponent implements Component {
 
     public static final int SPEED = 0;
     public static  final int SHIELD = 1;
     public static  final int HEALTH = 2;
 
-    private int powerUpType;
-    private float powerUpTimer;
-    private Map<Integer, Float> activePowerUps; // Stores power-up type and remaining duration
+    private final int powerUpType;
+    private final Map<Integer, Float> activePowerUps; // Stores power-up type and remaining duration
 
+    /**
+     * Constructs a {@link PowerUpComponent} with the given power-up type.
+     *
+     * @param powerUpType the type of power-up applied to the entity
+     */
     public PowerUpComponent(int powerUpType) {
         this.powerUpType = powerUpType;
-        this.powerUpTimer = 0;
-        this.activePowerUps = new HashMap<>();
-    }
-
-    public PowerUpComponent() {
         this.activePowerUps = new HashMap<>();
     }
 

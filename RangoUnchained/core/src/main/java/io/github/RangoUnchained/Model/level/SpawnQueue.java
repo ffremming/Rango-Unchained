@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
-import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Position;
+import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData.Dimension;
 
 public class SpawnQueue {
     ArrayList<EntityData> spawningEntities = new ArrayList<EntityData>();
@@ -23,9 +23,9 @@ public class SpawnQueue {
         
             GameLevel.LevelData.EntityData data = new EntityData();
             data.name = name;
-            data.position = new Position();
-            data.position.x = xPos;
-            data.position.y = yPos;
+            data.dimension = new Dimension();
+            data.dimension.x = xPos;
+            data.dimension.y = yPos;
             data.velocity = velocity;
 
             spawningEntities.add(data);

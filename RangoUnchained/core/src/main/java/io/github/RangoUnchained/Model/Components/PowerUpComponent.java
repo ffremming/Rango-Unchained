@@ -11,9 +11,7 @@ public class PowerUpComponent implements Component {
 
     public static final int SPEED = 0;
     public static  final int SHIELD = 1;
-    public static final int BALLSIZE = 2;
-    public static final int BALLBOUNCE = 3;
-
+    public static  final int HEALTH = 2;
 
     private int powerUpType;
     private float powerUpTimer;

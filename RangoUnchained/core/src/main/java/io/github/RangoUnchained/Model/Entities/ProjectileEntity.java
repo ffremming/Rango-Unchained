@@ -19,4 +19,8 @@ public class ProjectileEntity extends Entity{
         addComponent(transComp);
         addComponent(new ContactComponent());
     }
+
+    public ProjectileEntity() {
+        //TODO Auto-generated constructor stub
+    }
 }

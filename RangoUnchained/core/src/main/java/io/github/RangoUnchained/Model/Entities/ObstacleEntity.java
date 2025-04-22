@@ -16,4 +16,8 @@ public class ObstacleEntity extends Entity {
         addComponent(new ContactComponent());
     }
 
+    public ObstacleEntity() {
+        //TODO Auto-generated constructor stub
+    }
+
 }

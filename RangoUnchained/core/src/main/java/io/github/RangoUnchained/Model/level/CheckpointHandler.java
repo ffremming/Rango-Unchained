@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import io.github.RangoUnchained.Model.Components.BallComponent;
 import io.github.RangoUnchained.Model.Components.BodyComponent;
 import io.github.RangoUnchained.Model.Components.HealthComponent;
+import io.github.RangoUnchained.Model.Components.PowerUpComponent;
 import io.github.RangoUnchained.Model.Components.SpriteComponent;
 import io.github.RangoUnchained.Model.Components.StatComponent;
 import io.github.RangoUnchained.Model.Entities.BallEntity;
 import io.github.RangoUnchained.Model.Entities.Entity;
 import io.github.RangoUnchained.Model.Entities.PlayerEntity;
+import io.github.RangoUnchained.Model.Entities.PowerUpEntity;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData;
 import io.github.RangoUnchained.Model.level.GameLevel.LevelData.EntityData;
 
@@ -38,11 +40,12 @@ public class CheckpointHandler {
 
         // Add every entity that is not a player of ball
         for (EntityData entityData : entitiesData) {
-            if (entityData.name.startsWith("Player") || entityData.name.startsWith("Ball")) {
-                continue;
+            if (entityData.typeInfo != null && (entityData.typeInfo.type.equals("Obsticle") || entityData.typeInfo.type.equals("Background"))){
+                entitiesDataCheckPoint.add(entityData);
             }
-            entitiesDataCheckPoint.add(entityData);
         }
+        
+
         // Add every ball and player entity
         for (Entity entity : entities) {
             if (entity instanceof BallEntity) {
@@ -50,6 +53,9 @@ public class CheckpointHandler {
             }
             if (entity instanceof PlayerEntity) {
                 entitiesDataCheckPoint.add(makePlayerEntity(entity));
+            }
+            if (entity instanceof PowerUpEntity) {
+                entitiesDataCheckPoint.add(makePowerupEntity(entity));
             }
         }
 
@@ -70,6 +76,33 @@ public class CheckpointHandler {
 
         // After writing, reset counter.
         checkpointCounter = 0;
+    }
+
+
+    private static EntityData makePowerupEntity(Entity entity) {
+        EntityData entityData = new EntityData();
+        // Fetch needed components
+        BodyComponent body = (BodyComponent) entity.getComponent(BodyComponent.class);
+        StatComponent stat = (StatComponent) entity.getComponent(StatComponent.class);
+        SpriteComponent sprite = (SpriteComponent) entity.getComponent(SpriteComponent.class);
+
+        BallComponent ballComp = (BallComponent) entity.getComponent(BallComponent.class);
+        PowerUpComponent powerUpComp = (PowerUpComponent) entity.getComponent(PowerUpComponent.class);
+        
+        // Set the position property
+        EntityData.Dimension entityPosition = new EntityData.Dimension();
+        entityPosition.x = sprite.getSprite().getX();
+        entityPosition.y = sprite.getSprite().getY();
+        entityData.dimension = entityPosition;
+
+        //set type info
+        entityData.typeInfo = new EntityData.TypeInfo();
+        entityData.typeInfo.type = "Powerup";
+        entityData.typeInfo.subType = powerUpComp.getPowerUpType() == PowerUpComponent.SPEED ? "Speed" : powerUpComp.getPowerUpType() == PowerUpComponent.SHIELD ? "Shield" :"Heart";
+
+        // Set the velocity property
+        entityData.velocity = body.getBody().getLinearVelocity();
+        return entityData;
     }
 
 
@@ -106,16 +139,18 @@ public class CheckpointHandler {
 
         BallComponent ballComp = (BallComponent) entity.getComponent(BallComponent.class);
 
-        // Set the name property
-        String size = stat.getTimesPopped() == 0 ? "Big" : stat.getTimesPopped() == 1 ? "Medium" : "Small";
-
-        String recipe = "Ball: "+ ballComp.getTypeName() + " " +size;
-        entityData.name = recipe;
+        
         // Set the position property
-        EntityData.Position entityPosition = new EntityData.Position();
+        EntityData.Dimension entityPosition = new EntityData.Dimension();
         entityPosition.x = sprite.getSprite().getX();
         entityPosition.y = sprite.getSprite().getY();
-        entityData.position = entityPosition;
+        entityData.dimension = entityPosition;
+
+        //set type info
+        entityData.typeInfo = new EntityData.TypeInfo();
+        entityData.typeInfo.type = "Ball";
+        entityData.typeInfo.size = 3-stat.getTimesPopped();
+        entityData.typeInfo.subType = ballComp.getTypeName();
 
         // Set the velocity property
         entityData.velocity = body.getBody().getLinearVelocity();
@@ -142,11 +177,17 @@ public class CheckpointHandler {
         System.out.println(sprite.getPath());
 
         // Set the position property
-        EntityData.Position entityPosition = new EntityData.Position();
+        EntityData.Dimension entityPosition = new EntityData.Dimension();
         entityPosition.x = sprite.getSprite().getX();
         entityPosition.y = 150;
-        entityData.position = entityPosition;
+        entityData.dimension = entityPosition;
         entityData.health = health.getHealth();
+
+         //set type info
+         entityData.typeInfo = new EntityData.TypeInfo();
+         entityData.typeInfo.type = "Player";
+         entityData.typeInfo.subType = "Rango";
+ 
 
         return entityData;
     }

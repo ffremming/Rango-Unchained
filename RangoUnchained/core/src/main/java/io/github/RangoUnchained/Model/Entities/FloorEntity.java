@@ -9,5 +9,9 @@ public class FloorEntity extends ObstacleEntity {
         super(bodyComponent, spriteComponent);
         //TODO Auto-generated constructor stub
     }
+
+    public FloorEntity() {
+        //TODO Auto-generated constructor stub
+    }
     
 }

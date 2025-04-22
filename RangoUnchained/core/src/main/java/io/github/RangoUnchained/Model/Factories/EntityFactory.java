@@ -58,7 +58,7 @@ public class EntityFactory {
     private EntityFactory() {}
 
     public static Entity createEntity(float x, float y, String name, World world, Vector2 velocity, int hp, int level) {
-
+        
         Gdx.app.log("entity factory", "Name: " + name);
 
         if (name.startsWith("Player")) {
